@@ -1,13 +1,25 @@
+class Color:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    ENDC = '\033[0m'
+    dictionary = {0:"WHITE", 1:"RED", 2:"GREEN", 3:"YELLOW", 4:"BLUE", 5:"MAGENTA", 6:"CYAN", 7:"WHITE"}
 
 class Grid:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.last_move = None # (x,y,color)
         self.nodes = [[0 for _ in range(width)] for _ in range(height)]
 
-    def set_cell(self, x, y, value): # give the value of the cell x,y
+    def set_cell(self, x, y, value): # give the value/color of the cell x,y
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x] = value
+            self.last_move = (x, y, value)
         else:
             raise IndexError("Cell position out of bounds")
 
@@ -33,4 +45,19 @@ class Grid:
                     return False
 
         return True
+
+    def undo_last_move(self):
+        if self.last_move:
+            x, y, _ = self.last_move
+            self.set_cell(x, y, 0)
+            self.last_move = None
+        else:
+            print("No move to undo")
+
+    def print_terminal(self):
+        for row in self.nodes:
+            for cell in row:
+                color = Color.dictionary.get(cell)
+                print(f"{Color.__dict__[color]}⬤{Color.ENDC}", end=' ')
+            print()
 
