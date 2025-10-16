@@ -11,9 +11,13 @@ def on_button_click(event):
     ratio = min(800 / grid.width, 800 / grid.height)
     i = int(x // ratio)
     j = int(y // ratio)
-    if 0 <= i < grid.width and 0 <= j < grid.height and color_selected.get() != -1:
-        change_node_color(grid, i, j, color_selected.get() + 1)
-        draw_grid(grid)
+    print(f'clic: {x}, {y} -> {i}, {j}')
+    
+    if (0 <= i) and (i < grid.width) and (0 <= j) and (j < grid.height) and (color_selected.get() != -1):
+        print(f'Button clicked at: {i}, {j}') 
+        if (grid.get_cell(i, j) == 0):
+            change_node_color(grid, i, j, color_selected.get() + 1)
+            draw_grid(grid)
 
 
 def draw_rectangle(x, y, width, height, color):#draw rectangle form x,y to x+width,y+height
@@ -42,23 +46,24 @@ def draw_color_selection():
         tk.Radiobutton(root, text=color, value=i,variable=color_selected, fg=color).pack(anchor="w")
 
 
-def update_display():
-    canvas.delete("all")
-    root.after(100, update_display)  # Schedule the next update in 100 ms
-
-
 
 if __name__=="__main__":
+
+    grid = Grid(10, 5)
+
     root = tk.Tk()
     root.title("Graph Coloring Game")
-    root.geometry("1200x1000")
-    root.bind("<Button-1>", on_button_click)
-
-    canvas = tk.Canvas(root, width=800, height=800, bg="white")
+    
+    ratio = min(800 / grid.width, 800 / grid.height)
+    w = ratio * grid.width
+    h = ratio * grid.height
+    root.geometry(f'{int(w)}x{int(h)+100}')
+    canvas = tk.Canvas(root, width=w, height=h, bg="white")
+    canvas.bind("<Button-1>", on_button_click)
     color_selected = tk.IntVar(value=-1)  
     
     canvas.pack()
-    grid = Grid(10, 5)
+    
     draw_grid(grid)
     draw_color_selection()
 

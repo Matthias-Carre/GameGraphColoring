@@ -46,6 +46,21 @@ class Grid:
 
         return True
 
+    def same_color_neighbors(self, x, y):
+        for y in range(self.height-1):
+            for x in range(self.width-1): # we check only the right and down neighbors
+                current_color = self.get_cell(x,y)
+                right_color = self.get_cell(x+1,y)
+                down_color = self.get_cell(x,y+1)
+                if current_color == 0:
+                    return (-1,-1)
+                if (current_color == right_color):
+                    return (x+1, y)
+                if (current_color == down_color):
+                    return (x, y+1)
+
+        return True
+
     def undo_last_move(self):
         if self.last_move:
             x, y, _ = self.last_move
