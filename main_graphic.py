@@ -4,6 +4,7 @@ from Grid import Grid
 colors = ["Red", "Green", "Blue", "purple"]
 color_selected = -1 # given by the radio button
 
+#function to handle witch cell is clicked
 def on_button_click(event):
     x = event.x
     y = event.y
@@ -17,23 +18,26 @@ def on_button_click(event):
             change_node_color(grid, i, j, color_selected.get() + 1)
             draw_grid(grid)
 
-
-def draw_rectangle(x, y, width, height, color):#draw rectangle form x,y to x+width,y+height
+#draw rectangle form x,y to x+width,y+height
+def draw_rectangle(x, y, width, height, color):
     canvas.create_rectangle(x, y, x + width, y + height, fill=color, outline="")
 
-def draw_circle(x, y, radius, color):#draw circle centered in x,y with radius
+#draw circle centered in x,y with radius
+def draw_circle(x, y, radius, color):
     canvas.create_oval(x - radius, y - radius, x + radius, y + radius, fill=color, outline="")
     canvas.create_oval(x - radius/1.5, y - radius/1.5, x + radius/1.5, y + radius/1.5, fill="white", outline="")
 
+#undo the last move on the grid (only one for now)
 def undo_last_move():
     grid.undo_last_move()
     draw_grid(grid)
 
+#change the color of the node at (x,y) to the value of color
 def change_node_color(grid, x, y, color):
     grid.set_cell(x, y, color)
 
-
-def draw_grid(grid):#draw the grid with circles of colors of the nodes
+#draw the grid with circles of colors of the nodes
+def draw_grid(grid):
     ratio = min(800 / grid.width, 800 / grid.height)
 
     for i in range(grid.width):
@@ -43,6 +47,7 @@ def draw_grid(grid):#draw the grid with circles of colors of the nodes
             color = grid.get_cell(i, j)
             draw_circle(x + ratio / 2, y + ratio / 2, ratio / 2 - 5, colors[color - 1] if color > 0 else "black")
 
+#create the color selection on the window
 def draw_color_selection():
     for i, color in enumerate(colors):
         tk.Radiobutton(root, text=color, value=i,variable=color_selected, fg=color).pack(anchor="w")
@@ -51,8 +56,8 @@ def draw_color_selection():
 
 if __name__=="__main__":
 
+    #grid size can be changed here
     grid = Grid(5, 5)
-
 
     root = tk.Tk()
     root.title("Graph Coloring Game")
@@ -64,11 +69,10 @@ if __name__=="__main__":
     root.geometry(f'{int(w)}x{int(h)+150}')
     canvas = tk.Canvas(root, width=w, height=h, bg="white")
 
+    #creation of the canvas and button/color selection
     canvas.bind("<Button-1>", on_button_click)
     color_selected = tk.IntVar(value=-1)  
-    
     canvas.pack()
-    
     draw_grid(grid)
     draw_color_selection()
 
