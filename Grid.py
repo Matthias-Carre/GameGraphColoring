@@ -16,19 +16,32 @@ class Color:
 
 class Grid:
     #for now grid is defined as an matrix of cells with colors represented by integers
-    def __init__(self, width, height):
+    def __init__(self, height, width):
         self.width = width
         self.height = height
-        self.last_move = None # (x,y,color)
+        self.last_move = [] # (x,y,color)
         self.nodes = [[Cell(x, y) for y in range(width)] for x in range(height)]
 
     # give the value/color of the cell x,y
     def set_cell(self, x, y, value): 
+        print(f"Lastmove: {self.last_move}")
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
-            self.last_move = (x, y, value)
+            if value != 0:
+                self.last_move.append((x, y, value))
         else:
             raise IndexError("Cell position out of bounds")
+    
+    #play as "player" (A or B) the cell at x,y with color "value"
+    def play_cell(self, x, y, value, player):
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.nodes[y][x].set_value(value)
+            self.nodes[y][x].played_by = player
+            if value != 0:
+                self.last_move.append((x, y, value))
+            return True
+        return False
+
 
     # return the value of the cell x,y
     def get_cell(self, x, y): 
@@ -68,10 +81,11 @@ class Grid:
 
     #undo the last move on the grid (only one for now)
     def undo_last_move(self):
+        print(f"Lastmove: {self.last_move}")
         if self.last_move:
-            x, y, _ = self.last_move
-            self.set_cell(x, y, 0)
-            self.last_move = None
+            x, y, _ = self.last_move.pop()
+            print(f"Undoing move at: {x}, {y}")
+            self.play_cell(x, y, 0, player="")
         else:
             print("No move to undo")
 
