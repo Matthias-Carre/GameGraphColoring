@@ -1,5 +1,7 @@
 #Grid class to handle the grid of the graph
 
+from Cell import Cell
+
 #possible colors:
 class Color:
     RED = '\033[91m'
@@ -18,12 +20,12 @@ class Grid:
         self.width = width
         self.height = height
         self.last_move = None # (x,y,color)
-        self.nodes = [[0 for _ in range(width)] for _ in range(height)]
+        self.nodes = [[Cell(x, y) for y in range(width)] for x in range(height)]
 
     # give the value/color of the cell x,y
     def set_cell(self, x, y, value): 
         if 0 <= x < self.width and 0 <= y < self.height:
-            self.nodes[y][x] = value
+            self.nodes[y][x].set_value(value)
             self.last_move = (x, y, value)
         else:
             raise IndexError("Cell position out of bounds")

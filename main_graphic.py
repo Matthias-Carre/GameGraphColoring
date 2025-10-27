@@ -13,8 +13,8 @@ def on_button_click(event):
     j = int(y // ratio)
     
     if (0 <= i) and (i < grid.width) and (0 <= j) and (j < grid.height) and (color_selected.get() != -1):
-        print(f'Button clicked at: {i}, {j}') 
-        if (grid.get_cell(i, j) == 0):
+        print(f'Button clicked at: {i}, {j},') 
+        if (grid.get_cell(i, j).get_value() == 0):
             change_node_color(grid, i, j, color_selected.get() + 1)
             draw_grid(grid)
 
@@ -35,6 +35,7 @@ def undo_last_move():
 #change the color of the node at (x,y) to the value of color
 def change_node_color(grid, x, y, color):
     grid.set_cell(x, y, color)
+    draw_grid(grid)
 
 #draw the grid with circles of colors of the nodes
 def draw_grid(grid):
@@ -44,8 +45,9 @@ def draw_grid(grid):
         for j in range(grid.height):
             x = i * ratio
             y = j * ratio
-            color = grid.get_cell(i, j)
-            draw_circle(x + ratio / 2, y + ratio / 2, ratio / 2 - 5, colors[color - 1] if color > 0 else "black")
+            cell = grid.get_cell(i, j)
+            draw_circle(x + ratio / 2, y + ratio / 2, ratio / 2 - 5, colors[cell.get_value() - 1] if cell.get_value() > 0 else "black")
+            
 
 #create the color selection on the window
 def draw_color_selection():
@@ -57,7 +59,7 @@ def draw_color_selection():
 if __name__=="__main__":
 
     #grid size can be changed here
-    grid = Grid(5, 5)
+    grid = Grid(8, 4)
 
     root = tk.Tk()
     root.title("Graph Coloring Game")
