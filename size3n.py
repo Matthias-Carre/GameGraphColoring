@@ -1,6 +1,6 @@
 from Grid import Grid
 import tkinter as tk
-from Visual import Visual
+from Visual3n import Visual
 
 as_played = False
 visu=None

@@ -40,7 +40,7 @@ class Visual:
             cell = critical_cells[0]
             uncolored_neighbors = self.grid.get_uncolored_neighbor(cell)
 
-            print(self.grid.play_cell(uncolored_neighbors.y, uncolored_neighbors.x, cell.color_options[0], player="B"))
+            self.grid.play_cell(uncolored_neighbors.y, uncolored_neighbors.x, cell.color_options[0], player="B")
             self.draw_grid()
 
             return
