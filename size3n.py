@@ -8,11 +8,11 @@ visu=None
 def on_button_click(event):
     visu.on_button_click(event)
     root.update()
-    print("After Alice's move")
+    #print("After Alice's move")
     #test Bob move:
-    grid.play_cell(1, 1, 1, player="B")
-    visu.draw_grid()
-    root.update()
+    #grid.play_cell(1, 1, 1, player="B")
+    #visu.draw_grid()
+    #root.update()
 
 
 def bob_turns(grid):
@@ -20,7 +20,7 @@ def bob_turns(grid):
     grid.set_cell(1, 1, 1)
 
 if __name__ == "__main__":
-    grid = Grid(3, 10)
+    grid = Grid(3, 10, num_colors=3)
     root = tk.Tk()
     root.title("Graph Coloring Game")
 
