@@ -42,3 +42,6 @@ class Cell:
 
     def get_player(self):
         return self.played_by
+
+    def is_doctor(self):
+        return len(self.patients) > 0
