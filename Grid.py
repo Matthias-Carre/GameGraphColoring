@@ -168,15 +168,23 @@ class Grid:
         #if no block we create it/add the column to the neighboring block
         if block == None:
             block_left = self.block_at(x-1)
+            block_right = self.block_at(x+1)
+
             if(block_left):
                 block_left.end_col = x
                 block_left.size += 1
                 block_left.columns.append([self.get_cell(x, row) for row in range(self.height)])
+                #merge 2 blocks
+                if(block_right):
+                    block_left.end_col = block_right.end_col
+                    block_left.size += block_right.size
+                    block_left.columns.extend(block_right.columns)
+                    self.blocks.remove(block_right)
+                    
                 block_left.check_configurations()
                 block_left.print_block()
-                
                 return
-            block_right = self.block_at(x+1)
+                      
             if(block_right):
                 block_right.start_col = x
                 block_right.size += 1
