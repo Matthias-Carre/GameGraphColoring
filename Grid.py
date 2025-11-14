@@ -164,14 +164,44 @@ class Grid:
 
     #create/update or merge blocks after a move at (x,y)
     def update_blocks(self,x,y):
-        block = Block(self)
-        block.start_col = x
-        block.end_col = x
-        block.size = 1
-        block.columns.append([self.get_cell(x, row) for row in range(self.height)])
-        self.blocks.append(block)
+        block = self.block_at(x)
+        #if no block we create it/add the column to the neighboring block
+        if block == None:
+            block_left = self.block_at(x-1)
+            if(block_left):
+                block_left.end_col = x
+                block_left.size += 1
+                block_left.columns.append([self.get_cell(x, row) for row in range(self.height)])
+                block_left.check_configurations()
+                block_left.print_block()
+                
+                return
+            block_right = self.block_at(x+1)
+            if(block_right):
+                block_right.start_col = x
+                block_right.size += 1
+                block_right.columns.insert(0,[self.get_cell(x, row) for row in range(self.height)])
+                block_right.check_configurations()
+                block_right.print_block()
+                
+                return
+            #create new block
+            block = Block(self)
+            block.start_col = x
+            block.end_col = x
+            block.size = 1
+            block.columns.append([self.get_cell(x, row) for row in range(self.height)])
+            self.blocks.append(block)
 
+        block.check_configurations()
         block.print_block()
         return
+
+    # return block at x if it exists
+    def block_at(self, x):
+        for block in self.blocks:
+            if block.start_col <= x <= block.end_col:
+                return block
+        return None
     
     

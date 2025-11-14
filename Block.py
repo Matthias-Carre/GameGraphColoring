@@ -85,7 +85,7 @@ class Block:
 
     #particular case whene between two blocks
     def is_pi(self):
-        return false
+        return False
 
 
     #set the left and right configurations of the block
@@ -109,12 +109,16 @@ class Block:
 
     def print_block(self):
         print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
-        for col in self.columns:
-            for cell in col:
-                print(f"{cell.value} ", end="\n")
+        for i in range(4):
+            for col in self.columns:
+                cell = col[i]
+                print(f"{cell.value} ", end="")
             print()
+        print()
 
+        print(f"Left configuration: {self.left_configuration}, Right configuration: {self.right_configuration}")
 
+    
         
         
 
