@@ -21,8 +21,39 @@ class Block:
     def merge(self,other_block):
         return
 
+
+    def is_alpha(self):
+    
+    def is_beta(self):
+
+    def is_gamma(self):
+    
+    def is_delta(self):
+
+    #particular case whene between two blocks
+    def is_pi(self):
+        
+        return
     #set the left and right configurations of the block
     def check_configurations(self):
-        return
+        a,b,c,d = self.columns[0]
+        #beta
+        
+        
+        #alpha
+        
+        if(a==c or b==d ):
+            self.left_configuration = "a"
+
+
+    def print_block(self):
+        print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
+        for col in self.columns:
+            for cell in col:
+                print(f"{cell.value} ", end="\n")
+            print()
+
+
+        
         
 

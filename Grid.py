@@ -1,6 +1,7 @@
 #Grid class to handle the grid of the graph
 
 from Cell import Cell
+from Block import Block
 
 #possible colors:
 class Color:
@@ -22,6 +23,7 @@ class Grid:
         self.last_move = [] # (x,y,color)
         self.nodes = [[Cell(x, y, self.width, self.height,num_colors=num_colors) for y in range(width)] for x in range(height)]
         self.num_colors = num_colors
+        self.blocks = [] 
 
     
     def set_cell(self, x, y, value): 
@@ -75,6 +77,7 @@ class Grid:
             self.nodes[y][x].played_by = player
             if value != 0:
                 self.last_move.append((x, y, value))
+            self.update_blocks(x,y)
             return True
         return False
 
@@ -158,3 +161,17 @@ class Grid:
                     return neighbor_cell
 
         return None
+
+    #create/update or merge blocks after a move at (x,y)
+    def update_blocks(self,x,y):
+        block = Block(self)
+        block.start_col = x
+        block.end_col = x
+        block.size = 1
+        block.columns.append([self.get_cell(x, row) for row in range(self.height)])
+        self.blocks.append(block)
+
+        block.print_block()
+        return
+    
+    
