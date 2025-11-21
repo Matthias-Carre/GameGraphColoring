@@ -42,7 +42,7 @@ class Cell:
         #check if its safe
         #is colorred OR #N <= 3 OR 2 neighbors colored with same color
         #OR 3 neighbors colored with 3 colors but the 4th is neighbor to the last color
-        if self.value != 0 or len(self.neighbors) < 4 or len(self.neighbors) - len(set(self.neighbors)) > 0 :
+        if self.value != 0 or len(self.neighbors) < 4 or len(self.neighbors_colors()) - len(set(self.neighbors_colors())) > 0 :
             self.is_safe = True
             #print(f"Cell at ({self.x}, {self.y}) is safe")
         if len(self.neighbors) == 4 and len(set(self.neighbors_colors())) == 3:

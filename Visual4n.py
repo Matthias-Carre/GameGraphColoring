@@ -56,7 +56,7 @@ class Visual:
     def on_button_click(self,event):
         x = event.x
         y = event.y
-        ratio = min(800 / self.grid.width, 800 / self.grid.height)
+        ratio = min(self.width / self.grid.width, self.height / self.grid.height)
         i = int(x // ratio)
         j = int(y // ratio)
 
@@ -80,7 +80,7 @@ class Visual:
 
     #draw the grid on the canvas
     def draw_grid(self):
-        ratio = min(800 / self.grid.width, 800 / self.grid.height)
+        ratio = min(self.width / self.grid.width, self.height / self.grid.height)
         for i in range(self.grid.width):
             for j in range(self.grid.height):
                 x = i * ratio

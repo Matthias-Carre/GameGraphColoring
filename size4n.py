@@ -15,12 +15,12 @@ def bob_turns(grid):
     grid.set_cell(1, 1, 1)
 
 if __name__ == "__main__":
-    grid = Grid(4, 10, num_colors=4)
+    grid = Grid(4, 15, num_colors=4)
     root = tk.Tk()
     root.title("Graph Coloring Game")
 
     #set the window size to match the gird of the graph
-    ratio = min(800 / grid.width, 800 / grid.height)
+    ratio = min(1600 / grid.width, 1600 / grid.height)
     w = ratio * grid.width
     h = ratio * grid.height
     root.geometry(f'{int(w)}x{int(h)+150}')
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     canvas.bind("<Button-1>", on_button_click)
 
     playing = True
-    visu = Visual(800, 800, grid,root,canvas)
+    visu = Visual(1600, 1600, grid,root,canvas)
     visu.draw_window()
     
     root.mainloop()
