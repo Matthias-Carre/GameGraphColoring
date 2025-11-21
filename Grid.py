@@ -23,7 +23,18 @@ class Grid:
         self.last_move = [] # (x,y,color)
         self.nodes = [[Cell(x, y, self.width, self.height,num_colors=num_colors) for y in range(width)] for x in range(height)]
         self.num_colors = num_colors
-        self.blocks = [] 
+        self.blocks = []
+
+        #add neighbors to each cell
+        for i in range(self.width):
+            for j in range(self.height):
+                directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
+                for dx, dy in directions:
+                    nx, ny = i + dx, j + dy
+                    #check if we hit a border
+                    if 0 <= nx < self.width and 0 <= ny < self.height:
+                        self.nodes[j][i].neighbors.append(self.nodes[ny][nx])
+                self.nodes[j][i].update_cell()
 
     
     def set_cell(self, x, y, value): 
@@ -35,35 +46,25 @@ class Grid:
         else:
             raise IndexError("Cell position out of bounds")
     
+    def update_grid(self):
+        for row in self.nodes:
+            for cell in row:
+                cell.update_cell()
+
     def update_neighbors(self, x, y,value):
+        #print(f"2THdebug update neighbors of ({x},{y}) with value {value}")
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             #check if we hit a border
             if 0 <= nx < self.width and 0 <= ny < self.height:
                 neighbor_cell = self.get_cell(nx, ny)
-                neighbor_cell.neighbors.append(value)
+                
                 neighbor_cell.neighbors_to_color -= 1
 
                 #remove the color from the options
                 if value in neighbor_cell.color_options:
-                    neighbor_cell.color_options.remove(value)
-                
-                #check if its critical
-                if len(neighbor_cell.color_options) == 1:
-                    print(f"Cell at ({nx}, {ny}) is color critical")
-                    neighbor_cell.is_color_critical = True
-
-                #check if its safe
-                if neighbor_cell.neighbors_to_color == 0 and len(neighbor_cell.color_options)==0:
-                    neighbor_cell.is_safe = True
-                    print(f"Cell at ({nx}, {ny}) is safe")
-
-                #check if no color options left
-                if len(neighbor_cell.color_options) == 0:
-                    neighbor_cell.is_uncolorable = True
-                    print(f"Cell at ({nx}, {ny}) has no color options left")
-                    
+                    neighbor_cell.color_options.remove(value)    
         return
 
 
@@ -73,7 +74,7 @@ class Grid:
             self.nodes[y][x].set_value(value)
             #update the neighboring cells
             self.update_neighbors(x, y, value)
-
+            self.update_grid()
             self.nodes[y][x].played_by = player
             if value != 0:
                 self.last_move.append((x, y, value))

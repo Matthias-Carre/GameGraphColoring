@@ -9,6 +9,7 @@ class Visual:
         self.color_selected = -1 # given by the radio button
         self.root = root
         self.turn = 0 #0 for Alice, 1 for Bob
+        self.print_status = True 
 
     def draw_text(self, x, y, text, color="black", font=("Arial", 12)):
         self.canvas.create_text(x, y, text=text, fill=color, font=font)
@@ -91,7 +92,8 @@ class Visual:
                     self.draw_text(x + ratio / 2, y + ratio / 2, "X", color="red", font=("Arial", 16))
                 else:
                     self.draw_text(x + ratio / 2, y + ratio / 2, player, color="black", font=("Arial", 16))
-                
+                if(self.print_status):
+                    self.draw_text(x + ratio / 2, y + ratio / 2 + 10, cell.get_status(), color="blue", font=("Arial", 8))
                 
     def draw_window(self):
 
