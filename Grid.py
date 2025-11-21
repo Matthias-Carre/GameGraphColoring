@@ -36,7 +36,12 @@ class Grid:
                         self.nodes[j][i].neighbors.append(self.nodes[ny][nx])
                 self.nodes[j][i].update_cell()
 
-    
+    def is_move_valid(self, x, y, value): 
+        if 0 <= x < self.width and 0 <= y < self.height:
+            if value in self.nodes[y][x].color_options:
+                return True
+        return False
+
     def set_cell(self, x, y, value): 
         print(f"Lastmove: {self.last_move}")
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -64,12 +69,15 @@ class Grid:
 
                 #remove the color from the options
                 if value in neighbor_cell.color_options:
-                    neighbor_cell.color_options.remove(value)    
+                    neighbor_cell.color_options.remove(value)
         return
 
 
     #play as "player" (A or B) the cell at x,y with color "value"
     def play_cell(self, x, y, value, player):
+        if not self.is_move_valid(x, y, value):
+            print(f"Move at ({x},{y}) with value {value} is not valid")
+            return False
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
             #update the neighboring cells
@@ -119,13 +127,29 @@ class Grid:
 
         return True
 
+    #function to update neighbors when undoing a move
+    def undo_update(self, x, y,value):
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+
+            neighbor_cell = self.get_cell(nx, ny)
+            neighbor_cell.neighbors_to_color += 1
+
+            if value not in neighbor_cell.color_options:
+                neighbor_cell.color_options.append(value)
+        return
+
     #undo the last move on the grid (only one for now)
     def undo_last_move(self):
         print(f"Lastmove: {self.last_move}")
         if self.last_move:
-            x, y, _ = self.last_move.pop()
+            x, y, value = self.last_move.pop()
             print(f"Undoing move at: {x}, {y}")
-            self.play_cell(x, y, 0, player="")
+            self.nodes[y][x].set_value(0,player=None)
+            
+            self.undo_update(x, y, value)
+            self.update_grid()
         else:
             print("No move to undo")
 
