@@ -56,10 +56,40 @@ def draw_color_selection():
     tk.Button(root, text="Undo Last Move", command=undo_last_move).pack()
 
 
+def main(width=4, height=4,r=None):
+    global grid, root, canvas, color_selected
+    grid = Grid(width, height)
+
+    root = r
+    #erase all widgets in root
+    for widget in root.winfo_children():
+        widget.destroy()
+    
+    root.title("Graph Coloring Game")
+    
+    #set the window size to match the gird of the graph
+    ratio = min(800 / grid.width, 800 / grid.height)
+    w = ratio * grid.width
+    h = ratio * grid.height
+    root.geometry(f'{int(w)}x{int(h)+150}')
+    canvas = tk.Canvas(root, width=w, height=h, bg="white")
+
+    #creation of the canvas and button/color selection
+    canvas.bind("<Button-1>", on_button_click)
+    color_selected = tk.IntVar(value=-1)  
+    canvas.pack()
+    draw_grid(grid)
+    draw_color_selection()
+
+    root.mainloop()
+
+def submit_grid_size():
+    return
+
+
 if __name__=="__main__":
 
-    #grid size can be changed here
-    grid = Grid(8, 4)
+    grid = Grid(4, 4)
 
     root = tk.Tk()
     root.title("Graph Coloring Game")
