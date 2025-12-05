@@ -43,6 +43,7 @@ class Grid:
         return False
 
     def set_cell(self, x, y, value): 
+
         print(f"Lastmove: {self.last_move}")
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
@@ -81,12 +82,14 @@ class Grid:
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
             #update the neighboring cells
-            self.update_neighbors(x, y, value)
-            self.update_grid()
+            if self.width == 4:
+                self.update_neighbors(x, y, value)
+                self.update_grid()
             self.nodes[y][x].played_by = player
             if value != 0:
                 self.last_move.append((x, y, value))
-            self.update_blocks(x,y)
+            if self.width ==4:
+                self.update_blocks(x,y)
             return True
         return False
 
