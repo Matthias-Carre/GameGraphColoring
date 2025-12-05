@@ -82,14 +82,14 @@ class Grid:
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
             #update the neighboring cells
-            if self.width == 4:
-                self.update_neighbors(x, y, value)
-                self.update_grid()
+            
+            self.update_neighbors(x, y, value)
+            self.update_grid()
             self.nodes[y][x].played_by = player
             if value != 0:
                 self.last_move.append((x, y, value))
-            if self.width ==4:
-                self.update_blocks(x,y)
+            
+            self.update_blocks(x,y)
             return True
         return False
 
