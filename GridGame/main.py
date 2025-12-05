@@ -1,15 +1,23 @@
 import tkinter as tk
-import graphic.Draw as Draw
+from game.Grid import Grid
+from graphic.Draw import Draw
 from game.Engine import GameEngine
+from graphic.Interface import Interface
 
-def start_pvp():
+
+def on_button_click(event):
     return
 
-def treenGrid():
-    return
+def create_game(width, height, root):
+    grid = Grid(width, height, num_colors=4)
+    engine = GameEngine(grid)
+    
+    window = Interface(root,engine)
+    
+    print("Game created with grid size:", width, "x", height)
 
-def fournGrid():
-    return
+
+
 
 def main():
     root = tk.Tk()
@@ -20,11 +28,30 @@ def main():
 
     tk.Label(root, text="Choose your lunch option:").pack(pady=10)
 
-    tk.Button(root, text="Solo Custom Grid", command=start_pvp).pack(pady=5)
-    tk.Button(root, text="3n Grid", command=treenGrid).pack(pady=5)
-    tk.Button(root, text="4n Grid", command=fournGrid).pack(pady=5)
 
-    root.mainloop()
+    main_frame = tk.Frame(root)
+    main_frame.pack(padx=20, pady=20)
+    tk.Label(main_frame, text="Largeur de la grille:").pack(pady=5)
+    width_entry = tk.Entry(main_frame)
+    width_entry.pack(pady=5)
+
+    tk.Label(main_frame, text="Hauteur de la grille:").pack(pady=5)
+    height_entry = tk.Entry(main_frame)
+    height_entry.pack(pady=5)
+
+    tk.Label(main_frame, text="Nombre de couleurs").pack(pady=5)
+    color_entry = tk.Entry(main_frame)
+    color_entry.pack(pady=5)
+
+    def submit():
+        width = int(width_entry.get())
+        height = int(height_entry.get())
+        print(f"lunch with width: {width}, height: {height}")
+        create_game(width, height,root)
+
+    tk.Button(main_frame, text="Valider", command=submit).pack(pady=10)
+
+    tk.mainloop()
 
 if __name__ == "__main__":
     main()

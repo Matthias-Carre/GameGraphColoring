@@ -1,7 +1,7 @@
 #Grid class to handle the grid of the graph
 
-from Cell import Cell
-from Block import Block
+from game.Cell import Cell
+#from game.Block import Block
 
 #possible colors:
 class Color:

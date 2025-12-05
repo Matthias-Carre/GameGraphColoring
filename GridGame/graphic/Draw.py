@@ -26,7 +26,11 @@ class Draw:
         self.canvas.create_oval(x - radius, y - radius, x + radius, y + radius, fill=color, outline="")
         self.canvas.create_oval(x - radius/1.5, y - radius/1.5, x + radius/1.5, y + radius/1.5, fill="white", outline="")
 
+    def undo_last_move():
+        return
 
+    def bob_play():
+        return
 
     #draw the color selection radio buttons
     def draw_color_selection(self):
@@ -51,7 +55,8 @@ class Draw:
                     self.draw_text(x + ratio / 2, y + ratio / 2, player, color="black", font=("Arial", 16))
                 if(self.print_status):
                     self.draw_text(x + ratio / 2, y + ratio / 2 + 10, cell.get_status(), color="blue", font=("Arial", 8))
-                
+
+           
     def draw_window(self):
 
         #creation of the canvas and button/color selection
@@ -59,3 +64,4 @@ class Draw:
         self.canvas.pack()
         self.draw_grid()
         self.draw_color_selection()
+        
