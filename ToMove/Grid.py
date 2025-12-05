@@ -43,7 +43,6 @@ class Grid:
         return False
 
     def set_cell(self, x, y, value): 
-
         print(f"Lastmove: {self.last_move}")
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
@@ -52,27 +51,6 @@ class Grid:
         else:
             raise IndexError("Cell position out of bounds")
     
-    def update_grid(self):
-        for row in self.nodes:
-            for cell in row:
-                cell.update_cell()
-
-    def update_neighbors(self, x, y,value):
-        #print(f"2THdebug update neighbors of ({x},{y}) with value {value}")
-        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            #check if we hit a border
-            if 0 <= nx < self.width and 0 <= ny < self.height:
-                neighbor_cell = self.get_cell(nx, ny)
-                
-                neighbor_cell.neighbors_to_color -= 1
-
-                #remove the color from the options
-                if value in neighbor_cell.color_options:
-                    neighbor_cell.color_options.remove(value)
-        return
-
 
     #play as "player" (A or B) the cell at x,y with color "value"
     def play_cell(self, x, y, value, player):
@@ -81,17 +59,9 @@ class Grid:
             return False
         if 0 <= x < self.width and 0 <= y < self.height:
             self.nodes[y][x].set_value(value)
-            #update the neighboring cells
-            
-            self.update_neighbors(x, y, value)
-            self.update_grid()
-            self.nodes[y][x].played_by = player
-            if value != 0:
-                self.last_move.append((x, y, value))
-            
-            self.update_blocks(x,y)
             return True
-        return False
+        else:
+            return False
 
 
     # return the value of the cell x,y
@@ -111,7 +81,6 @@ class Grid:
                 down_color = self.get_cell(x,y+1)
                 if ((current_color == right_color) or (current_color == down_color)) and current_color != 0:
                     return False
-
         return True
 
     #take as input the coordinates of a cell and return the coordinates of a neighbor with the same color, or True if none
@@ -156,13 +125,6 @@ class Grid:
         else:
             print("No move to undo")
 
-    #print the grid in terminal with colors
-    def print_terminal(self):
-        for row in self.nodes:
-            for cell in row:
-                color = Color.dictionary.get(cell)
-                print(f"{Color.__dict__[color]}⬤{Color.ENDC}", end=' ')
-            print()
 
     #return list of critical cells
     def get_critical_cells(self):
@@ -173,6 +135,7 @@ class Grid:
                 if cell.is_color_critical:
                     critical_cells.append(cell)
         return critical_cells
+
 
     #return the first uncolored neighbor of (x,y)
     def get_uncolored_neighbor(self, cell):
@@ -190,6 +153,7 @@ class Grid:
 
         return None
 
+    '''
     #create/update or merge blocks after a move at (x,y)
     def update_blocks(self,x,y):
         block = self.block_at(x)
@@ -232,6 +196,7 @@ class Grid:
         block.check_configurations()
         block.print_block()
         return
+'''
 
     # return block at x if it exists
     def block_at(self, x):

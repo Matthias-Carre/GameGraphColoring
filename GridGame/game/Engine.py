@@ -10,6 +10,7 @@ class GameEngine:
         self.Alice = Alice
         self.Bob = Bob
         self.on_click = self.on_click
+        self.color_selected = 1
 
     def run(self):
         current_player = self.Alice
@@ -31,8 +32,9 @@ class GameEngine:
         j = int(y // ratio)
 
 
-        if (0 <= i) and (i < self.grid.width) and (0 <= j) and (j < self.grid.height) and (self.color_selected.get() != -1):
+        if (0 <= i) and (i < self.grid.width) and (0 <= j) and (j < self.grid.height) and (self.color_selected != -1):
             print(f'Button clicked at: {i}, {j},')
             if (self.grid.get_cell(i, j).get_value() == 0):
-                self.change_node_color(self.grid, i, j, self.color_selected.get() + 1)
+                
+                self.change_node_color(self.grid, i, j, self.color_selected + 1)
                 self.draw_grid()
