@@ -25,7 +25,7 @@ class Interface:
         w = ratio * self.grid.width
         h = ratio * self.grid.height
         
-        self.root.geometry(f'{int(w)}x{int(h)+150}')
+        self.root.geometry(f'{int(w)}x{int(h)+250}')
         canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
         draw = Draw(window_size, window_size, self.grid,self.root,canvas)
         self.draw = draw

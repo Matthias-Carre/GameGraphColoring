@@ -37,9 +37,24 @@ class Draw:
 
     #draw the color selection radio buttons
     def draw_color_selection(self):
-        for i, color in enumerate(self.colors):
-            tk.Radiobutton(self.root, text=color, value=i, variable=self.color_selected, fg=color).pack(anchor="w")
+
+        color_frame = tk.Frame(self.root)
+        color_frame.pack(anchor="w")
         
+
+        radio_frame = tk.Frame(color_frame)
+        radio_frame.pack(side="left")
+        
+        #color Slecetion
+        for i, color in enumerate(self.colors):
+            tk.Radiobutton(radio_frame, text=color, value=i, variable=self.color_selected, fg=color).pack(anchor="w")
+        
+        button_frame = tk.Frame(color_frame)
+        button_frame.pack(side="left", padx=10)
+        
+        tk.Button(button_frame, text="random move", command=self.test_print).pack()
+        
+        # Other buttons below
         tk.Button(self.root, text="Undo Last Move", command=self.undo_last_move).pack()
         tk.Button(self.root, text="Bob Play", command=self.bob_play).pack()
         tk.Button(self.root, text="Test Print", command=self.test_print).pack()
