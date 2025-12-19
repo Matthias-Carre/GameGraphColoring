@@ -12,7 +12,6 @@ class Draw:
         self.root = root
         self.turn = 0 #0 for Alice, 1 for Bob
         self.print_status = True
-        self.engine = GameEngine(grid)
 
     def draw_text(self, x, y, text, color="black", font=("Arial", 12)):
         self.canvas.create_text(x, y, text=text, fill=color, font=font)
@@ -31,13 +30,19 @@ class Draw:
 
     def bob_play():
         return
+    
+    def test_print(self):
+        #print("color selected:", self.color_selected.get())
+        return
 
     #draw the color selection radio buttons
     def draw_color_selection(self):
         for i, color in enumerate(self.colors):
             tk.Radiobutton(self.root, text=color, value=i, variable=self.color_selected, fg=color).pack(anchor="w")
+        
         tk.Button(self.root, text="Undo Last Move", command=self.undo_last_move).pack()
         tk.Button(self.root, text="Bob Play", command=self.bob_play).pack()
+        tk.Button(self.root, text="Test Print", command=self.test_print).pack()
 
     #draw the grid on the canvas
     def draw_grid(self):
@@ -60,7 +65,7 @@ class Draw:
     def draw_window(self):
 
         #creation of the canvas and button/color selection
-        self.color_selected = tk.IntVar(value=-1)
+        self.color_selected = tk.IntVar(value=0)
         self.canvas.pack()
         self.draw_grid()
         self.draw_color_selection()

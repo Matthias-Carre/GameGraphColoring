@@ -10,9 +10,13 @@ def on_button_click(event):
 
 def create_game(width, height, root):
     grid = Grid(width, height, num_colors=4)
-    engine = GameEngine(grid)
+
     
+    engine = GameEngine(grid)
     window = Interface(root,engine)
+    engine.window = window
+    
+   
     
     print("Game created with grid size:", width, "x", height)
 
