@@ -1,5 +1,4 @@
 import tkinter as tk
-from game.Engine import GameEngine
 
 class Draw:
     def __init__(self, width, height, grid,root,canvas):
@@ -12,8 +11,10 @@ class Draw:
         self.root = root
         self.turn = 0 #0 for Alice, 1 for Bob
         self.print_status = True
+        self.round = 1
 
-    def draw_text(self, x, y, text, color="black", font=("Arial", 12)):
+
+    def draw_text(self, x, y, text, color="black", font=("Arial", 16)):
         self.canvas.create_text(x, y, text=text, fill=color, font=font)
 
     #draw rectangle form x,y to x+width,y+height
@@ -36,15 +37,32 @@ class Draw:
         return
 
     #draw the color selection radio buttons
+
     def draw_color_selection(self):
+        #self.draw_color_selection_color()
+        self.draw_color_selection_value()
+
+    def draw_color_selection_value(self):
+        color_frame = tk.Frame(self.root)
+        color_frame.pack(anchor="w")
+        radio_frame = tk.Frame(color_frame)
+        radio_frame.pack(side="left")
+        #color Slecetion
+
+        for i in range(len(self.colors)):
+            tk.Radiobutton(radio_frame, text=(i+1), value=i, variable=self.color_selected).pack(anchor="w")
+        button_frame = tk.Frame(color_frame)
+        button_frame.pack(side="left", padx=10)
+        #tk.Button(button_frame, text="random move", command=self.test_print).pack()
+
+
+    def draw_color_selection_color(self):
 
         color_frame = tk.Frame(self.root)
         color_frame.pack(anchor="w")
         
-
         radio_frame = tk.Frame(color_frame)
         radio_frame.pack(side="left")
-        
         #color Slecetion
         for i, color in enumerate(self.colors):
             tk.Radiobutton(radio_frame, text=color, value=i, variable=self.color_selected, fg=color).pack(anchor="w")
@@ -55,12 +73,24 @@ class Draw:
         tk.Button(button_frame, text="random move", command=self.test_print).pack()
         
         # Other buttons below
-        tk.Button(self.root, text="Undo Last Move", command=self.undo_last_move).pack()
-        tk.Button(self.root, text="Bob Play", command=self.bob_play).pack()
-        tk.Button(self.root, text="Test Print", command=self.test_print).pack()
+        #self.draw_button("Undo", self.undo_last_move).pack()
+        #tk.Button(self.root, text="Undo Last Move", command=self.undo_last_move).pack()
+        #tk.Button(self.root, text="Bob Play", command=self.bob_play).pack()
+        #tk.Button(self.root, text="Test Print", command=self.test_print).pack()
+
+    def draw_button(self, text, command):
+        button = tk.Button(self.root, text=text, command=command).pack()
+        #button.place(x=pos_x, y=pos_y)
+        return button
+
+
+    def draw_grid(self):
+        #self.draw_gridV1()
+        self.draw_gridV2()
+
 
     #draw the grid on the canvas
-    def draw_grid(self):
+    def draw_gridV1(self):
         ratio = min(self.width / self.grid.width, self.height / self.grid.height)
         for i in range(self.grid.width):
             for j in range(self.grid.height):
@@ -76,12 +106,27 @@ class Draw:
                 if(self.print_status):
                     self.draw_text(x + ratio / 2, y + ratio / 2 + 10, cell.get_status(), color="blue", font=("Arial", 8))
 
+    def draw_gridV2(self):
+        ratio = min(self.width / self.grid.width, self.height / self.grid.height)
+        
+        self.draw_rectangle(0,0,self.width,self.height,"white")
+        for i in range(self.grid.width):
+            self.draw_rectangle(i*(self.width/self.grid.width),0,1,self.height,"black")
+
+            for j in range(self.grid.height):
+                self.draw_rectangle(0,j*(self.width/self.grid.width),self.width,1,"black")
+                x = i * ratio
+                y = j * ratio
+                cell = self.grid.get_cell(i, j)
+                self.draw_text(x + ratio / 2, y + ratio / 2, cell.get_value() if cell.get_value()!=0 else "","Blue" if cell.played_by == 1 else "Red",font=("Arial",int(ratio/1.5)))
+                if(self.print_status):
+                    self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
            
     def draw_window(self):
 
         #creation of the canvas and button/color selection
         self.color_selected = tk.IntVar(value=0)
         self.canvas.pack()
-        self.draw_grid()
+        self.draw_gridV2()
         self.draw_color_selection()
         

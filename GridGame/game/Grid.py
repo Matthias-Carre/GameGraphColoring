@@ -20,10 +20,12 @@ class Grid:
     def __init__(self, height, width, num_colors=4):
         self.width = width
         self.height = height
-        self.last_move = [] # (x,y,color)
+        self.last_moves = [] # (x,y,color)
         self.nodes = [[Cell(x, y, self.width, self.height,num_colors=num_colors) for y in range(width)] for x in range(height)]
         self.num_colors = num_colors
         self.blocks = []
+        self.player = 0 #0 for Alice, 1 for Bob
+        self.round = 1
 
         #add neighbors to each cell
         for i in range(self.width):
@@ -37,20 +39,25 @@ class Grid:
                 self.nodes[j][i].update_cell()
 
     def is_move_valid(self, x, y, value):
+        for neighbor in self.nodes[y][x].neighbors:
+            if neighbor.value == value:
+                return False
+
         if 0 <= x < self.width and 0 <= y < self.height:
             if value in self.nodes[y][x].color_options:
                 if self.nodes[y][x].value == 0:
                     return True
         return False
 
-    def play_move(self,x,y,color,player):
+    def play_move(self,x,y,color):
         if not(self.is_move_valid(x,y,color)):
-            print(f"Invalid move at ({x}, {y}) with color {color} by player {player}")
+            print(f"Invalid move at ({x}, {y}) with color {color} by player {self.player}")
             return False
         
         self.nodes[y][x].value = color
-        self.nodes[y][x].played_by = player
-        self.last_move = (x,y,color)
+        self.nodes[y][x].played_by = self.player
+        self.nodes[y][x].round = self.round
+        self.last_moves.append((x,y,color))
 
     def update_neighbors(self,x,y,color):
         cell = self.nodes[y][x]
@@ -65,3 +72,14 @@ class Grid:
         else:
             raise IndexError("Cell position out of bounds")
     
+    def undo_move(self):
+        print("Undo:",self.last_moves[-1])
+        if self.last_moves != []:
+            x,y,_ = self.last_moves.pop()
+            self.nodes[y][x].value=0
+            self.nodes[y][x].played_by = ""
+            self.nodes[y][x].round = None
+            return True
+        return False
+            
+            

@@ -1,5 +1,6 @@
 import tkinter as tk
 from graphic.Draw import Draw
+
 class Interface:
     def __init__(self,root,engine):
         self.root = root
@@ -10,7 +11,6 @@ class Interface:
         self.selected_color = engine.color_selected
         engine.on_update_callback = self.draw_grid
         
-        self.create_window()
 
 
     
@@ -25,24 +25,37 @@ class Interface:
         w = ratio * self.grid.width
         h = ratio * self.grid.height
         
-        self.root.geometry(f'{int(w)}x{int(h)+250}')
+        self.root.geometry(f'{int(w)}x{int(h)+150}')
         canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
         draw = Draw(window_size, window_size, self.grid,self.root,canvas)
         self.draw = draw
+
         draw.draw_window()
         self.draw_grid()
         #creation of the canvas and button/color selection
         canvas.bind("<Button-1>", self.on_click)
         self.engine.color_var_accessor = draw.color_selected
 
+        self.draw_buttons()
+
         playing = True
         
-        self.root.mainloop()
+
 
     def get_draw(self):
         return self.draw
     
     
     def draw_grid(self):
-        #print("TEST DRAW GRID INTER")
         self.draw.draw_grid()
+    
+    def draw_button(self, text, command):
+        print("DrawButtonInterface")
+        self.draw.draw_button(text, command)
+        self.root.update()
+    
+    def draw_buttons(self):
+        self.draw_button("test",self.test)
+
+    def test(self):
+        print("test")

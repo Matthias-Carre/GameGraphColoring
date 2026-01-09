@@ -8,17 +8,16 @@ from graphic.Interface import Interface
 def on_button_click(event):
     return
 
-def create_game(width, height, root):
+def create_game(root,width=4, height=7):
     grid = Grid(width, height, num_colors=4)
 
+    engine = GameEngine(grid,root)
+    #window = Interface(root,engine)
+    #engine.window = window
     
-    engine = GameEngine(grid)
-    window = Interface(root,engine)
-    engine.window = window
-    
-   
     
     print("Game created with grid size:", width, "x", height)
+    engine.run()
 
 
 
@@ -51,11 +50,15 @@ def main():
         width = int(width_entry.get())
         height = int(height_entry.get())
         print(f"lunch with width: {width}, height: {height}")
-        create_game(width, height,root)
+        create_game(root,width, height)
 
     tk.Button(main_frame, text="Valider", command=submit).pack(pady=10)
 
     tk.mainloop()
 
 if __name__ == "__main__":
-    main()
+    #selection menu
+    #main()
+
+    #pour les test passer direcetement a la grille
+    create_game(tk.Tk())

@@ -5,6 +5,9 @@ class Cell:
         self.grid_width = grid_width
         self.grid_height = grid_height
 
+        #used to track rounds in advanced strategies
+        self.round=None
+
         self.value = value #color value, 0 if uncolored
 
         self.neighbors = [] #values of the colors of neighboring cells
@@ -12,7 +15,7 @@ class Cell:
         self.neighbors_to_color = self.number_of_neighbors() #number of neighbors yet to be colored
         self.color_options = [i for i in range(1,num_colors+1)] #remaining color options
 
-        self.played_by = None #A or B for Alice of Bob
+        self.played_by = None #0 or 1 for Alice or Bob
 
         self.is_safe = False
         self.is_sound = False
@@ -90,6 +93,7 @@ class Cell:
                 return neighbor
         return None
     #return the status safe/sound/color_critical/doctor/patient
+
     def get_status(self):
         if self.is_safe:
             return "safe"
