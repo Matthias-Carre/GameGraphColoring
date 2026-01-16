@@ -10,6 +10,8 @@ class Cell:
 
         self.value = value #color value, 0 if uncolored
 
+        self.any_color = False #used to show x on cell
+
         self.neighbors = [] #values of the colors of neighboring cells
         self.neighbors_color = self.neighbors_colors()
         self.neighbors_to_color = self.number_of_neighbors() #number of neighbors yet to be colored
@@ -25,7 +27,7 @@ class Cell:
         self.doctors = []
         self.patients = []
 
-
+    #return the colors of the neighboring cells
     def neighbors_colors(self):
         colors = []
         for neighbor in self.neighbors:
@@ -62,6 +64,7 @@ class Cell:
             self.is_uncolorable = True
             print(f"Cell at ({self.x}, {self.y}) has no color options left")
 
+    #to simplify the detection of safe cells
     def number_of_neighbors(self):
         #at minimum border cells have 2 neighbors
         result = 2
@@ -74,6 +77,7 @@ class Cell:
             result += 1
         return result
 
+    #change the value of the cell
     def set_value(self, value, player="A"):
         self.value = value
         self.played_by = player
@@ -101,4 +105,19 @@ class Cell:
             return "sound"
         return "o"
     
+    #debug/analysis print (with right click)
+    def print_cell_informations(self):
+        print(f"Cell ({self.x}, {self.y}):")
+        print(f"  Value: {self.value}")
+        print(f"  Played by: {self.played_by}")
+        print(f"  Neighbors: {[(n.x, n.y) for n in self.neighbors]}")
+        print(f"  Neighbors colors: {self.neighbors_colors()}")
+        print(f"  Neighbors to color: {self.neighbors_to_color}")
+        print(f"  Color options: {self.color_options}")
+        print(f"  Is safe: {self.is_safe}")
+        print(f"  Is sound: {self.is_sound}")
+        print(f"  Is color critical: {self.is_color_critical}")
+        print(f"  Is uncolorable: {self.is_uncolorable}")
+        print(f"  Doctors: {[(d.x, d.y) for d in self.doctors]}")
+        print(f"  Patients: {[(p.x, p.y) for p in self.patients]}")
         

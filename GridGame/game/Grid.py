@@ -54,17 +54,38 @@ class Grid:
             print(f"Invalid move at ({x}, {y}) with color {color} by player {self.player}")
             return False
         
+        
+        
         self.nodes[y][x].value = color
         self.nodes[y][x].played_by = self.player
         self.nodes[y][x].round = self.round
         self.last_moves.append((x,y,color))
+
+        self.update_neighbors(x,y,color)
+
 
     def update_neighbors(self,x,y,color):
         cell = self.nodes[y][x]
         for neighbor in cell.neighbors:
             if color in neighbor.color_options:
                 neighbor.color_options.remove(color)
+            neighbor.neighbors_to_color -= 1
             neighbor.update_cell()
+    
+    def roll_back_neighbors(self,x,y,color):
+        cell = self.nodes[y][x]
+        for neighbor in cell.neighbors:
+            color_is_posible = True #check if we can restore the color option
+            for neighbor2 in neighbor.neighbors:
+                print(f"voisin2 value: {neighbor2.value}, color: {color}")
+                if neighbor2.value == color:
+                    color_is_posible = False
+                    break
+                
+            if color_is_posible:
+                neighbor.color_options.append(color)
+            neighbor.neighbors_to_color += 1
+            
             
     def get_cell(self, x, y): 
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -72,13 +93,16 @@ class Grid:
         else:
             raise IndexError("Cell position out of bounds")
     
+    #undo need to blank the last move, and restore the color options of the neighbors
     def undo_move(self):
         print("Undo:",self.last_moves[-1])
         if self.last_moves != []:
-            x,y,_ = self.last_moves.pop()
+            x,y,color = self.last_moves.pop()
             self.nodes[y][x].value=0
             self.nodes[y][x].played_by = ""
             self.nodes[y][x].round = None
+            #restore the color options of the neighbors
+            self.roll_back_neighbors(x,y,color)
             return True
         return False
             

@@ -11,11 +11,12 @@ class GameEngine:
         self.state = GameState(grid)
         self.Alice = Alice
         self.Bob = Bob
-        self.on_click = self.on_click
+        self.on_click = self.on_left_click
         self.color_selected = 1
         self.on_update_callback = None
         self.buttons={}
         self.window = Interface(root,self)
+        
 
     def button_test():
         print("Test")
@@ -24,6 +25,10 @@ class GameEngine:
         self.window.create_window()
         print("Engine")
         self.window.draw_button("Undo",self.undo)
+        self.window.canvas.bind("<Button-1>", self.on_left_click)
+        self.window.canvas.bind("<Button-3>", self.on_right_click)
+        #if we press X the cell draw a X on it just to do ilustration (press again to remove)
+        self.window.canvas.bind("<Button-2>",self.on_x_press)
 
         
         """
@@ -38,7 +43,7 @@ class GameEngine:
 
         self.root.mainloop()
 
-    def on_click(self,event):
+    def on_left_click(self,event):
         
         print("click",event)
         x = event.x
@@ -63,7 +68,33 @@ class GameEngine:
                 if self.grid.player == 1:
                     self.grid.round += 1
                 self.grid.player = 0 if self.grid.player == 1 else 1
-                
+    
+    def on_right_click(self,event):
+        print("right click",event)
+        x = event.x
+        y = event.y
+        ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
+        i = int(x // ratio)
+        j = int(y // ratio)
+
+        if (0 <= i) and (i < self.grid.width) and (0 <= j) and (j < self.grid.height):
+            print(f'Right Button clicked at: {i}, {j}')
+            cell = self.grid.get_cell(i, j)
+            cell.print_cell_informations()
+
+    def on_x_press(self,event):
+        print("button3 pressed",event)
+        x = event.x
+        y = event.y
+        ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
+        i = int(x // ratio)
+        j = int(y // ratio)
+
+        cell = self.grid.get_cell(i, j)
+        cell.any_color = not cell.any_color
+        self.on_update_callback()
+
+
 
     def undo(self):
         print("Undo last move")

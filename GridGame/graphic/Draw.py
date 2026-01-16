@@ -89,7 +89,7 @@ class Draw:
         self.draw_gridV2()
 
 
-    #draw the grid on the canvas
+    #draw the grid on the canvas with circles
     def draw_gridV1(self):
         ratio = min(self.width / self.grid.width, self.height / self.grid.height)
         for i in range(self.grid.width):
@@ -106,6 +106,7 @@ class Draw:
                 if(self.print_status):
                     self.draw_text(x + ratio / 2, y + ratio / 2 + 10, cell.get_status(), color="blue", font=("Arial", 8))
 
+    #draw the grid on the canvas as we do on the paper
     def draw_gridV2(self):
         ratio = min(self.width / self.grid.width, self.height / self.grid.height)
         
@@ -121,7 +122,10 @@ class Draw:
                 self.draw_text(x + ratio / 2, y + ratio / 2, cell.get_value() if cell.get_value()!=0 else "","Blue" if cell.played_by == 1 else "Red",font=("Arial",int(ratio/1.5)))
                 if(self.print_status):
                     self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
-           
+                if(cell.any_color):
+                    self.draw_text(x + ratio / 4, y + ratio / 4, "any", color="black", font=("Arial", 16))
+
+
     def draw_window(self):
 
         #creation of the canvas and button/color selection

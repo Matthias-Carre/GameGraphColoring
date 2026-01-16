@@ -6,6 +6,7 @@ class Interface:
         self.root = root
         self.engine = engine
         self.grid = engine.grid
+        self.canvas = None
         self.on_click = engine.on_click
         self.draw = None
         self.selected_color = engine.color_selected
@@ -27,6 +28,8 @@ class Interface:
         
         self.root.geometry(f'{int(w)}x{int(h)+150}')
         canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
+        self.canvas = canvas
+
         draw = Draw(window_size, window_size, self.grid,self.root,canvas)
         self.draw = draw
 
