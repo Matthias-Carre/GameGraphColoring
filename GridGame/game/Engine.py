@@ -1,5 +1,6 @@
 from game.GameState import GameState
 from graphic.Interface import Interface
+from game.strategy.block_height_4 import BlockHeight4
 
 
 class GameEngine:
@@ -9,6 +10,8 @@ class GameEngine:
         self.grid = grid
         self.root = root
         self.state = GameState(grid)
+        self.strategy = None
+
         self.Alice = Alice
         self.Bob = Bob
         self.on_click = self.on_left_click
@@ -22,13 +25,20 @@ class GameEngine:
         print("Test")
 
     def run(self):
+        if self.grid.height == 4:
+            self.strategy = BlockHeight4(self.grid)
+
+
         self.window.create_window()
-        print("Engine")
+
+        #management of inputs
         self.window.draw_button("Undo",self.undo)
         self.window.canvas.bind("<Button-1>", self.on_left_click)
         self.window.canvas.bind("<Button-3>", self.on_right_click)
         #if we press X the cell draw a X on it just to do ilustration (press again to remove)
         self.window.canvas.bind("<Button-2>",self.on_x_press)
+        self.window.canvas.bind("<Key>", self.on_key_press)
+        self.window.canvas.focus_set()
 
         
         """
@@ -42,6 +52,13 @@ class GameEngine:
         """
 
         self.root.mainloop()
+
+    def on_key_press(self,event):
+        print("key pressed",event)
+        if event.char == 'u':
+            self.undo()
+        
+        
 
     def on_left_click(self,event):
         
@@ -107,6 +124,8 @@ class GameEngine:
 
     def change_node_color(self,grid, x, y, color):
         grid.play_move(x, y, color)
+        if self.strategy is not None:
+            self.strategy.move_played(x, y, color, "A" if grid.player == 0 else "B")
         return
     
     def draw_grid(self):

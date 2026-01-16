@@ -8,7 +8,7 @@ from graphic.Interface import Interface
 def on_button_click(event):
     return
 
-def create_game(root,width=9, height=9):
+def create_game(root,width=4, height=12):
     grid = Grid(width, height, num_colors=4)
 
     engine = GameEngine(grid,root)
