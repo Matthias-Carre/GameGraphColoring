@@ -48,17 +48,19 @@ class Interface:
     def get_draw(self):
         return self.draw
     
-    
+    #draw the grid
     def draw_grid(self):
         self.draw.draw_grid()
     
+    #create and draw a button with text and command
     def draw_button(self, text, command):
         print("DrawButtonInterface")
         self.draw.draw_button(text, command)
         self.root.update()
     
+    #draw all buttons needed for the game interface
     def draw_buttons(self):
-        self.draw_button("test",self.test)
+        self.draw_button("test",self.test_print())
 
-    def test(self):
-        print("test")
+    def test_print(self,msg=""):
+        print("InterTestPrint:",msg)

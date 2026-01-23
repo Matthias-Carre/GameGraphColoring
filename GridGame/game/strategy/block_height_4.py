@@ -1,4 +1,4 @@
-from game.strategy.Block import Block
+from game.strategy.Block4 import Block
 
 class BlockHeight4(Block) :
     def __init__(self,grid):

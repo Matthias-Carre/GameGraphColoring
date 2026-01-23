@@ -47,16 +47,19 @@ class Cell:
         #check if its safe
         #is colorred OR #N <= 3 OR 2 neighbors colored with same color
         #OR 3 neighbors colored with 3 colors but the 4th is neighbor to the last color
+        if len(self.color_options) == 0:
+            self.is_safe = True
         if self.value != 0 or len(self.neighbors) < 4 or len(self.neighbors_colors()) - len(set(self.neighbors_colors())) > 0 :
             self.is_safe = True
             #print(f"Cell at ({self.x}, {self.y}) is safe")
         if len(self.neighbors) == 4 and len(set(self.neighbors_colors())) == 3:
-            missing_color = self.color_options[0]
+            missing_color = self.color_options[0] if len(self.color_options) > 1 else []
             print(f"Cell at ({self.x}, {self.y}) is check uncolored neighbor")
             uncolored_neighbor = self.get_uncolored_neighbor()
-            if missing_color in uncolored_neighbor.neighbors_colors():
-                self.is_safe = True
-                print(f"Cell at ({self.x}, {self.y}) is safe by neighbor colors")
+            if uncolored_neighbor is not None:
+                if missing_color in uncolored_neighbor.neighbors_colors():
+                    self.is_safe = True
+                    print(f"Cell at ({self.x}, {self.y}) is safe by neighbor colors")
 
         
         #check if no color options left

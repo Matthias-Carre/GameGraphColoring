@@ -11,9 +11,9 @@ class Draw:
         self.root = root
         self.turn = 0 #0 for Alice, 1 for Bob
         self.print_status = True
-        self.round = 1
+        self.round = 1 
 
-
+    #draw text at x,y with color and font
     def draw_text(self, x, y, text, color="black", font=("Arial", 16)):
         self.canvas.create_text(x, y, text=text, fill=color, font=font)
 
@@ -32,14 +32,12 @@ class Draw:
     def bob_play():
         return
     
-    def test_print(self):
-        #print("color selected:", self.color_selected.get())
+    def test_print(self,msg=""):
+        print("DrawTestPrint:", msg)
         return
 
     #draw the color selection radio buttons
-
     def draw_color_selection(self):
-        #self.draw_color_selection_color()
         self.draw_color_selection_value()
 
     def draw_color_selection_value(self):
@@ -47,43 +45,21 @@ class Draw:
         color_frame.pack(anchor="w")
         radio_frame = tk.Frame(color_frame)
         radio_frame.pack(side="left")
+        
         #color Slecetion
-
         for i in range(len(self.colors)):
             tk.Radiobutton(radio_frame, text=(i+1), value=i, variable=self.color_selected).pack(anchor="w")
         button_frame = tk.Frame(color_frame)
         button_frame.pack(side="left", padx=10)
         #tk.Button(button_frame, text="random move", command=self.test_print).pack()
 
-
-    def draw_color_selection_color(self):
-
-        color_frame = tk.Frame(self.root)
-        color_frame.pack(anchor="w")
-        
-        radio_frame = tk.Frame(color_frame)
-        radio_frame.pack(side="left")
-        #color Slecetion
-        for i, color in enumerate(self.colors):
-            tk.Radiobutton(radio_frame, text=color, value=i, variable=self.color_selected, fg=color).pack(anchor="w")
-        
-        button_frame = tk.Frame(color_frame)
-        button_frame.pack(side="left", padx=10)
-        
-        tk.Button(button_frame, text="random move", command=self.test_print).pack()
-        
-        # Other buttons below
-        #self.draw_button("Undo", self.undo_last_move).pack()
-        #tk.Button(self.root, text="Undo Last Move", command=self.undo_last_move).pack()
-        #tk.Button(self.root, text="Bob Play", command=self.bob_play).pack()
-        #tk.Button(self.root, text="Test Print", command=self.test_print).pack()
-
+    #function to draw a button with text and command
     def draw_button(self, text, command):
         button = tk.Button(self.root, text=text, command=command).pack()
         #button.place(x=pos_x, y=pos_y)
         return button
 
-
+    #change to select another style of grid drawing 
     def draw_grid(self):
         #self.draw_gridV1()
         self.draw_gridV2()

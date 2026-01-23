@@ -34,8 +34,11 @@ class GameEngine:
         #management of inputs
         self.window.draw_button("Undo",self.undo)
         self.window.canvas.bind("<Button-1>", self.on_left_click)
+        
+        #press Button3 in the cell to draw "any" just to do ilustration (press again to remove)
         self.window.canvas.bind("<Button-3>", self.on_right_click)
-        #if we press X the cell draw a X on it just to do ilustration (press again to remove)
+        
+
         self.window.canvas.bind("<Button-2>",self.on_x_press)
         self.window.canvas.bind("<Key>", self.on_key_press)
         self.window.canvas.focus_set()
@@ -57,6 +60,23 @@ class GameEngine:
         print("key pressed",event)
         if event.char == 'u':
             self.undo()
+
+        #color selection
+        if event.char == '1':
+            self.color_selected = 0
+            self.color_var_accessor.set(0)
+
+        if event.char == '2':
+            self.color_selected = 1
+            self.color_var_accessor.set(1)
+
+        if event.char == '3':
+            self.color_selected = 2
+            self.color_var_accessor.set(2)
+
+        if event.char == '4':
+            self.color_selected = 3
+            self.color_var_accessor.set(3)
         
         
 
@@ -135,3 +155,6 @@ class GameEngine:
     def is_move_valid(self,x,y,color):
         return self.grid.is_move_valid(x,y,color)
     
+
+    def test_print(self,msg):
+        print("EngineTestPrint:",msg)
