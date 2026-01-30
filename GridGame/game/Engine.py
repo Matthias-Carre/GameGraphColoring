@@ -21,7 +21,7 @@ class GameEngine:
         self.window = Interface(root,self)
         
 
-    def button_test():
+    def button_test(self):
         print("Test")
 
     def run(self):
@@ -32,7 +32,10 @@ class GameEngine:
         self.window.create_window()
 
         #management of inputs
+        self.window.draw_button("Alice move",self.Alice.next_move if self.Bob is not None else self.test_print("Bob not defined"))
         self.window.draw_button("Undo",self.undo)
+
+
         self.window.canvas.bind("<Button-1>", self.on_left_click)
         
         #press Button3 in the cell to draw "any" just to do ilustration (press again to remove)

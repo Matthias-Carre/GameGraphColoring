@@ -1,1 +1,0 @@
-#goal is to implement Alice's strategy for the game

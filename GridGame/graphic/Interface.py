@@ -60,7 +60,8 @@ class Interface:
     
     #draw all buttons needed for the game interface
     def draw_buttons(self):
-        self.draw_button("test",self.test_print())
+        #self.draw_button("test",self.test_print())
+        return 
 
     def test_print(self,msg=""):
         print("InterTestPrint:",msg)

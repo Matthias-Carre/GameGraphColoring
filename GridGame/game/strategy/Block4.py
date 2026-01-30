@@ -17,6 +17,8 @@ class Block:
         self.right_configuration = None
         self.left_configuration = None
 
+        #self.pi_
+
     #merge 2 blocks together 
     def merge(self,other_block):
         return
@@ -145,10 +147,37 @@ class Block:
                 return True
 
     #particular case whene between two blocks
+    # a==d, b==cd and c != a,b,0 and a != b and a,b,c != 0
     def is_pi(self):
-        if  self.end_col + 2  : 
-            return 
+        a,b,c,d = self.columns[len(self.columns)-1]
+
+        if  self.end_col +2 < self.grid.width:
+            cd = self.grid.get_cell(self.end_col +2,2)
+            print("cd=",cd.value)
+            if a.value == d.value and b.value == cd.value :
+                print("Block: check pi")
+                if c.value != a.value and c.value != b.value and c.value !=0 and a.value != b.value and a.value !=0 and b.value !=0:
+                    self.right_configuration = "p"
+                    return True
         return False
+    
+    # b_0 == a_2 == c_2 == d_0 != 0
+    # c_1 != 0 
+    # a_0,b_0,d_0,b_1,d_1 == 0 
+    def is_Delta(self):
+        if self.size <3:
+            return False
+        a_0,b_0,c_0,d_0 = self.columns[len(self.columns)-2]
+        a_1,b_1,c_1,d_1 = self.columns[len(self.columns)-1]
+        a_2,b_2,c_2,d_2 = self.columns[len(self.columns)]
+        if(b_0.value == a_2.value and a_2.value == c_2.value and c_2.value == d_0.value and d_0.value !=0):
+            if(c_1.value !=0):
+                if(a_0.value == 0 and b_0.value == 0 and d_0.value == 0 and b_1.value == 0 and d_1.value == 0):
+                    print("Block is Delta")
+                    self.right_configuration = "D"
+
+        return
+    
 
 
     #set the left and right configurations of the block
@@ -175,6 +204,13 @@ class Block:
             print("Block is pi")
             self.right_configuration = "p"
 
+        
+        #manage critical cases
+        if self.is_Delta():
+            print("Block is Delta")
+            self.right_configuration = "D"
+        
+        
 
     def print_block(self):
         print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
