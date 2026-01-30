@@ -15,20 +15,9 @@ def fournGrid():
     import size4n
     size4n.main(root)
 
+
 def start_pvp():
-    def submit():
-        width = int(width_entry.get())
-        height = int(height_entry.get())
-        print(f"lunch with width: {width}, height: {height}")
-        import main_graphic
-        main_graphic.main(width, height,root)
-
-        
-        start_solo_custom()
-
-    for widget in root.winfo_children():
-        print(widget)
-        widget.destroy()
+    
 
 
     main_frame = tk.Frame(root)
