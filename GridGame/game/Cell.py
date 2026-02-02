@@ -38,6 +38,7 @@ class Cell:
 
     #check and update the status of the cell
     def update_cell(self):
+        self.is_safe = False
         
         #check if its critical
         if len(self.color_options) == 1:
@@ -47,6 +48,8 @@ class Cell:
         #check if its safe
         #is colorred OR #N <= 3 OR 2 neighbors colored with same color
         #OR 3 neighbors colored with 3 colors but the 4th is neighbor to the last color
+        if self.value != 0:
+            self.is_safe = True
         if len(self.color_options) == 0:
             self.is_safe = True
         if self.value != 0 or len(self.neighbors) < 4 or len(self.neighbors_colors()) - len(set(self.neighbors_colors())) > 0 :

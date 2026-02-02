@@ -5,8 +5,8 @@ from game.strategy.block_height_4 import BlockHeight4
 
 class GameEngine:
     def __init__(self,grid,root,Alice=None,Bob=None):
-        self.window_width = 800
-        self.window_height = 800
+        self.window_width = 1500
+        self.window_height = 1500
         self.grid = grid
         self.root = root
         self.state = GameState(grid)
@@ -32,8 +32,10 @@ class GameEngine:
         self.window.create_window()
 
         #management of inputs
-        self.window.draw_button("Alice move",self.Alice.next_move if self.Bob is not None else self.test_print("Bob not defined"))
+        self.window.draw_button("Alice move",self.alice_move)
+        
         self.window.draw_button("Undo",self.undo)
+        self.window.draw_button("debug",self.toggle_debug)
 
 
         self.window.canvas.bind("<Button-1>", self.on_left_click)
@@ -134,7 +136,11 @@ class GameEngine:
         cell.any_color = not cell.any_color
         self.on_update_callback()
 
-
+    #manage Alice actions
+    def alice_move(self):
+        x, y, color = self.Alice.next_move()
+        self.grid.play_move(x, y, color)
+        self.on_update_callback()
 
     def undo(self):
         print("Undo last move")
@@ -161,3 +167,7 @@ class GameEngine:
 
     def test_print(self,msg):
         print("EngineTestPrint:",msg)
+
+    def toggle_debug(self):
+        self.window.draw.print_status = not self.window.draw.print_status
+        self.on_update_callback()

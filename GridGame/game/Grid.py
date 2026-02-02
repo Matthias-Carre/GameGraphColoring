@@ -49,6 +49,12 @@ class Grid:
                     return True
         return False
 
+    def get_col(self, col_index):
+        if 0 <= col_index < self.width:
+            return [self.nodes[row][col_index] for row in range(self.height)]
+        else:
+            raise IndexError("Column index out of bounds")
+
     def play_move(self,x,y,color):
         if not(self.is_move_valid(x,y,color)):
             print(f"Invalid move at ({x}, {y}) with color {color} by player {self.player}")
@@ -85,6 +91,7 @@ class Grid:
             if color_is_posible:
                 neighbor.color_options.append(color)
             neighbor.neighbors_to_color += 1
+            neighbor.update_cell()
             
             
     def get_cell(self, x, y): 
@@ -107,3 +114,4 @@ class Grid:
         return False
             
             
+    

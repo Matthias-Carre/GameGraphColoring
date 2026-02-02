@@ -20,13 +20,13 @@ class Interface:
         for widget in self.root.winfo_children():
             widget.destroy()
 
-        window_size = 800
+        window_size = self.engine.window_width
         #set the window size to match the gird of the graph
         ratio = min(window_size / self.grid.width, window_size / self.grid.height)
         w = ratio * self.grid.width
         h = ratio * self.grid.height
         
-        self.root.geometry(f'{int(w)}x{int(h)+150}')
+        self.root.geometry(f'{int(w)}x{int(h)+250}')
         canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
         self.canvas = canvas
 

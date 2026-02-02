@@ -17,6 +17,8 @@ class Block:
         self.right_configuration = None
         self.left_configuration = None
 
+        self.particular_config = {} #dict to store node:config
+
         #self.pi_
 
     #merge 2 blocks together 
@@ -165,7 +167,7 @@ class Block:
     # c_1 != 0 
     # a_0,b_0,d_0,b_1,d_1 == 0 
     def is_Delta(self):
-        if self.size <3:
+        if self.size <= 3:
             return False
         a_0,b_0,c_0,d_0 = self.columns[len(self.columns)-2]
         a_1,b_1,c_1,d_1 = self.columns[len(self.columns)-1]
