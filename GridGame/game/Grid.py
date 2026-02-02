@@ -26,6 +26,7 @@ class Grid:
         self.blocks = []
         self.player = 0 #0 for Alice, 1 for Bob
         self.round = 1
+        self.last_Bob_move = None # (x,y,color,past_config)        
 
         #add neighbors to each cell
         for i in range(self.width):

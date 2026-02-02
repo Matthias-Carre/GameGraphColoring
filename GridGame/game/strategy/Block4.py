@@ -17,6 +17,9 @@ class Block:
         self.right_configuration = None
         self.left_configuration = None
 
+        self.flip_config_right = None #store the block fliped to match configurations (can be same as self)
+        self.flip_config_left = None #store the block for the left config but flip it at right
+
         self.particular_config = {} #dict to store node:config
 
         #self.pi_
@@ -40,8 +43,15 @@ class Block:
         a,b,c,d = self.columns[len(self.columns)-1]
         first = self.alpha_config(a,b,c,d)
         revers = self.alpha_config(d,c,b,a)
-        if first or revers:
+
+        
+        if revers:
+            self.flip_config_left = self.flip_horizontal()
+            self.left_configuration = "a"
+            
+        if first:
             #block of 1 is always left alpha
+            self.flip_config_left = self
             self.left_configuration = "a"
             
         
@@ -66,7 +76,14 @@ class Block:
         ap, bp, cp, dp = self.columns[len(self.columns)-2]
         first = self.beta_config(b,c,cp)
         revers = self.beta_config(c,b,bp)
-        if first or revers:
+        
+        #create fliped right
+        if revers:
+            self.flip_config_right = self.flip_horizontal()
+            self.right_configuration = "b"
+
+        if first:
+            self.flip_config_right = self
             self.right_configuration = "b"
         
 
@@ -75,7 +92,18 @@ class Block:
         ap, bp, cp, dp = self.columns[1]
         first = self.beta_config(b,c,cp)
         revers = self.beta_config(c,b,bp)
-        if first or revers:
+
+
+        #create fliped horison vertic left
+        if revers:
+            self.flip_config_left = self.flip_vertical()
+            fliped = self.flip_config_left
+            self.flip_config_left = fliped.flip_horizontal()
+            self.left_configuration = "b"
+
+        #create vertic fliped  
+        if first:
+            self.flip_config_left = self.flip_vertical()
             self.left_configuration = "b"
 
 
@@ -95,7 +123,14 @@ class Block:
         ap, bp, cp, dp = self.columns[len(self.columns)-2]
         first = self.gamma_config(a,b,c,d,ap,bp,cp,dp)
         revers = self.gamma_config(d,c,b,a,dp,cp,bp,ap)
-        if first or revers:
+
+        if revers:
+            self.flip_config_right = self.flip_horizontal()
+            self.right_configuration = "g"
+
+
+        if first:
+            self.flip_config_right = self
             self.right_configuration = "g"
         
         #left side
@@ -103,7 +138,16 @@ class Block:
         ap, bp, cp, dp = self.columns[1]
         first = self.gamma_config(a,b,c,d,ap,bp,cp,dp)
         revers = self.gamma_config(d,c,b,a,dp,cp,bp,ap)
-        if first or revers:
+
+        
+        if revers:
+            self.flip_config_left = self.flip_vertical()
+            fliped = self.flip_config_left
+            self.flip_config_left = fliped.flip_horizontal()
+            self.left_configuration = "g"
+
+        if first:
+            self.flip_config_left = self.flip_vertical()
             self.left_configuration = "g"
 
         
@@ -127,7 +171,14 @@ class Block:
         ap, bp, cp, dp = self.columns[len(self.columns)-2]
         first = self.delta_config(a,c,bp)
         revers = self.delta_config(d,b,cp)
-        if first or revers:
+
+        
+        if revers:
+            self.flip_config_right = self.flip_horizontal()
+            self.right_configuration = "d"
+
+        if first:
+            self.flip_config_right = self
             self.right_configuration = "d"
         
         #left side
@@ -135,7 +186,15 @@ class Block:
         dp,cp,bp,ap = self.columns[1]
         first = self.delta_config(a,c,bp)
         revers = self.delta_config(d,b,cp)
-        if revers or first:
+        
+        if revers:
+            self.flip_config_left = self.flip_vertical()
+            fliped = self.flip_config_left
+            self.flip_config_left = fliped.flip_horizontal()
+            self.left_configuration = "d"
+
+        if first:
+            self.flip_config_left = self.flip_vertical()
             self.left_configuration = "d"
 
         
@@ -211,21 +270,63 @@ class Block:
         if self.is_Delta():
             print("Block is Delta")
             self.right_configuration = "D"
-        
-        
 
-    def print_block(self):
-        print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
+        print("RIGHT config:")
+        self.print_block(self.flip_config_right)
+        print("LEFT config:")
+        self.print_block(self.flip_config_left)
+        
+    #flip the block on horizontal axis 
+    #goal is to apply same strategy after fliping (creating a new block object pointing to same cells)
+    def flip_horizontal(self):
+        flipped_block = Block(self.grid)
+        flipped_block.start_col = self.start_col
+        flipped_block.end_col = self.end_col
+        flipped_block.size = self.size
+        flipped_block.is_safe = self.is_safe
+        flipped_block.is_sound = self.is_sound
+        flipped_block.is_sick = self.is_sick
+
+        #flip each column
+        for col in self.columns:
+            a,b,c,d = col
+            flipped_col = [d,c,b,a]
+            flipped_block.columns.append(flipped_col)
+
+        #flip configurations
+        flipped_block.left_configuration = self.left_configuration
+        flipped_block.right_configuration = self.right_configuration
+        return flipped_block
+        
+    def flip_vertical(self):
+        flipped_block = Block(self.grid)
+        flipped_block.start_col = self.start_col
+        flipped_block.end_col = self.end_col
+        flipped_block.size = self.size
+        flipped_block.is_safe = self.is_safe
+        flipped_block.is_sound = self.is_sound
+        flipped_block.is_sick = self.is_sick
+
+        #flip columns order
+        for i in range(self.size-1,-1,-1):
+            col = self.columns[i]
+            flipped_block.columns.append(col)
+
+        return flipped_block
+
+
+
+    def print_block(self,block=None):
+        if block == None:
+            block = self
+
+        print(f"Block from column {block.start_col} to {block.end_col}, size: {block.size}")
         for i in range(4):
-            for col in self.columns:
+            for col in block.columns:
                 cell = col[i]
                 print(f"{cell.value} ", end="")
             print()
         print()
-
-        print(f"Left configuration: {self.left_configuration}, Right configuration: {self.right_configuration}")
-
-    
-        
+        print(f"Left configuration: {block.left_configuration}, Right configuration: {block.right_configuration}")
         
 

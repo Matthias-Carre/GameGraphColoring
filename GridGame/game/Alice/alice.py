@@ -82,6 +82,13 @@ class Alice:
 
     #cases:
 
+    '''
+    def handle_case_1D():
+        bob_move = self.grid.last_Bob_move
+        self.case_1D(bob_move)
+    '''
+
+
     #color j+1 or j+2 of D => 
     #1. bob color sick => Alice color any j+1
     #2. bob not color sick => Alice color sick with available color
@@ -99,7 +106,7 @@ class Alice:
         #if config D'
         if bob_move.config == 'Dp':
             #if bob color v(2,j-1) or v(3,j) => v(2,j+1)
-            if bob_move.pos == x,y:
+            if bob_move.pos == None:#x,y:
                 pass
             #if bob color v(2,j) => v(1,j+1)
 
