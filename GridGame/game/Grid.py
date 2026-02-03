@@ -78,6 +78,7 @@ class Grid:
                 neighbor.color_options.remove(color)
             neighbor.neighbors_to_color -= 1
             neighbor.update_cell()
+            
     
     def roll_back_neighbors(self,x,y,color):
         cell = self.nodes[y][x]

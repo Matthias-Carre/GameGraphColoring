@@ -210,22 +210,61 @@ class Block:
     #particular case whene between two blocks
     # a==d, b==cd and c != a,b,0 and a != b and a,b,c != 0
     def is_pi(self):
-        a,b,c,d = self.columns[len(self.columns)-1]
+        #right side
+        
 
         if  self.end_col +2 < self.grid.width:
+
+            a,b,c,d = self.columns[len(self.columns)-1]
             cd = self.grid.get_cell(self.end_col +2,2)
-            print("cd=",cd.value)
-            if a.value == d.value and b.value == cd.value :
-                print("Block: check pi")
-                if c.value != a.value and c.value != b.value and c.value !=0 and a.value != b.value and a.value !=0 and b.value !=0:
-                    self.right_configuration = "p"
-                    return True
+
+            if self.pi_config(a,b,c,d,cd):
+                self.right_configuration = "p"
+                self.flip_config_right = self
+            
+
+            d, c, b, a = self.columns[len(self.columns)-1]
+            cd = self.grid.get_cell(self.end_col +2,1)
+            if self.pi_config(a,b,c,d,cd):
+                self.right_configuration = "p"
+                self.flip_config_right = self.flip_horizontal()
+        
+        #left side
+        if self.start_col -2 >= 0:
+
+            a,b,c,d = self.columns[0]
+            cd = self.grid.get_cell(self.start_col -2,2)
+            print(f"Pi config A cd={cd.value}, a={a.value},b={b.value},c={c.value},d={d.value}")
+
+            if self.pi_config(a,b,c,d,cd):
+                self.left_configuration = "p"
+                self.flip_config_left = self.flip_vertical()
+            
+
+            d, c, b, a = self.columns[0]
+            cd = self.grid.get_cell(self.start_col -2,1)
+            print("Pi config B:",cd.value)
+            if self.pi_config(a,b,c,d,cd):
+                self.left_configuration = "p"
+                fliped = self.flip_vertical()
+                self.flip_config_left = fliped.flip_horizontal()
+
+    def pi_config(self,a,b,c,d,cd):
+        # a==d, b==cd and c != a,b,0 and a != b and a,b,c != 0
+        if a.value == d.value and b.value == cd.value :
+            if c.value != a.value and c.value != b.value and c.value !=0 and a.value != b.value and a.value !=0 and b.value !=0:
+                return True
+        
         return False
     
+
+
     # b_0 == a_2 == c_2 == d_0 != 0
     # c_1 != 0 
     # a_0,b_0,d_0,b_1,d_1 == 0 
     def is_Delta(self):
+
+        """
         if self.size <= 3:
             return False
         a_0,b_0,c_0,d_0 = self.columns[len(self.columns)-2]
@@ -236,7 +275,7 @@ class Block:
                 if(a_0.value == 0 and b_0.value == 0 and d_0.value == 0 and b_1.value == 0 and d_1.value == 0):
                     print("Block is Delta")
                     self.right_configuration = "D"
-
+        """
         return
     
 
@@ -327,6 +366,4 @@ class Block:
                 print(f"{cell.value} ", end="")
             print()
         print()
-        print(f"Left configuration: {block.left_configuration}, Right configuration: {block.right_configuration}")
-        
 

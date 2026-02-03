@@ -33,6 +33,7 @@ class Cell:
         for neighbor in self.neighbors:
             if neighbor.get_value() != 0:
                 colors.append(neighbor.get_value())
+                    
         return colors
 
 
@@ -64,7 +65,27 @@ class Cell:
                     self.is_safe = True
                     print(f"Cell at ({self.x}, {self.y}) is safe by neighbor colors")
 
-        
+        #check if sound
+        #sound if 2 neighbors are safe and become doctors.(doctors can only have 1 patient)
+
+        #sound va me rendre fou 
+        safe_doctor_neighbors = []
+        for neighbor in self.neighbors:
+            if neighbor.is_safe and (not neighbor.is_doctor()):
+                safe_doctor_neighbors.append(neighbor)
+
+        if len(safe_doctor_neighbors) >= 2:
+            safe_doctor_neighbors[0].patients.append(self)
+            safe_doctor_neighbors[1].patients.append(self)
+            self.doctors.append(safe_doctor_neighbors[0])
+            self.doctors.append(safe_doctor_neighbors[1])
+            self.is_sound = True
+
+
+
+        #check if sick
+
+
         #check if no color options left
         if len(self.color_options) == 0:
             self.is_uncolorable = True
@@ -105,10 +126,15 @@ class Cell:
     #return the status safe/sound/color_critical/doctor/patient
 
     def get_status(self):
+        if self.is_uncolorable:
+            return "x"
         if self.is_safe:
             return "safe"
         if self.is_sound:
             return "sound"
+        if self.is_color_critical:
+            return "cc"
+        
         return "o"
     
     #debug/analysis print (with right click)

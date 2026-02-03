@@ -97,13 +97,28 @@ class Draw:
                 cell = self.grid.get_cell(i, j)
                 self.draw_text(x + ratio / 2, y + ratio / 2, cell.get_value() if cell.get_value()!=0 else "","Blue" if cell.played_by == 1 else "Red",font=("Arial",int(ratio/1.5)))
                 if(self.print_status):
-                    if(cell.is_safe):
-                        self.draw_text(x + ratio / 6, y + ratio / 6, "S", color="green", font=("Arial", 8))
+                    state = cell.get_status()
+                    self.draw_text(x + ratio / 6, y + ratio / 6, state, color="green", font=("Arial", 8))
                         
                     self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
+                
+                    self.draw_doctor_patient(cell)
+
                 if(cell.any_color):
                     self.draw_text(x + ratio / 4, y + ratio / 4, "any", color="black", font=("Arial", 16))
 
+
+    def draw_doctor_patient(self,cell):
+        for patient in cell.patients:
+            #draw a line from doctor to patient 
+            ratio = min(self.width / self.grid.width, self.height / self.grid.height)
+            x1 = cell.x * ratio + ratio / 2
+            y1 = cell.y * ratio + ratio / 2
+            x2 = patient.x * ratio + ratio / 2
+            y2 = patient.y * ratio + ratio / 2
+            self.canvas.create_line(x1, y1, x2, y2, fill="black", width=2, dash=(4, 2))
+
+        
 
     def draw_window(self):
 
