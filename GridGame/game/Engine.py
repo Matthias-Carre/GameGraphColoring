@@ -87,7 +87,7 @@ class GameEngine:
 
     def on_left_click(self,event):
         
-        print("click",event)
+        #print("click",event)
         x = event.x
         y = event.y
         ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
@@ -96,7 +96,7 @@ class GameEngine:
 
         if hasattr(self, 'color_var_accessor'):
             self.color_selected = self.color_var_accessor.get()
-            print("color selected:", self.color_selected)
+            #print("color selected:", self.color_selected)
 
         if (0 <= i) and (i < self.grid.width) and (0 <= j) and (j < self.grid.height) and (self.color_selected != -1):
             print(f'Button clicked at: {i}, {j}, color: {self.color_selected}')
@@ -105,6 +105,7 @@ class GameEngine:
                 return
             
             if (self.grid.get_cell(i, j).get_value() == 0):
+                #entry point of the move
                 self.change_node_color(self.grid, i, j, self.color_selected + 1)
                 self.on_update_callback()
                 if self.grid.player == 1:
@@ -112,7 +113,7 @@ class GameEngine:
                 self.grid.player = 0 if self.grid.player == 1 else 1
     
     def on_right_click(self,event):
-        print("right click",event)
+        #print("right click",event)
         x = event.x
         y = event.y
         ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
@@ -123,17 +124,24 @@ class GameEngine:
             print(f'Right Button clicked at: {i}, {j}')
             cell = self.grid.get_cell(i, j)
             cell.print_cell_informations()
+        
+        self.on_update_callback()
+        
 
     def on_x_press(self,event):
-        print("button3 pressed",event)
+        #print("button3 pressed",event)
         x = event.x
         y = event.y
         ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
         i = int(x // ratio)
         j = int(y // ratio)
 
-        cell = self.grid.get_cell(i, j)
-        cell.any_color = not cell.any_color
+        #cell = self.grid.get_cell(i, j)
+        #cell.any_color = not cell.any_color
+        print(f"Engine:previous changes")
+        for n in self.grid.previous_changes[-1]:
+            n.print_cell_informations()
+            
         self.on_update_callback()
 
     #manage Alice actions
@@ -149,6 +157,7 @@ class GameEngine:
             if self.grid.player == 0:
                 self.grid.round -= 1
             self.grid.player = 0 if self.grid.player == 1 else 1
+        self.on_update_callback()
         return
 
     def change_node_color(self,grid, x, y, color):

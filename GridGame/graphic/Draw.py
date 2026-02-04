@@ -116,7 +116,7 @@ class Draw:
             y1 = cell.y * ratio + ratio / 2
             x2 = patient.x * ratio + ratio / 2
             y2 = patient.y * ratio + ratio / 2
-            self.canvas.create_line(x1, y1, x2, y2, fill="black", width=2, dash=(4, 2))
+            self.canvas.create_line(y1, x1, y2, x2, fill="black", width=2, dash=(4, 2))
 
         
 

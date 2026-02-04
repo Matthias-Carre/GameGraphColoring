@@ -234,7 +234,7 @@ class Block:
 
             a,b,c,d = self.columns[0]
             cd = self.grid.get_cell(self.start_col -2,2)
-            print(f"Pi config A cd={cd.value}, a={a.value},b={b.value},c={c.value},d={d.value}")
+            #print(f"Pi config A cd={cd.value}, a={a.value},b={b.value},c={c.value},d={d.value}")
 
             if self.pi_config(a,b,c,d,cd):
                 self.left_configuration = "p"
@@ -243,7 +243,7 @@ class Block:
 
             d, c, b, a = self.columns[0]
             cd = self.grid.get_cell(self.start_col -2,1)
-            print("Pi config B:",cd.value)
+            #print("Pi config B:",cd.value)
             if self.pi_config(a,b,c,d,cd):
                 self.left_configuration = "p"
                 fliped = self.flip_vertical()
@@ -286,35 +286,36 @@ class Block:
         self.right_configuration = None
 
         if self.is_alpha():
-            print("Block is alpha")
+            #print("Block is alpha")
             self.right_configuration = "a"
         
         # if config is alpha and beta => beta
         if self.is_beta():
-            print("Block is beta")
+            #print("Block is beta")
             self.right_configuration = "b"
 
         if self.is_gamma():
-            print("Block is gamma")
+            #print("Block is gamma")
             self.right_configuration = "g"
         if self.is_delta():
-            print("Block is delta")
+            #print("Block is delta")
             self.right_configuration = "d"
         if self.is_pi():
-            print("Block is pi")
+            #print("Block is pi")
             self.right_configuration = "p"
 
         
         #manage critical cases
         if self.is_Delta():
-            print("Block is Delta")
+            #print("Block is Delta")
             self.right_configuration = "D"
 
+        '''
         print("RIGHT config:")
         self.print_block(self.flip_config_right)
         print("LEFT config:")
         self.print_block(self.flip_config_left)
-        
+        '''
     #flip the block on horizontal axis 
     #goal is to apply same strategy after fliping (creating a new block object pointing to same cells)
     def flip_horizontal(self):
