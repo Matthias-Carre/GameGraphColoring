@@ -20,9 +20,12 @@ class Grid:
     def __init__(self, height, width, num_colors=4):
         self.width = width
         self.height = height
+        self.nodes = [[Cell(x, y, self ,num_colors=num_colors) for y in range(width)] for x in range(height)]
+        
+        self.neighbors = []
+        
         self.last_moves = [] # (x,y,color)
         self.previous_changes = [] #list of list on changes for each move
-        self.nodes = [[Cell(x, y, self.width, self.height,num_colors=num_colors) for y in range(width)] for x in range(height)]
         self.num_colors = num_colors
         self.blocks = []
         self.player = 0 #0 for Alice, 1 for Bob
@@ -36,13 +39,9 @@ class Grid:
     def init_state(self):
         for i in range(self.width):
             for j in range(self.height):
-                directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
-                for dx, dy in directions:
-                    nx, ny = i + dx, j + dy
-                    #check if we hit a border
-                    if 0 <= nx < self.width and 0 <= ny < self.height:
-                        self.nodes[j][i].neighbors.append(self.nodes[ny][nx])
-                
+                print(f"TEST GRID: nodes[{self.nodes}]")
+                self.nodes[j][i].neighbors = self.neighborhood(self.nodes[j][i])
+
                 #add the starting status of each cell
                 self.nodes[j][i].check_safe_cell()
         for i in range(self.width):
@@ -148,10 +147,18 @@ class Grid:
             print("No moves to undo")
             return False
         List_of_nodes = self.previous_changes.pop()
+
+        #set the nodes to their previous state
         for node in List_of_nodes:
             x = node.x
             y = node.y
             self.nodes[x][y] = node
+        
+        #setback neighbors to their previous state
+        for node in List_of_nodes:
+            i = node.x
+            j = node.y
+            self.nodes[i][j].neighbors = self.neighborhood(self.nodes[i][j])
         
         return True
     
@@ -168,3 +175,16 @@ class Grid:
             if n.x == node.x and n.y == node.y:
                 return True
         return False
+    
+
+    def neighborhood(self,cell):
+        i = cell.y
+        j = cell.x
+        neighborhood = []
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
+        for dx, dy in directions:
+            nx, ny = i + dx, j + dy
+            #check if we hit a border
+            if 0 <= nx < self.width and 0 <= ny < self.height:
+                neighborhood.append(self.nodes[ny][nx])
+        return neighborhood
