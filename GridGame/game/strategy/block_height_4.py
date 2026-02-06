@@ -43,7 +43,7 @@ class BlockHeight4(Block) :
                     self.blocks.remove(block_right)
                     
                 block_left.check_configurations()
-                block_left.print_block()
+                #block_left.print_block()
                 return
                       
             if(block_right):
@@ -51,7 +51,7 @@ class BlockHeight4(Block) :
                 block_right.size += 1
                 block_right.columns.insert(0,[self.get_cell(x, row) for row in range(self.height)])
                 block_right.check_configurations()
-                block_right.print_block()
+                #block_right.print_block()
                 
                 return
             
@@ -64,7 +64,7 @@ class BlockHeight4(Block) :
             self.blocks.append(block)
 
         block.check_configurations()
-        block.print_block()
+        #block.print_block()
         return
 
 

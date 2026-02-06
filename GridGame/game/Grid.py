@@ -20,23 +20,33 @@ class Grid:
     def __init__(self, height, width, num_colors=4):
         self.width = width
         self.height = height
+        self.nodes = [[Cell(x, y, self ,num_colors=num_colors) for y in range(width)] for x in range(height)]
+        
+        self.neighbors = []
+        
         self.last_moves = [] # (x,y,color)
-        self.nodes = [[Cell(x, y, self.width, self.height,num_colors=num_colors) for y in range(width)] for x in range(height)]
+        self.previous_changes = [] #list of list on changes for each move
         self.num_colors = num_colors
         self.blocks = []
         self.player = 0 #0 for Alice, 1 for Bob
         self.round = 1
+        self.last_Bob_move = None # (x,y,color,past_config)        
 
         #add neighbors to each cell
+        self.init_state()
+  
+
+    def init_state(self):
         for i in range(self.width):
             for j in range(self.height):
-                directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
-                for dx, dy in directions:
-                    nx, ny = i + dx, j + dy
-                    #check if we hit a border
-                    if 0 <= nx < self.width and 0 <= ny < self.height:
-                        self.nodes[j][i].neighbors.append(self.nodes[ny][nx])
-                self.nodes[j][i].update_cell()
+                print(f"TEST GRID: nodes[{self.nodes}]")
+                self.nodes[j][i].neighbors = self.neighborhood(self.nodes[j][i])
+
+                #add the starting status of each cell
+                self.nodes[j][i].check_safe_cell()
+        for i in range(self.width):
+            for j in range(self.height):
+                self.nodes[j][i].check_sound_cell()
 
     def is_move_valid(self, x, y, value):
         for neighbor in self.nodes[y][x].neighbors:
@@ -49,42 +59,66 @@ class Grid:
                     return True
         return False
 
+    def get_col(self, col_index):
+        if 0 <= col_index < self.width:
+            return [self.nodes[row][col_index] for row in range(self.height)]
+        else:
+            raise IndexError("Column index out of bounds")
+
     def play_move(self,x,y,color):
         if not(self.is_move_valid(x,y,color)):
             print(f"Invalid move at ({x}, {y}) with color {color} by player {self.player}")
             return False
         
-        
+        #list of the nodes changed by this move
+        self.previous_changes.append([])
+
+        node = self.nodes[y][x].clone_cell()
+        self.add_to_previous_changes([node])
         
         self.nodes[y][x].value = color
         self.nodes[y][x].played_by = self.player
         self.nodes[y][x].round = self.round
+        self.nodes[y][x].update_cell()
         self.last_moves.append((x,y,color))
 
         self.update_neighbors(x,y,color)
+        print(f"Debug:previous changes \n{len(self.previous_changes)}")
+
 
 
     def update_neighbors(self,x,y,color):
         cell = self.nodes[y][x]
         for neighbor in cell.neighbors:
             if color in neighbor.color_options:
+                self.add_to_previous_changes([neighbor.clone_cell()])
+
                 neighbor.color_options.remove(color)
             neighbor.neighbors_to_color -= 1
-            neighbor.update_cell()
+            affected_cells = neighbor.update_cell()
+            self.add_to_previous_changes(affected_cells)
+        return 
+    
+            
     
     def roll_back_neighbors(self,x,y,color):
         cell = self.nodes[y][x]
         for neighbor in cell.neighbors:
-            color_is_posible = True #check if we can restore the color option
+            
+            #check if we can restore the color option
+            color_is_posible = True 
             for neighbor2 in neighbor.neighbors:
-                print(f"voisin2 value: {neighbor2.value}, color: {color}")
+                #print(f"voisin2 value: {neighbor2.value}, color: {color}")
                 if neighbor2.value == color:
                     color_is_posible = False
                     break
-                
             if color_is_posible:
                 neighbor.color_options.append(color)
             neighbor.neighbors_to_color += 1
+
+
+    
+            neighbor.update_cell()
             
             
     def get_cell(self, x, y): 
@@ -93,6 +127,7 @@ class Grid:
         else:
             raise IndexError("Cell position out of bounds")
     
+    """
     #undo need to blank the last move, and restore the color options of the neighbors
     def undo_move(self):
         print("Undo:",self.last_moves[-1])
@@ -105,5 +140,51 @@ class Grid:
             self.roll_back_neighbors(x,y,color)
             return True
         return False
-            
-            
+    """
+    #undo version where we just rollback changed cells
+    def undo_move(self):
+        if self.previous_changes == []:
+            print("No moves to undo")
+            return False
+        List_of_nodes = self.previous_changes.pop()
+
+        #set the nodes to their previous state
+        for node in List_of_nodes:
+            x = node.x
+            y = node.y
+            self.nodes[x][y] = node
+        
+        #setback neighbors to their previous state
+        for node in List_of_nodes:
+            i = node.x
+            j = node.y
+            self.nodes[i][j].neighbors = self.neighborhood(self.nodes[i][j])
+        
+        return True
+    
+    #add changed nodes to the last list of previous changes
+    def add_to_previous_changes(self,changed_nodes):
+        for node in changed_nodes:
+            if not(self.is_present(node,self.previous_changes[-1])):
+                self.previous_changes[-1].append(node)
+
+
+    #return true if node is in list 
+    def is_present(self,node,list):
+        for n in list:
+            if n.x == node.x and n.y == node.y:
+                return True
+        return False
+    
+
+    def neighborhood(self,cell):
+        i = cell.y
+        j = cell.x
+        neighborhood = []
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
+        for dx, dy in directions:
+            nx, ny = i + dx, j + dy
+            #check if we hit a border
+            if 0 <= nx < self.width and 0 <= ny < self.height:
+                neighborhood.append(self.nodes[ny][nx])
+        return neighborhood

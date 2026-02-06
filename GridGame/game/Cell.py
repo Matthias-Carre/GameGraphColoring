@@ -1,9 +1,11 @@
+import copy
 class Cell:
-    def __init__(self, x, y, grid_width, grid_height,num_colors=4, value=0):
+    def __init__(self, x, y, grid,num_colors=4, value=0):
+        #self.grid = grid
         self.x = x
         self.y = y
-        self.grid_width = grid_width
-        self.grid_height = grid_height
+        self.grid_width = grid.width
+        self.grid_height = grid.height
 
         #used to track rounds in advanced strategies
         self.round=None
@@ -12,8 +14,9 @@ class Cell:
 
         self.any_color = False #used to show x on cell
 
-        self.neighbors = [] #values of the colors of neighboring cells
-        self.neighbors_color = self.neighbors_colors()
+        self.neighbors = []
+
+        self.neighbors_color = self.get_neighbor_colors() 
         self.neighbors_to_color = self.number_of_neighbors() #number of neighbors yet to be colored
         self.color_options = [i for i in range(1,num_colors+1)] #remaining color options
 
@@ -28,44 +31,93 @@ class Cell:
         self.patients = []
 
     #return the colors of the neighboring cells
-    def neighbors_colors(self):
-        colors = []
-        for neighbor in self.neighbors:
-            if neighbor.get_value() != 0:
-                colors.append(neighbor.get_value())
-        return colors
 
 
     #check and update the status of the cell
+    #also return the list of cells affected byt he update
     def update_cell(self):
+        affected = []
+        self.is_safe = False
         
         #check if its critical
         if len(self.color_options) == 1:
             print(f"Cell at ({self.x}, {self.y}) is color critical")
             self.is_color_critical = True
 
-        #check if its safe
-        #is colorred OR #N <= 3 OR 2 neighbors colored with same color
-        #OR 3 neighbors colored with 3 colors but the 4th is neighbor to the last color
-        if len(self.color_options) == 0:
-            self.is_safe = True
-        if self.value != 0 or len(self.neighbors) < 4 or len(self.neighbors_colors()) - len(set(self.neighbors_colors())) > 0 :
-            self.is_safe = True
-            #print(f"Cell at ({self.x}, {self.y}) is safe")
-        if len(self.neighbors) == 4 and len(set(self.neighbors_colors())) == 3:
-            missing_color = self.color_options[0] if len(self.color_options) > 1 else []
-            print(f"Cell at ({self.x}, {self.y}) is check uncolored neighbor")
-            uncolored_neighbor = self.get_uncolored_neighbor()
-            if uncolored_neighbor is not None:
-                if missing_color in uncolored_neighbor.neighbors_colors():
-                    self.is_safe = True
-                    print(f"Cell at ({self.x}, {self.y}) is safe by neighbor colors")
+        #is safe?
+        affected += self.check_safe_cell()
+        #is sound?
+        affected += self.check_sound_cell()
 
-        
+
+        #check if sick
+
+
         #check if no color options left
         if len(self.color_options) == 0:
             self.is_uncolorable = True
             print(f"Cell at ({self.x}, {self.y}) has no color options left")
+        
+        #print(f"Cell: affected={len(affected)}")
+        return affected
+
+    def check_safe_cell(self):
+        affected = []
+        #check if its safe
+        #is colorred OR #N <= 3 OR 2 neighbors colored with same color
+        #OR 3 neighbors colored with 3 colors but the 4th is neighbor to the last color
+        if self.value != 0:
+            self.is_safe = True
+        
+        #if len(self.color_options) == 0: # ?????
+        #    self.is_safe = True
+        
+        neighbor_colors = self.get_neighbor_colors()
+        print(f"CELL 1st test:{len(self.neighbors)<4 } 2nd: {len(neighbor_colors)> len(set(neighbor_colors))} ")
+        
+        if self.value != 0 or len(self.neighbors) < 4 or len(neighbor_colors) - len(set(neighbor_colors)) > 0 :
+            
+            self.is_safe = True
+            #print(f"Cell at ({self.x}, {self.y}) is safe")
+
+        if len(self.neighbors) == 4 and len(set(self.neighbors_color)) == 3:
+            affected.append(self.clone_cell())
+            missing_color = self.color_options[0] if len(self.color_options) > 1 else []
+            print(f"Cell at ({self.x}, {self.y}) is check uncolored neighbor")
+            uncolored_neighbor = self.get_uncolored_neighbor()
+            if uncolored_neighbor is not None:
+                if missing_color in uncolored_neighbor.neighbors_color:
+                    self.is_safe = True
+                    print(f"Cell at ({self.x}, {self.y}) is safe by neighbor colors")
+        return affected
+    #check if sound
+    #return the list of affected cells
+    def check_sound_cell(self):
+        if self.is_safe:
+            return []
+        
+
+        #check if sound
+        #sound if 2 neighbors are safe and become doctors.(doctors can only have 1 patient)
+
+        affected = []
+        #sound va me rendre fou 
+        safe_doctor_neighbors = []
+        for neighbor in self.neighbors:
+            if neighbor.is_safe and (not neighbor.is_doctor()) and neighbor.value == 0:
+                safe_doctor_neighbors.append(neighbor)
+
+        if len(safe_doctor_neighbors) >= 2:
+            affected.append(safe_doctor_neighbors[0].clone_cell())
+            affected.append(safe_doctor_neighbors[1].clone_cell())
+
+            safe_doctor_neighbors[0].patients.append(self)
+            safe_doctor_neighbors[1].patients.append(self)
+            self.doctors.append(safe_doctor_neighbors[0])
+            self.doctors.append(safe_doctor_neighbors[1])
+            self.is_sound = True
+
+        return affected
 
     #to simplify the detection of safe cells
     def number_of_neighbors(self):
@@ -102,19 +154,37 @@ class Cell:
     #return the status safe/sound/color_critical/doctor/patient
 
     def get_status(self):
+        if self.is_uncolorable:
+            return "x"
         if self.is_safe:
             return "safe"
         if self.is_sound:
             return "sound"
+        if self.is_color_critical:
+            return "cc"
+        
         return "o"
     
+
+    def get_neighbor_colors(self):
+        return [neighbor.value for neighbor in self.neighbors if neighbor.value != 0]
+    
+
+    def clone_cell(self):
+        clone = copy.deepcopy(self)
+        clone.neighbors_color = [] 
+        return clone
+
+    
+
     #debug/analysis print (with right click)
     def print_cell_informations(self):
+        print("=--=--=--=--=--=--=--=--=--=--=--=--=--=--=")
         print(f"Cell ({self.x}, {self.y}):")
         print(f"  Value: {self.value}")
         print(f"  Played by: {self.played_by}")
         print(f"  Neighbors: {[(n.x, n.y) for n in self.neighbors]}")
-        print(f"  Neighbors colors: {self.neighbors_colors()}")
+        print(f"  Neighbors colors: {self.neighbors_color}")
         print(f"  Neighbors to color: {self.neighbors_to_color}")
         print(f"  Color options: {self.color_options}")
         print(f"  Is safe: {self.is_safe}")
@@ -123,4 +193,5 @@ class Cell:
         print(f"  Is uncolorable: {self.is_uncolorable}")
         print(f"  Doctors: {[(d.x, d.y) for d in self.doctors]}")
         print(f"  Patients: {[(p.x, p.y) for p in self.patients]}")
+        print("=--=--=--=--=--=--=--=--=--=--=--=--=--=--=")
         

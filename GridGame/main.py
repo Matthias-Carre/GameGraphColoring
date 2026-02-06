@@ -3,6 +3,8 @@ from game.Grid import Grid
 from graphic.Draw import Draw
 from game.Engine import GameEngine
 from graphic.Interface import Interface
+from game.Bob.bob import Bob
+from game.Alice.alice import Alice
 
 
 def on_button_click(event):
@@ -13,9 +15,9 @@ def create_game(root,width=4, height=12):
     #grid = Grid(width, height, num_colors=4)
     
     #for the cas of the paper
-    grid = Grid(4,15,3)
+    grid = Grid(4,15,4)
 
-    engine = GameEngine(grid,root)
+    engine = GameEngine(grid,root,Alice=Alice(grid),Bob=Bob(grid))
   
     
     print("Game created with grid size:", width, "x", height)
@@ -28,7 +30,7 @@ def main():
     # Create the main window
     root = tk.Tk()
     root.title("Lunch Menu")
-
+    
     main_frame = tk.Frame(root)
     main_frame.pack(padx=20, pady=20)
 
