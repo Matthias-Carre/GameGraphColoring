@@ -165,14 +165,14 @@ class Cell:
         
         return "o"
     
-    
+
     def get_neighbor_colors(self):
         return [neighbor.value for neighbor in self.neighbors if neighbor.value != 0]
     
 
     def clone_cell(self):
         clone = copy.deepcopy(self)
-        clone.neighbors_color = []
+        clone.neighbors_color = [] 
         return clone
 
     

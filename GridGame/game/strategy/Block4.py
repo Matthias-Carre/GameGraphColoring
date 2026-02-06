@@ -310,6 +310,8 @@ class Block:
             #print("Block is Delta")
             self.right_configuration = "D"
 
+        print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
+        print(f"RIGHT {self.right_configuration} LEFT {self.left_configuration}")
         '''
         print("RIGHT config:")
         self.print_block(self.flip_config_right)
