@@ -1,4 +1,5 @@
 import copy
+
 class Cell:
     def __init__(self, x, y, grid,num_colors=4, value=0):
         #self.grid = grid
@@ -73,7 +74,7 @@ class Cell:
         #    self.is_safe = True
         
         neighbor_colors = self.get_neighbor_colors()
-        print(f"CELL 1st test:{len(self.neighbors)<4 } 2nd: {len(neighbor_colors)> len(set(neighbor_colors))} ")
+        #print(f"CELL 1st test:{len(self.neighbors)<4 } 2nd: {len(neighbor_colors)> len(set(neighbor_colors))} ")
         
         if self.value != 0 or len(self.neighbors) < 4 or len(neighbor_colors) - len(set(neighbor_colors)) > 0 :
             

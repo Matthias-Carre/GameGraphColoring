@@ -21,9 +21,7 @@ class Grid:
         self.width = width
         self.height = height
         self.nodes = [[Cell(x, y, self ,num_colors=num_colors) for y in range(width)] for x in range(height)]
-        
-        self.neighbors = []
-        
+                
         self.last_moves = [] # (x,y,color)
         self.previous_changes = [] #list of list on changes for each move
         self.num_colors = num_colors
@@ -39,7 +37,6 @@ class Grid:
     def init_state(self):
         for i in range(self.width):
             for j in range(self.height):
-                print(f"TEST GRID: nodes[{self.nodes}]")
                 self.nodes[j][i].neighbors = self.neighborhood(self.nodes[j][i])
 
                 #add the starting status of each cell

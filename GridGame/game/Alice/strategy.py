@@ -11,3 +11,4 @@ def is_1Delta(grid,bob_move):
 def solve_1Delta(grid,bob_move):
     j = bob_move.j
     sick_vertex_pos = (j + 1, 2) 
+    

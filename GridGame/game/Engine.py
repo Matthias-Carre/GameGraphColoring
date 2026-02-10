@@ -36,6 +36,7 @@ class GameEngine:
         
         self.window.draw_button("Undo",self.undo)
         self.window.draw_button("debug",self.toggle_debug)
+        self.window.draw_button("rounds",self.toggle_rounds)
 
 
         self.window.canvas.bind("<Button-1>", self.on_left_click)
@@ -159,6 +160,8 @@ class GameEngine:
             self.grid.player = 0 if self.grid.player == 1 else 1
         self.on_update_callback()
         return
+    
+
 
     def change_node_color(self,grid, x, y, color):
         grid.play_move(x, y, color)
@@ -179,4 +182,8 @@ class GameEngine:
 
     def toggle_debug(self):
         self.window.draw.print_status = not self.window.draw.print_status
+        self.on_update_callback()
+
+    def toggle_rounds(self):
+        self.window.draw.print_rounds = not self.window.draw.print_rounds
         self.on_update_callback()

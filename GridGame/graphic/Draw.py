@@ -10,7 +10,8 @@ class Draw:
         self.color_selected = -1 # given by the radio button
         self.root = root
         self.turn = 0 #0 for Alice, 1 for Bob
-        self.print_status = True
+        self.print_status = False
+        self.print_rounds = True
         self.round = 1 
 
     #draw text at x,y with color and font
@@ -99,16 +100,21 @@ class Draw:
                 if(self.print_status):
                     state = cell.get_status()
                     self.draw_text(x + ratio / 6, y + ratio / 6, state, color="green", font=("Arial", 8))
-                        
-                    self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
                 
                     self.draw_doctor_patient(cell)
+
+                if(self.print_rounds):
+                    self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
+
+
 
                 if(cell.any_color):
                     self.draw_text(x + ratio / 4, y + ratio / 4, "any", color="black", font=("Arial", 16))
 
 
     def draw_doctor_patient(self,cell):
+        return
+        """
         for patient in cell.patients:
             #draw a line from doctor to patient 
             ratio = min(self.width / self.grid.width, self.height / self.grid.height)
@@ -117,7 +123,7 @@ class Draw:
             x2 = patient.x * ratio + ratio / 2
             y2 = patient.y * ratio + ratio / 2
             self.canvas.create_line(y1, x1, y2, x2, fill="black", width=2, dash=(4, 2))
-
+        """
         
 
     def draw_window(self):
