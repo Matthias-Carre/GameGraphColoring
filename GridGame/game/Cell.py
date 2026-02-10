@@ -196,3 +196,40 @@ class Cell:
         print(f"  Patients: {[(p.x, p.y) for p in self.patients]}")
         print("=--=--=--=--=--=--=--=--=--=--=--=--=--=--=")
         
+
+
+    #test undo diff
+    #retourne une sauvegarde de letat d'une cell
+    def get_state(self):
+        return {
+            "value": self.value,
+            "color_options": self.color_options[:], # Copie de la liste !
+            "neighbors_to_color": self.neighbors_to_color,
+            "is_safe": self.is_safe,
+            "is_sound": self.is_sound,
+            "is_color_critical": self.is_color_critical,
+            "is_uncolorable": self.is_uncolorable,
+            "played_by": self.played_by,
+            "round": self.round,
+            #on save les coo pour restaurer plus facilement
+            "doctors_coords": [(d.x, d.y) for d in self.doctors],
+            "patients_coords": [(p.x, p.y) for p in self.patients]
+        }
+
+    #restaure lancien etat des cells
+    def restore_state(self, state, grid):
+       
+        self.value = state['value']
+        self.color_options = state['color_options'][:]
+        self.neighbors_to_color = state['neighbors_to_color']
+        self.is_safe = state['is_safe']
+        self.is_sound = state['is_sound']
+        self.is_color_critical = state['is_color_critical']
+        self.is_uncolorable = state['is_uncolorable']
+        self.played_by = state['played_by']
+        self.round = state['round']
+        
+        # Reconstruction des objets à partir des coordonnées
+        # On va chercher les vrais objets dans la grille actuelle
+        self.doctors = [grid.nodes[y][x] for x, y in state['doctors_coords']]
+        self.patients = [grid.nodes[y][x] for x, y in state['patients_coords']]
