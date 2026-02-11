@@ -13,6 +13,8 @@ class Draw:
         self.print_status = False
         self.print_rounds = True
         self.round = 1 
+        self.button_frame =  tk.Frame(self.root)
+        self.button_frame.pack(pady=10)
 
     #draw text at x,y with color and font
     def draw_text(self, x, y, text, color="black", font=("Arial", 16)):
@@ -56,7 +58,7 @@ class Draw:
 
     #function to draw a button with text and command
     def draw_button(self, text, command):
-        button = tk.Button(self.root, text=text, command=command).pack()
+        button = tk.Button(self.button_frame, text=text, command=command).pack(side="left", padx=5)
         #button.place(x=pos_x, y=pos_y)
         return button
 

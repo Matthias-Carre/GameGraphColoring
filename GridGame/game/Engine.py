@@ -34,6 +34,7 @@ class GameEngine:
         #management of inputs
         self.window.draw_button("Alice move",self.alice_move)
         
+        self.window.draw_button("preview",self.preview)
         self.window.draw_button("Undo",self.undo)
         self.window.draw_button("debug",self.toggle_debug)
         self.window.draw_button("rounds",self.toggle_rounds)
@@ -109,9 +110,6 @@ class GameEngine:
                 #entry point of the move
                 self.change_node_color(self.grid, i, j, self.color_selected + 1)
                 self.on_update_callback()
-                if self.grid.player == 1:
-                    self.grid.round += 1
-                self.grid.player = 0 if self.grid.player == 1 else 1
     
     def on_right_click(self,event):
         #print("right click",event)
@@ -127,6 +125,9 @@ class GameEngine:
             cell.print_cell_informations()
         
         self.on_update_callback()
+        
+    def preview(self):
+        print("Previewing next move")
         
 
     def on_x_press(self,event):
@@ -147,8 +148,11 @@ class GameEngine:
 
     #manage Alice actions
     def alice_move(self):
-        x, y, color = self.Alice.next_move()
-        self.grid.play_move(x, y, color)
+        if self.grid.player != 0:
+            print("Not Alice's turn")
+            return
+        x, y, color = self.Alice.next_move()  
+        self.change_node_color(self.grid, x, y, color)
         self.on_update_callback()
 
     def undo(self):
@@ -167,6 +171,10 @@ class GameEngine:
         grid.play_move(x, y, color)
         if self.strategy is not None:
             self.strategy.move_played(x, y, color, "A" if grid.player == 0 else "B")
+
+        if self.grid.player == 1:
+            self.grid.round += 1
+        self.grid.player = 0 if self.grid.player == 1 else 1
         return
     
     def draw_grid(self):

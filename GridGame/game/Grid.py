@@ -70,6 +70,7 @@ class Grid:
             return False
         
         #save pour undo
+        self.last_Bob_move = (x,y,color)
         self.save_zone_snapshot(x, y, distance=2)
 
         #applique le coup

@@ -1,4 +1,3 @@
-import copy
 
 class Cell:
     def __init__(self, x, y, grid,num_colors=4, value=0):
@@ -82,7 +81,7 @@ class Cell:
             #print(f"Cell at ({self.x}, {self.y}) is safe")
 
         if len(self.neighbors) == 4 and len(set(self.neighbors_color)) == 3:
-            affected.append(self.clone_cell())
+            #affected.append(self.clone_cell())
             missing_color = self.color_options[0] if len(self.color_options) > 1 else []
             print(f"Cell at ({self.x}, {self.y}) is check uncolored neighbor")
             uncolored_neighbor = self.get_uncolored_neighbor()
@@ -109,8 +108,8 @@ class Cell:
                 safe_doctor_neighbors.append(neighbor)
 
         if len(safe_doctor_neighbors) >= 2:
-            affected.append(safe_doctor_neighbors[0].clone_cell())
-            affected.append(safe_doctor_neighbors[1].clone_cell())
+            #affected.append(safe_doctor_neighbors[0].clone_cell())
+            #affected.append(safe_doctor_neighbors[1].clone_cell())
 
             safe_doctor_neighbors[0].patients.append(self)
             safe_doctor_neighbors[1].patients.append(self)
@@ -170,12 +169,12 @@ class Cell:
     def get_neighbor_colors(self):
         return [neighbor.value for neighbor in self.neighbors if neighbor.value != 0]
     
-
+    '''
     def clone_cell(self):
-        clone = copy.deepcopy(self)
+        clone = []
         clone.neighbors_color = [] 
         return clone
-
+    '''
     
 
     #debug/analysis print (with right click)
