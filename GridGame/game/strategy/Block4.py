@@ -20,7 +20,7 @@ class Block:
         self.flip_config_right = None #store the block fliped to match configurations (can be same as self)
         self.flip_config_left = None #store the block for the left config but flip it at right
 
-        self.particular_config = {} #dict to store node:config
+        self.particular_config = None #dict to store node:config
 
         #self.pi_
 
@@ -258,27 +258,69 @@ class Block:
         return False
     
 
-
-    # b_0 == a_2 == c_2 == d_0 != 0
-    # c_1 != 0 
-    # a_0,b_0,d_0,b_1,d_1 == 0 
+    # In reverse of the paiper (j,1 j,2 j,3 j,4 => j,3 j,2 j,1 j,0) 
+    # a sont importance D' et D2' sont pas sym horisontale
+    # j,1 == j,3 == j+2,0 == j+2,2 != 0 
+    # j+1,0 == j+1,1 == j+1,3 == j+2,1 == j+2,3 == 0
+    # j+1,2 != 0 != j,1
     def is_Delta(self):
+        #j = border col - 2
 
-        """
-        if self.size <= 3:
+        if(len(self.columns) < 3): return False
+        j = len(self.columns) - 3
+        print(f"Delta config: j={j}")
+        cell_c = [(j,1),(j,3),(j+2,0),(j+2,2)]
+        cell_0 = [(j+1,0),(j+1,1),(j+1,3),(j+2,1),(j+2,3)]
+        if self.same_value(cell_c) and self.columns[j][1].value !=0:
+            if self.same_value(cell_0) and self.columns[j+1][0].value == 0 :
+                if self.columns[j+1][2].value != 0 and self.columns[j][1].value != self.columns[j+1][2].value: 
+                    return True
+
+        return False
+
+    #Is Delta'
+    #j-1,1 == j,0 == j,3 == j+1,1 == j+2,3 == j+4,2 != 0
+    #j-1,2 == j,1 == j,2 == j+1,0 == j+1,2 == j+1,3 == j+2,0 == j+2,1 == j+2,2 == 0
+    def is_Delta_p(self):
+        j=len(self.columns) - 4
+        if (len(self.columns) < 5):
             return False
-        a_0,b_0,c_0,d_0 = self.columns[len(self.columns)-2]
-        a_1,b_1,c_1,d_1 = self.columns[len(self.columns)-1]
-        a_2,b_2,c_2,d_2 = self.columns[len(self.columns)]
-        if(b_0.value == a_2.value and a_2.value == c_2.value and c_2.value == d_0.value and d_0.value !=0):
-            if(c_1.value !=0):
-                if(a_0.value == 0 and b_0.value == 0 and d_0.value == 0 and b_1.value == 0 and d_1.value == 0):
-                    print("Block is Delta")
-                    self.right_configuration = "D"
-        """
-        return
-    
+        cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3),(j+3,2)]
+        cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3),(j+2,0),(j+2,1),(j+2,2)]
+        if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
+            if self.same_value(cell_0) and self.columns[j-1][2].value == 0 : 
+                return True
+        return False
 
+
+    # j-1,1 == j,0 == j,3 == j+1,1 == j+2,3 !=0
+    # j+2,2 != 0 != j-1,1
+    # j-1,2 == j,1 == j,2 == j+1,0 == j+1,2 == j+1,3 == 0
+    def is_Delta_p2(self):
+        j=len(self.columns) - 3
+        if (len(self.columns) < 4):
+            return False
+        cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3)]
+        cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3)]
+        if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
+            if self.same_value(cell_0) and self.columns[j-1][2].value == 0 and self.columns[j+2][2].value != 0 and self.columns[j-1][1].value != self.columns[j+2][2].value:
+                return True
+        return False
+   
+
+    #Lambda praticular case like pi
+    #j-1 empty
+    #j-2,0 == j-2,2 == j,1 == j,3 != 0
+    #j-2,1 == j-2,3 == "j-1" == j,2 == 0
+    #j,0 != j,1 =! j+1,2!= 0
+    #j+1,2 != j,1 =! 0
+    def is_Lambda(self):
+
+        return False
+
+    def is_Lambda_p(self):
+
+        return False
 
     #set the left and right configurations of the block
     def check_configurations(self):
@@ -303,15 +345,22 @@ class Block:
         if self.is_pi():
             #print("Block is pi")
             self.right_configuration = "p"
-
-        
-        #manage critical cases
+ 
+  
+        #manage particulars cases
         if self.is_Delta():
-            #print("Block is Delta")
-            self.right_configuration = "D"
+            self.particular_config = "Delta"
+      
+        if self.is_Delta_p():
+            self.particular_config = "Delta'"
+
+        if self.is_Delta_p2():
+            self.particular_config = "Delta''"
+
 
         print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
         print(f"RIGHT {self.right_configuration} LEFT {self.left_configuration}")
+        print(f"particular config: {self.particular_config}")
         '''
         print("RIGHT config:")
         self.print_block(self.flip_config_right)
@@ -370,3 +419,13 @@ class Block:
             print()
         print()
 
+
+    #check if all cells in list have same value and is not the val "not_val"
+    #list = [(j,x)]
+    def same_value(self,list):
+        (j,x) = list[0]
+        first_value = self.columns[j][x].value
+        for j,x in list: 
+            if self.columns[j][x].value != first_value: 
+                return False
+        return True

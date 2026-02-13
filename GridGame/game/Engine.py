@@ -33,6 +33,7 @@ class GameEngine:
 
         #management of inputs
         self.window.draw_button("Alice move",self.alice_move)
+        self.window.draw_button("Bob move",self.bob_move)
         
         self.window.draw_button("preview",self.preview)
         self.window.draw_button("Undo",self.undo)
@@ -152,6 +153,14 @@ class GameEngine:
             print("Not Alice's turn")
             return
         x, y, color = self.Alice.next_move()  
+        self.change_node_color(self.grid, x, y, color)
+        self.on_update_callback()
+
+    def bob_move(self):
+        if self.grid.player != 1:
+            print("Not Bob's turn")
+            return
+        x, y, color = self.Bob.next_move()
         self.change_node_color(self.grid, x, y, color)
         self.on_update_callback()
 

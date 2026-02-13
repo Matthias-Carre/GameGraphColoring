@@ -28,6 +28,7 @@ class Grid:
         self.blocks = []
         self.player = 0 #0 for Alice, 1 for Bob
         self.round = 1
+        
         self.last_Bob_move = None # (x,y,color,past_config)        
 
         #add neighbors to each cell
@@ -123,7 +124,7 @@ class Grid:
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.nodes[y][x]
         else:
-            raise IndexError("Cell position out of bounds")
+            raise IndexError(f"Cell position out of bounds ({x},{y})")
     
     """
     #undo need to blank the last move, and restore the color options of the neighbors

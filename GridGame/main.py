@@ -15,7 +15,7 @@ def create_game(root,width=4, height=12):
     #grid = Grid(width, height, num_colors=4)
     
     #for the cas of the paper
-    grid = Grid(4,16,4)
+    grid = Grid(3,16,3)
 
     engine = GameEngine(grid,root,Alice=Alice(grid),Bob=Bob(grid))
   

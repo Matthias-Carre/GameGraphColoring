@@ -7,6 +7,8 @@ class Cell:
         self.grid_width = grid.width
         self.grid_height = grid.height
 
+        self.num_colors = num_colors
+
         #used to track rounds in advanced strategies
         self.round=None
 
@@ -75,7 +77,7 @@ class Cell:
         neighbor_colors = self.get_neighbor_colors()
         #print(f"CELL 1st test:{len(self.neighbors)<4 } 2nd: {len(neighbor_colors)> len(set(neighbor_colors))} ")
         
-        if self.value != 0 or len(self.neighbors) < 4 or len(neighbor_colors) - len(set(neighbor_colors)) > 0 :
+        if self.value != 0 or len(self.neighbors) < self.num_colors or len(neighbor_colors) - len(set(neighbor_colors)) > 0 :
             
             self.is_safe = True
             #print(f"Cell at ({self.x}, {self.y}) is safe")
@@ -165,6 +167,8 @@ class Cell:
         
         return "o"
     
+    def get_empty_neighbors(self):
+        return [neighbor for neighbor in self.neighbors if neighbor.value == 0]
 
     def get_neighbor_colors(self):
         return [neighbor.value for neighbor in self.neighbors if neighbor.value != 0]
@@ -230,5 +234,5 @@ class Cell:
         
         # Reconstruction des objets à partir des coordonnées
         # On va chercher les vrais objets dans la grille actuelle
-        self.doctors = [grid.nodes[y][x] for x, y in state['doctors_coords']]
-        self.patients = [grid.nodes[y][x] for x, y in state['patients_coords']]
+        self.doctors = [grid.nodes[x][y] for x, y in state['doctors_coords']]
+        self.patients = [grid.nodes[x][y] for x, y in state['patients_coords']]

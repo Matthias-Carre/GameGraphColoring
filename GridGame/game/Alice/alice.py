@@ -1,12 +1,11 @@
-from game.Alice.strategy import *
+from game.Alice.strategy_4 import *
+from game.Alice.strategy_random import *
 
 class Alice:
     def __init__(self,grid):
         self.grid = grid
-        self.strategy = strategies = [
-            (is_TestConfig, solve_TestConfig)
-        ]
-
+        self.strategy = []
+        self.load_strategy()
 
     '''
     On a besoin:
@@ -15,6 +14,18 @@ class Alice:
      - la situation de la case avant le move de Bob
     
     '''
+
+    def load_strategy(self):
+
+        if self.grid.height == 4:
+            self.strategy = [
+                (is_TestConfig,solve_TestConfig)
+            ]
+        else:
+            self.strategy = [
+                (is_any,random_move)
+            ]
+
 
     #return (x,y,color) of the move that Alice wants to play
     def next_move(self):
@@ -29,6 +40,10 @@ class Alice:
         if(self.grid.round == 1):
             return (0,1,1)
         
+        for is_case, solve_case in self.strategy:
+            if is_case(self.grid,self.grid.last_Bob_move):
+                return solve_case(self.grid,self.grid.last_Bob_move)
+
         #case test:
         if is_TestConfig(self.grid,self.grid.last_Bob_move):
             return solve_TestConfig(self.grid,self.grid.last_Bob_move)
