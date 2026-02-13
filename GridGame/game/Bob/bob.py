@@ -19,7 +19,9 @@ class Bob:
 
         if self.grid.height == 3:
             self.strategy = [
-                (as_color_critical,winning_move)
+                (as_color_critical,winning_move),
+                (is_side,solve_side),
+                (is_center,solve_side)
             ]
         else:
             self.strategy = [
