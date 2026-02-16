@@ -11,11 +11,12 @@ def on_button_click(event):
     return
 
 
-def create_game(root,width=4, height=12):
+def create_game(root,width=4, height=12,num_colors=4):
     #grid = Grid(width, height, num_colors=4)
     
     #for the cas of the paper
-    grid = Grid(3,16,4)
+    #grid = Grid(3,16,4)
+    grid = Grid(height, width, num_colors)
 
     engine = GameEngine(grid,root,Alice=Alice(grid),Bob=Bob(grid))
   
@@ -55,8 +56,9 @@ def main():
     def submit():
         width = int(width_entry.get())
         height = int(height_entry.get())
+        num_colors = int(color_entry.get())
         print(f"lunch with width: {width}, height: {height}")
-        create_game(root,width, height)
+        create_game(root,width, height, num_colors)
 
     tk.Button(main_frame, text="Valider", command=submit).pack(pady=10)
 
@@ -64,7 +66,7 @@ def main():
 
 if __name__ == "__main__":
     #selection des parametres
-    #main()
+    main()
 
     #Commenter au dessus et decommenter en dessous pour passer la selection des parametres
-    create_game(tk.Tk())
+    #create_game(tk.Tk())

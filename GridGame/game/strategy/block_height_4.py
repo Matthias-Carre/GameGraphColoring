@@ -9,7 +9,7 @@ class BlockHeight4(Block) :
 
 
     def move_played(self,x,y,color,player_name):
-        print("Move played in BlockHeight4")
+        #print("Move played in BlockHeight4")
         self.update_blocks(x)
 
         return

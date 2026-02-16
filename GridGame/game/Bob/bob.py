@@ -7,13 +7,7 @@ class Bob:
         self.strategy = []
         self.load_strategy()
 
-    '''
-    On a besoin:
-     - du dernier move de Bob 
-     - dans quel config on ce trouve
-     - la situation de la case avant le move de Bob
-    
-    '''
+
 
     def load_strategy(self):
 
