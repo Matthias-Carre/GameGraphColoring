@@ -87,14 +87,19 @@ class Draw:
 
     #draw the grid on the canvas as we do on the paper
     def draw_gridV2(self):
-        ratio = min(self.width / self.grid.width, self.height / self.grid.height)
-        
+        if (self.grid.width/self.grid.height>1):\
+            ratio = self.width / self.grid.width
+            
+        else:
+            ratio = self.height / self.grid.height
+
+        #ratio = min(self.width / self.grid.width, self.height / self.grid.height)        
         self.draw_rectangle(0,0,self.width,self.height,"white")
         for i in range(self.grid.width):
-            self.draw_rectangle(i*(self.width/self.grid.width),0,1,self.height,"black")
+            self.draw_rectangle(i*(ratio),0,1,self.height,"black")
 
             for j in range(self.grid.height):
-                self.draw_rectangle(0,j*(self.width/self.grid.width),self.width,1,"black")
+                self.draw_rectangle(0,j*(ratio),self.width,1,"black")
                 x = i * ratio
                 y = j * ratio
                 cell = self.grid.get_cell(i, j)

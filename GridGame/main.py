@@ -11,7 +11,7 @@ def on_button_click(event):
     return
 
 
-def create_game(root,width=4, height=12,num_colors=4):
+def create_game(root,width=15, height=4,num_colors=4):
     #grid = Grid(width, height, num_colors=4)
     
     #for the cas of the paper
@@ -66,7 +66,7 @@ def main():
 
 if __name__ == "__main__":
     #selection des parametres
-    main()
+    #main()
 
     #Commenter au dessus et decommenter en dessous pour passer la selection des parametres
-    #create_game(tk.Tk())
+    create_game(tk.Tk(),width=10, height=30, num_colors=4)

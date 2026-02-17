@@ -15,6 +15,8 @@ def solve_TestConfig(grid,bob_move):
     print("resolve test config")
     return (lx+1,ly+1,lc)
 
+
+#in D, B(j+1 or j+2)
 def is_1Delta(grid,bob_move):
     if bob_move.config != "D":
         return False
@@ -23,6 +25,7 @@ def is_1Delta(grid,bob_move):
     return False
 
 def solve_1Delta(grid,bob_move):
+    
     j = bob_move.j
     sick_vertex_pos = (j + 1, 2) 
     

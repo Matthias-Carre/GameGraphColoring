@@ -25,6 +25,11 @@ def is_center(grid, Alice_move):
         print("Bob strategy 3: is_center True")
         return True
 
+def solve_center(grid, Alice_move):
+    lx,ly,lc = Alice_move
+    print("Bob strategy 3: solve_center")
+    return (lx+1,0,lc+1) if lx == 0 else (lx-1,0,lc)
+
 def as_color_critical(grid, Alice_move):
     
     #check if bob move is color critical

@@ -10,22 +10,18 @@ class BlockHeight4(Block) :
 
     def move_played(self,x,y,color,player_name):
         #print("Move played in BlockHeight4")
-        self.update_blocks(x)
+        self.update_block(x)
+        right_block_start = self.get_right_block(self.block_at(x))
+        self.update_block(right_block_start) if right_block_start != None else None
+
 
         return
 
-    def next_Bob_move(self):
-
-        return
-    
-    def next_Alice_move(self):
-        return
-    
     def evaluate_block(self):
 
         return
     
-    def update_blocks(self,x):
+    def update_block(self,x):
         block = self.block_at(x)
         if block == None:
             block_left = self.block_at(x-1)
@@ -76,4 +72,14 @@ class BlockHeight4(Block) :
     
     def get_cell(self, x, y):
         return self.grid.get_cell(x, y)
+    
+
+    #to update the configuration of the block pour pi,L,D... whene we play on the left block
+    #return the line of the right block
+    def get_right_block(self, block):
+        for b in self.blocks:
+            if b.start_col > block.end_col:
+                return b.start_col
+        return None
+        
     

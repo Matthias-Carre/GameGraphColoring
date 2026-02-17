@@ -5,8 +5,8 @@ from game.strategy.block_height_4 import BlockHeight4
 
 class GameEngine:
     def __init__(self,grid,root,Alice=None,Bob=None):
-        self.window_width = 1500
-        self.window_height = 1500
+        self.window_width = 1600
+        self.window_height = 900
         self.grid = grid
         self.root = root
         self.state = GameState(grid)
@@ -90,7 +90,7 @@ class GameEngine:
 
     def on_left_click(self,event):
         
-        #print("click",event)
+        print("click",event)
         x = event.x
         y = event.y
         ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
