@@ -1,7 +1,7 @@
 from game.GameState import GameState
 from graphic.Interface import Interface
 from game.strategy.block_height_4 import BlockHeight4
-
+from game.latexForm import save_grid_latex
 
 class GameEngine:
     def __init__(self,grid,root,Alice=None,Bob=None):
@@ -19,6 +19,9 @@ class GameEngine:
         self.on_update_callback = None
         self.buttons={}
         self.window = Interface(root,self)
+
+        # for latex file
+        self.num_latex = 0 
         
 
     def button_test(self):
@@ -30,12 +33,13 @@ class GameEngine:
 
 
         self.window.create_window()
+        self.window.root.title(f"Grid Game {self.grid.height}x{self.grid.width}")
 
         #management of inputs
         self.window.draw_button("Alice move",self.alice_move)
         self.window.draw_button("Bob move",self.bob_move)
         
-        self.window.draw_button("preview",self.preview)
+       # self.window.draw_button("preview",self.preview)
         self.window.draw_button("Undo",self.undo)
         self.window.draw_button("debug",self.toggle_debug)
         self.window.draw_button("rounds",self.toggle_rounds)
@@ -68,7 +72,9 @@ class GameEngine:
         print("key pressed",event)
         if event.char == 'u':
             self.undo()
-
+        if event.char == 'l':
+            self.num_latex += 1
+            save_grid_latex(self.grid,f"grid_{self.num_latex}.tex")
         #color selection
         if event.char == '1':
             self.color_selected = 0
@@ -85,6 +91,7 @@ class GameEngine:
         if event.char == '4':
             self.color_selected = 3
             self.color_var_accessor.set(3)
+        
         
         
 
@@ -139,11 +146,9 @@ class GameEngine:
         i = int(x // ratio)
         j = int(y // ratio)
 
-        #cell = self.grid.get_cell(i, j)
-        #cell.any_color = not cell.any_color
-        print(f"Engine:previous changes")
-        for n in self.grid.previous_changes[-1]:
-            n.print_cell_informations()
+        cell = self.grid.get_cell(i, j)
+        cell.any_color = not cell.any_color
+
             
         self.on_update_callback()
 

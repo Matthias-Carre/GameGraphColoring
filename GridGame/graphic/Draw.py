@@ -87,12 +87,11 @@ class Draw:
 
     #draw the grid on the canvas as we do on the paper
     def draw_gridV2(self):
-        if (self.grid.width/self.grid.height>1):\
+        if(self.height / self.width > self.grid.height/self.grid.width):
             ratio = self.width / self.grid.width
-            
         else:
             ratio = self.height / self.grid.height
-
+            
         #ratio = min(self.width / self.grid.width, self.height / self.grid.height)        
         self.draw_rectangle(0,0,self.width,self.height,"white")
         for i in range(self.grid.width):
@@ -100,8 +99,10 @@ class Draw:
 
             for j in range(self.grid.height):
                 self.draw_rectangle(0,j*(ratio),self.width,1,"black")
+                print("Draw ratio",ratio)
                 x = i * ratio
                 y = j * ratio
+                print("Draw x y",x,y)
                 cell = self.grid.get_cell(i, j)
                 self.draw_text(x + ratio / 2, y + ratio / 2, cell.get_value() if cell.get_value()!=0 else "","Blue" if cell.played_by == 1 else "Red",font=("Arial",int(ratio/1.5)))
                 if(self.print_status):

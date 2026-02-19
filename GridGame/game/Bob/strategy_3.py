@@ -8,6 +8,7 @@ def is_side(grid, Alice_move):
         return True
 
 def solve_side(grid, Alice_move):
+    print("Bob strategy 3: solve_side")
     lx,ly,lc = Alice_move
     if(ly == 0):
         print("Bob strategy 3: solve_side 0")
@@ -26,9 +27,10 @@ def is_center(grid, Alice_move):
         return True
 
 def solve_center(grid, Alice_move):
+    print("Bob strategy 3: solve_center")
     lx,ly,lc = Alice_move
     print("Bob strategy 3: solve_center")
-    return (lx+1,0,lc+1) if lx == 0 else (lx-1,0,lc)
+    return (lx+1,ly+1,lc+1) 
 
 def as_color_critical(grid, Alice_move):
     

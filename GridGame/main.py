@@ -69,4 +69,4 @@ if __name__ == "__main__":
     #main()
 
     #Commenter au dessus et decommenter en dessous pour passer la selection des parametres
-    create_game(tk.Tk(),width=10, height=30, num_colors=4)
+    create_game(tk.Tk(),width=5, height=5, num_colors=4)

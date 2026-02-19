@@ -15,7 +15,7 @@ class Bob:
             self.strategy = [
                 (as_color_critical,winning_move),
                 (is_side,solve_side),
-                (is_center,solve_side)
+                (is_center,solve_center)
             ]
         else:
             self.strategy = [
