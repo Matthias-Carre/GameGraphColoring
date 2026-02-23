@@ -19,11 +19,17 @@ def create_game(root,width=15, height=4,num_colors=4):
     grid = Grid(height, width, num_colors)
 
     engine = GameEngine(grid,root,Alice=Alice(grid),Bob=Bob(grid))
+    engine.reset = lambda: reset_game(root)  # Set the reset function to call reset_game
   
     
     print("Game created with grid size:", width, "x", height)
     engine.run()
 
+
+def reset_game(tk_root):
+    # Clear the current game state and reset the interface
+    tk_root.destroy()  # Close the current window
+    main()
 
 
 
@@ -69,4 +75,4 @@ if __name__ == "__main__":
     #main()
 
     #Commenter au dessus et decommenter en dessous pour passer la selection des parametres
-    create_game(tk.Tk(),width=5, height=5, num_colors=4)
+    create_game(tk.Tk(),width=4, height=5, num_colors=4)

@@ -20,6 +20,7 @@ class GameEngine:
         self.buttons={}
         self.window = Interface(root,self)
 
+        self.reset = None
         # for latex file
         self.num_latex = 0 
         
@@ -43,7 +44,7 @@ class GameEngine:
         self.window.draw_button("Undo",self.undo)
         self.window.draw_button("debug",self.toggle_debug)
         self.window.draw_button("rounds",self.toggle_rounds)
-
+        self.window.draw_button("Reset",self.reset)
 
         self.window.canvas.bind("<Button-1>", self.on_left_click)
         
@@ -180,6 +181,11 @@ class GameEngine:
         return
     
 
+    #input void
+    #out close the window and lunch again
+    def reset(self):
+        self.reset(self.tk_root) if self.reset is not None else print("No reset function defined")
+         
 
     def change_node_color(self,grid, x, y, color):
         grid.play_move(x, y, color)
