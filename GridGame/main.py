@@ -42,7 +42,7 @@ def main():
     main_frame.pack(padx=20, pady=20)
 
     # parameters selection
-    tk.Label(root, text="Choose your lunch option:").pack(pady=10)
+    tk.Label(root, text="Options:").pack(pady=10)
 
     main_frame = tk.Frame(root)
     main_frame.pack(padx=20, pady=20)
@@ -54,7 +54,8 @@ def main():
     height_entry = tk.Entry(main_frame)
     height_entry.pack(pady=5)
 
-    tk.Label(main_frame, text="Nombre de couleurs").pack(pady=5)
+    tk.Label(main_frame, text="Nombre de couleurs").pack(pady=2.5)
+    tk.Label(main_frame, text="(min 2,max 5):").pack(pady=3)
     color_entry = tk.Entry(main_frame)
     color_entry.pack(pady=5)
 
@@ -64,6 +65,10 @@ def main():
         height = int(height_entry.get())
         num_colors = int(color_entry.get())
         print(f"lunch with width: {width}, height: {height}")
+        if num_colors < 2:
+            num_colors = 2
+        elif num_colors > 5:
+            num_colors = 5
         create_game(root,width, height, num_colors)
 
     tk.Button(main_frame, text="Valider", command=submit).pack(pady=10)

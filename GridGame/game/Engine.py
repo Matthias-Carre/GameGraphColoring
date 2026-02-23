@@ -92,7 +92,10 @@ class GameEngine:
         if event.char == '4':
             self.color_selected = 3
             self.color_var_accessor.set(3)
-        
+
+        if event.char == '5':
+            self.color_selected = 4
+            self.color_var_accessor.set(4)
         
         
 
@@ -185,7 +188,7 @@ class GameEngine:
     #out close the window and lunch again
     def reset(self):
         self.reset(self.tk_root) if self.reset is not None else print("No reset function defined")
-         
+
 
     def change_node_color(self,grid, x, y, color):
         grid.play_move(x, y, color)

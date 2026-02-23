@@ -6,6 +6,7 @@ class Draw:
         self.height = height
         self.grid = grid
         self.canvas = canvas
+        self.number_of_colors = grid.num_colors
         self.colors = ["Red", "Green", "Blue","Purple"]
         self.color_selected = -1 # given by the radio button
         self.root = root
@@ -50,7 +51,7 @@ class Draw:
         radio_frame.pack(side="left")
         
         #color Slecetion
-        for i in range(len(self.colors)):
+        for i in range(self.number_of_colors):
             tk.Radiobutton(radio_frame, text=(i+1), value=i, variable=self.color_selected).pack(anchor="w")
         button_frame = tk.Frame(color_frame)
         button_frame.pack(side="left", padx=10)
