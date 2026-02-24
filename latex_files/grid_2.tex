@@ -11,23 +11,25 @@
         }
         }
 
-        \node at (3.5,0.5){\footnotesize $c_{2}$};
-        \node at (2.5,1.5){\footnotesize $c_{1}$};
-        \node at (1.5,2.5){\footnotesize $c_{2}$};
-        \node at (4.5,2.5){\footnotesize $c_{1}$};
-        \node at (0.5,3.5){\footnotesize $c_{1}$};
-        \node at (3.5,3.5){\footnotesize $c_{2}$};
-        \node at (2.5,4.5){\footnotesize $c_{1}$};
-        \node at (4.5,4.5){\footnotesize $c_{1}$};
+        \node at (2.5,1.5){\footnotesize $c_{2}$};
+        \node at (2.5,3.5){\footnotesize $c_{1}$};
         \foreach \x in {0,...,4} {
             \node at (\x+0.5,5.5){{\footnotesize $\x$}};
         }
         \foreach \y in {0,...,4} {
             \node at (-0.5,\y+0.5){{\footnotesize $\y$}};
         }
+        \draw [draw=black, line width=1pt, fill=gray] (0,2) rectangle (1,3);
+        \draw [draw=black, line width=1pt, fill=gray] (0,3) rectangle (1,4);
+        \draw [draw=black, line width=1pt, fill=gray] (1,3) rectangle (2,4);
+        \draw [draw=black, line width=1pt, fill=gray] (0,4) rectangle (1,5);
+        \draw [draw=black, line width=1pt, fill=gray] (1,4) rectangle (2,5);
+        \draw [draw=black, line width=1pt, fill=gray] (2,4) rectangle (3,5);
 
 \end{tikzpicture}
 }
 \end{minipage}
+\caption{TITRE A AJOUTER}
+\label{fig:NOMFIGURE}
 \end{center}
 \end{figure}

@@ -5,30 +5,29 @@
 \begin{minipage}[c]{0.48\textwidth}
 \scalebox{1}{
 \begin{tikzpicture}[scale=0.5,inner sep=0.7mm]
-        \foreach \y in {0,...,4} {
-        \foreach \x in {0,...,3} {
+        \foreach \y in {0,...,5} {
+        \foreach \x in {0,...,5} {
                 \draw [draw=black, line width=1pt] (\x,\y) rectangle (\x+1,\y+1);
         }
         }
 
-        \node at (2.5,0.5){\footnotesize $c_{1}$};
-        \node at (1.5,1.5){\footnotesize $c_{2}$};
-        \node at (0.5,2.5){\footnotesize $c_{1}$};
-        \node at (3.5,2.5){\footnotesize $c_{1}$};
-        \node at (2.5,3.5){\footnotesize $c_{2}$};
-        \node at (1.5,4.5){\footnotesize $c_{1}$};
-        \foreach \x in {0,...,3} {
-            \node at (\x+0.5,5.5){{\footnotesize $\x$}};
+        \node at (2.5,2.5){\footnotesize $c_{2}$};
+        \node at (4.5,2.5){\footnotesize $c_{4}$};
+        \node at (3.5,3.5){\footnotesize $c_{3}$};
+        \node at (2.5,4.5){\footnotesize $c_{1}$};
+        \node at (4.5,4.5){\footnotesize $c_{2}$};
+        \foreach \x in {0,...,5} {
+            \node at (\x+0.5,6.5){{\footnotesize $\x$}};
         }
-        \foreach \y in {0,...,4} {
+        \foreach \y in {0,...,5} {
             \node at (-0.5,\y+0.5){{\footnotesize $\y$}};
         }
-        \draw [draw=black, line width=1pt, fill=gray] (0,0) rectangle (1,1);
-        \draw [draw=black, line width=1pt, fill=gray] (1,0) rectangle (2,1);
-        \draw [draw=black, line width=1pt, fill=gray] (0,1) rectangle (1,2);
-        \draw [draw=black, line width=1pt, fill=gray] (3,3) rectangle (4,4);
-        \draw [draw=black, line width=1pt, fill=gray] (2,4) rectangle (3,5);
-        \draw [draw=black, line width=1pt, fill=gray] (3,4) rectangle (4,5);
+        \draw [draw=black, line width=1pt, fill=gray] (0,3) rectangle (1,4);
+        \draw [draw=black, line width=1pt, fill=gray] (0,4) rectangle (1,5);
+        \draw [draw=black, line width=1pt, fill=gray] (1,4) rectangle (2,5);
+        \draw [draw=black, line width=1pt, fill=gray] (0,5) rectangle (1,6);
+        \draw [draw=black, line width=1pt, fill=gray] (1,5) rectangle (2,6);
+        \draw [draw=black, line width=1pt, fill=gray] (2,5) rectangle (3,6);
 
 \end{tikzpicture}
 }

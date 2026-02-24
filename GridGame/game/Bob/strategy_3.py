@@ -1,5 +1,20 @@
 
 
+def has_diagonal(grid, Alice_move):
+    if len(grid.last_moves) <= 2:
+        return False
+    lx, ly, lc = grid.last_moves[-2]
+
+    # Vérifier si le coup est en diagonale (par exemple, ly = 0 ou ly = 2)
+    if ly == 0 or ly == 2:
+        print("Bob strategy 3: has_diagonal True")
+        return True
+
+def solve_diagonal(grid, Alice_move):
+    print("Solve diagonal")
+    lx, ly, lc = grid.last_moves[-2]
+    return (lx, 1, lc+1%3)
+
 def is_side(grid, Alice_move):
     #check if Alice played on the side
     lx,ly,lc = Alice_move
@@ -9,7 +24,7 @@ def is_side(grid, Alice_move):
 
 def solve_side(grid, Alice_move):
     print("Bob strategy 3: solve_side")
-    lx,ly,lc = Alice_move
+    lx,ly,lc = Alice_move   
     if(ly == 0):
         print("Bob strategy 3: solve_side 0")
         return (lx+1,2,lc)
@@ -29,10 +44,9 @@ def is_center(grid, Alice_move):
 def solve_center(grid, Alice_move):
     print("Bob strategy 3: solve_center")
     lx,ly,lc = Alice_move
-    print("Bob strategy 3: solve_center")
     return (lx+1,ly+1,lc+1) 
 
-def as_color_critical(grid, Alice_move):
+def has_color_critical(grid, Alice_move):
     
     #check if bob move is color critical
     lx,ly,lc = Alice_move
@@ -55,5 +69,5 @@ def winning_move(grid, Alice_move):
         if neighbor.is_color_critical:
             empty_cells = neighbor.get_empty_neighbors()
             lc = neighbor.color_options[0] if neighbor.color_options else 1
-    print(f"Bob strategy 3:{empty_cells[0]} ")
+    #print(f"Bob strategy 3:{empty_cells[0]} ")
     return (empty_cells[0].y, empty_cells[0].x,lc) if empty_cells else None

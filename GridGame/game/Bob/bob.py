@@ -11,9 +11,10 @@ class Bob:
 
     def load_strategy(self):
 
-        if self.grid.height == 3:
+        if self.grid.height == 3 and self.grid.num_colors == 3:
             self.strategy = [
-                (as_color_critical,winning_move),
+                (has_color_critical,winning_move),
+                (has_diagonal,solve_diagonal),
                 (is_side,solve_side),
                 (is_center,solve_center)
             ]
@@ -27,7 +28,7 @@ class Bob:
             print("Not Bob's turn")
             return None
         print("Bob move")
-
+        
         last_move = self.grid.last_moves[-1] if self.grid.last_moves else None
         ax, ay, acolor = last_move
 
@@ -35,5 +36,6 @@ class Bob:
             if is_case(self.grid,last_move):
                 return solve_case(self.grid,last_move)
         
+        print("Bob: no strategy found, play random")
         return random_move(self.grid,last_move)
 
