@@ -1,4 +1,4 @@
-import copy
+
 class Cell:
     def __init__(self, x, y, grid,num_colors=4, value=0):
         #self.grid = grid
@@ -6,6 +6,8 @@ class Cell:
         self.y = y
         self.grid_width = grid.width
         self.grid_height = grid.height
+
+        self.num_colors = num_colors
 
         #used to track rounds in advanced strategies
         self.round=None
@@ -73,15 +75,15 @@ class Cell:
         #    self.is_safe = True
         
         neighbor_colors = self.get_neighbor_colors()
-        print(f"CELL 1st test:{len(self.neighbors)<4 } 2nd: {len(neighbor_colors)> len(set(neighbor_colors))} ")
+        #print(f"CELL 1st test:{len(self.neighbors)<4 } 2nd: {len(neighbor_colors)> len(set(neighbor_colors))} ")
         
-        if self.value != 0 or len(self.neighbors) < 4 or len(neighbor_colors) - len(set(neighbor_colors)) > 0 :
+        if self.value != 0 or len(self.neighbors) < self.num_colors or len(neighbor_colors) - len(set(neighbor_colors)) > 0 :
             
             self.is_safe = True
             #print(f"Cell at ({self.x}, {self.y}) is safe")
 
         if len(self.neighbors) == 4 and len(set(self.neighbors_color)) == 3:
-            affected.append(self.clone_cell())
+            #affected.append(self.clone_cell())
             missing_color = self.color_options[0] if len(self.color_options) > 1 else []
             print(f"Cell at ({self.x}, {self.y}) is check uncolored neighbor")
             uncolored_neighbor = self.get_uncolored_neighbor()
@@ -108,8 +110,8 @@ class Cell:
                 safe_doctor_neighbors.append(neighbor)
 
         if len(safe_doctor_neighbors) >= 2:
-            affected.append(safe_doctor_neighbors[0].clone_cell())
-            affected.append(safe_doctor_neighbors[1].clone_cell())
+            #affected.append(safe_doctor_neighbors[0].clone_cell())
+            #affected.append(safe_doctor_neighbors[1].clone_cell())
 
             safe_doctor_neighbors[0].patients.append(self)
             safe_doctor_neighbors[1].patients.append(self)
@@ -165,16 +167,18 @@ class Cell:
         
         return "o"
     
+    def get_empty_neighbors(self):
+        return [neighbor for neighbor in self.neighbors if neighbor.value == 0]
 
     def get_neighbor_colors(self):
         return [neighbor.value for neighbor in self.neighbors if neighbor.value != 0]
     
-
+    '''
     def clone_cell(self):
-        clone = copy.deepcopy(self)
+        clone = []
         clone.neighbors_color = [] 
         return clone
-
+    '''
     
 
     #debug/analysis print (with right click)
@@ -195,3 +199,40 @@ class Cell:
         print(f"  Patients: {[(p.x, p.y) for p in self.patients]}")
         print("=--=--=--=--=--=--=--=--=--=--=--=--=--=--=")
         
+
+
+    #test undo diff
+    #retourne une sauvegarde de letat d'une cell
+    def get_state(self):
+        return {
+            "value": self.value,
+            "color_options": self.color_options[:], # Copie de la liste !
+            "neighbors_to_color": self.neighbors_to_color,
+            "is_safe": self.is_safe,
+            "is_sound": self.is_sound,
+            "is_color_critical": self.is_color_critical,
+            "is_uncolorable": self.is_uncolorable,
+            "played_by": self.played_by,
+            "round": self.round,
+            #on save les coo pour restaurer plus facilement
+            "doctors_coords": [(d.x, d.y) for d in self.doctors],
+            "patients_coords": [(p.x, p.y) for p in self.patients]
+        }
+
+    #restaure lancien etat des cells
+    def restore_state(self, state, grid):
+       
+        self.value = state['value']
+        self.color_options = state['color_options'][:]
+        self.neighbors_to_color = state['neighbors_to_color']
+        self.is_safe = state['is_safe']
+        self.is_sound = state['is_sound']
+        self.is_color_critical = state['is_color_critical']
+        self.is_uncolorable = state['is_uncolorable']
+        self.played_by = state['played_by']
+        self.round = state['round']
+        
+        # Reconstruction des objets à partir des coordonnées
+        # On va chercher les vrais objets dans la grille actuelle
+        self.doctors = [grid.nodes[x][y] for x, y in state['doctors_coords']]
+        self.patients = [grid.nodes[x][y] for x, y in state['patients_coords']]

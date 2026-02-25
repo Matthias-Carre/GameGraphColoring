@@ -1,12 +1,12 @@
 from game.GameState import GameState
 from graphic.Interface import Interface
 from game.strategy.block_height_4 import BlockHeight4
-
+from game.latexForm import save_grid_latex
 
 class GameEngine:
     def __init__(self,grid,root,Alice=None,Bob=None):
-        self.window_width = 1500
-        self.window_height = 1500
+        self.window_width = 1600
+        self.window_height = 900
         self.grid = grid
         self.root = root
         self.state = GameState(grid)
@@ -19,6 +19,10 @@ class GameEngine:
         self.on_update_callback = None
         self.buttons={}
         self.window = Interface(root,self)
+
+        self.reset = None
+        # for latex file
+        self.num_latex = 0 
         
 
     def button_test(self):
@@ -30,13 +34,17 @@ class GameEngine:
 
 
         self.window.create_window()
+        self.window.root.title(f"Grid Game {self.grid.height}x{self.grid.width}")
 
         #management of inputs
         self.window.draw_button("Alice move",self.alice_move)
+        self.window.draw_button("Bob move",self.bob_move)
         
+       # self.window.draw_button("preview",self.preview)
         self.window.draw_button("Undo",self.undo)
         self.window.draw_button("debug",self.toggle_debug)
-
+        self.window.draw_button("rounds",self.toggle_rounds)
+        self.window.draw_button("Reset",self.reset)
 
         self.window.canvas.bind("<Button-1>", self.on_left_click)
         
@@ -65,7 +73,9 @@ class GameEngine:
         print("key pressed",event)
         if event.char == 'u':
             self.undo()
-
+        if event.char == 'l':
+            self.num_latex += 1
+            save_grid_latex(self.grid,f"grid_{self.num_latex}.tex")
         #color selection
         if event.char == '1':
             self.color_selected = 0
@@ -82,12 +92,16 @@ class GameEngine:
         if event.char == '4':
             self.color_selected = 3
             self.color_var_accessor.set(3)
+
+        if event.char == '5':
+            self.color_selected = 4
+            self.color_var_accessor.set(4)
         
         
 
     def on_left_click(self,event):
         
-        #print("click",event)
+        print("click",event)
         x = event.x
         y = event.y
         ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
@@ -108,9 +122,6 @@ class GameEngine:
                 #entry point of the move
                 self.change_node_color(self.grid, i, j, self.color_selected + 1)
                 self.on_update_callback()
-                if self.grid.player == 1:
-                    self.grid.round += 1
-                self.grid.player = 0 if self.grid.player == 1 else 1
     
     def on_right_click(self,event):
         #print("right click",event)
@@ -127,6 +138,9 @@ class GameEngine:
         
         self.on_update_callback()
         
+    def preview(self):
+        print("Previewing next move")
+        
 
     def on_x_press(self,event):
         #print("button3 pressed",event)
@@ -136,18 +150,27 @@ class GameEngine:
         i = int(x // ratio)
         j = int(y // ratio)
 
-        #cell = self.grid.get_cell(i, j)
-        #cell.any_color = not cell.any_color
-        print(f"Engine:previous changes")
-        for n in self.grid.previous_changes[-1]:
-            n.print_cell_informations()
+        cell = self.grid.get_cell(i, j)
+        cell.any_color = not cell.any_color
+
             
         self.on_update_callback()
 
     #manage Alice actions
     def alice_move(self):
-        x, y, color = self.Alice.next_move()
-        self.grid.play_move(x, y, color)
+        if self.grid.player != 0:
+            print("Not Alice's turn")
+            return
+        x, y, color = self.Alice.next_move()  
+        self.change_node_color(self.grid, x, y, color)
+        self.on_update_callback()
+
+    def bob_move(self):
+        if self.grid.player != 1:
+            print("Not Bob's turn")
+            return
+        x, y, color = self.Bob.next_move()
+        self.change_node_color(self.grid, x, y, color)
         self.on_update_callback()
 
     def undo(self):
@@ -159,11 +182,22 @@ class GameEngine:
             self.grid.player = 0 if self.grid.player == 1 else 1
         self.on_update_callback()
         return
+    
+
+    #input void
+    #out close the window and lunch again
+    def reset(self):
+        self.reset(self.tk_root) if self.reset is not None else print("No reset function defined")
+
 
     def change_node_color(self,grid, x, y, color):
         grid.play_move(x, y, color)
         if self.strategy is not None:
             self.strategy.move_played(x, y, color, "A" if grid.player == 0 else "B")
+
+        if self.grid.player == 1:
+            self.grid.round += 1
+        self.grid.player = 0 if self.grid.player == 1 else 1
         return
     
     def draw_grid(self):
@@ -179,4 +213,8 @@ class GameEngine:
 
     def toggle_debug(self):
         self.window.draw.print_status = not self.window.draw.print_status
+        self.on_update_callback()
+
+    def toggle_rounds(self):
+        self.window.draw.print_rounds = not self.window.draw.print_rounds
         self.on_update_callback()

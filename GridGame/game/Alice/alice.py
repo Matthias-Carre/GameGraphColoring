@@ -1,8 +1,11 @@
-
+from game.Alice.strategy_4 import *
+from game.Alice.strategy_random import *
 
 class Alice:
     def __init__(self,grid):
         self.grid = grid
+        self.strategy = []
+        self.load_strategy()
 
     '''
     On a besoin:
@@ -12,11 +15,22 @@ class Alice:
     
     '''
 
+    def load_strategy(self):
+
+        if self.grid.height == 4:
+            self.strategy = [
+                (is_TestConfig,solve_TestConfig)
+            ]
+        else:
+            self.strategy = [
+                (is_any,random_move)
+            ]
+
+
     #return (x,y,color) of the move that Alice wants to play
     def next_move(self):
         if self.grid.player != 0:
             print("Not Alice's turn")
-            self.grid.on
             return None
         print("Alice move")
 
@@ -25,7 +39,14 @@ class Alice:
         #first move
         if(self.grid.round == 1):
             return (0,1,1)
+        
+        for is_case, solve_case in self.strategy:
+            if is_case(self.grid,self.grid.last_Bob_move):
+                return solve_case(self.grid,self.grid.last_Bob_move)
 
+        #case test:
+        if is_TestConfig(self.grid,self.grid.last_Bob_move):
+            return solve_TestConfig(self.grid,self.grid.last_Bob_move)
        
 
         #CASE 1: in block/border d/j,j-1 of L,L2,L',L'2/j-2 of L,L'/j-2 of L2,L'2 if j-3 not empty

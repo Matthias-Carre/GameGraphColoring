@@ -20,17 +20,28 @@ class Interface:
         for widget in self.root.winfo_children():
             widget.destroy()
 
-        window_size = self.engine.window_width
+        window_height = self.engine.window_height 
+        window_width = self.engine.window_width
+
+        if(window_height / window_width > self.grid.height/self.grid.width):
+            ratio = window_width / self.grid.width
+            
+        else:
+            ratio = window_height / self.grid.height
+            
+
         #set the window size to match the gird of the graph
-        ratio = min(window_size / self.grid.width, window_size / self.grid.height)
+        #ratio = min(window_width / self.grid.width, window_height / self.grid.height)
         w = ratio * self.grid.width
         h = ratio * self.grid.height
-        
+        print(f"h={h}, ratio={ratio}, grid height={self.grid.height}, window height={window_height}")
         self.root.geometry(f'{int(w)}x{int(h)+250}')
+
+        print(f"Window size: {int(w)}x{int(h)}, ratio: {ratio}")
         canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
         self.canvas = canvas
 
-        draw = Draw(window_size, window_size, self.grid,self.root,canvas)
+        draw = Draw( window_width,window_height, self.grid,self.root,canvas)
         self.draw = draw
 
         draw.draw_window()

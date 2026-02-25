@@ -20,7 +20,8 @@ class Block:
         self.flip_config_right = None #store the block fliped to match configurations (can be same as self)
         self.flip_config_left = None #store the block for the left config but flip it at right
 
-        self.particular_config = {} #dict to store node:config
+        self.particular_config = None #dict to store node:config
+        self.particular_config_block = None #give the block with the particular config rotated
 
         #self.pi_
 
@@ -258,26 +259,212 @@ class Block:
         return False
     
 
-
-    # b_0 == a_2 == c_2 == d_0 != 0
-    # c_1 != 0 
-    # a_0,b_0,d_0,b_1,d_1 == 0 
+    # In reverse of the paiper (j,1 j,2 j,3 j,4 => j,3 j,2 j,1 j,0) 
+    # a sont importance D' et D2' sont pas sym horisontale
+    # j,1 == j,3 == j+2,0 == j+2,2 != 0 
+    # j+1,0 == j+1,1 == j+1,3 == j+2,1 == j+2,3 == 0
+    # j+1,2 != 0 != j,1
     def is_Delta(self):
+        #j = border col - 2
 
-        """
-        if self.size <= 3:
+        if(len(self.columns) < 3): return False
+        j = len(self.columns) - 3
+        #print(f"Delta config: j={j}")
+        cell_c = [(j,1),(j,3),(j+2,0),(j+2,2)]
+        cell_0 = [(j+1,0),(j+1,1),(j+1,3),(j+2,1),(j+2,3)]
+        if self.same_value(cell_c) and self.columns[j][1].value !=0:
+            if self.same_value(cell_0) and self.columns[j+1][0].value == 0 :
+                if self.columns[j+1][2].value != 0 and self.columns[j][1].value != self.columns[j+1][2].value: 
+                    return True
+
+        return False
+
+    #Is Delta'
+    #j-1,1 == j,0 == j,3 == j+1,1 == j+2,3 == j+4,2 != 0
+    #j-1,2 == j,1 == j,2 == j+1,0 == j+1,2 == j+1,3 == j+2,0 == j+2,1 == j+2,2 == 0
+    def is_Delta_p(self):
+        j=len(self.columns) - 4
+        if (len(self.columns) < 5):
             return False
-        a_0,b_0,c_0,d_0 = self.columns[len(self.columns)-2]
-        a_1,b_1,c_1,d_1 = self.columns[len(self.columns)-1]
-        a_2,b_2,c_2,d_2 = self.columns[len(self.columns)]
-        if(b_0.value == a_2.value and a_2.value == c_2.value and c_2.value == d_0.value and d_0.value !=0):
-            if(c_1.value !=0):
-                if(a_0.value == 0 and b_0.value == 0 and d_0.value == 0 and b_1.value == 0 and d_1.value == 0):
-                    print("Block is Delta")
-                    self.right_configuration = "D"
-        """
-        return
+        cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3),(j+3,2)]
+        cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3),(j+2,0),(j+2,1),(j+2,2)]
+        if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
+            if self.same_value(cell_0) and self.columns[j-1][2].value == 0 : 
+                return True
+        return False
+
+
+    # j-1,1 == j,0 == j,3 == j+1,1 == j+2,3 !=0
+    # j+2,2 != 0 != j-1,1
+    # j-1,2 == j,1 == j,2 == j+1,0 == j+1,2 == j+1,3 == 0
+    def is_Delta_p2(self):
+        j=len(self.columns) - 3
+        if (len(self.columns) < 4):
+            return False
+        cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3)]
+        cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3)]
+        if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
+            if self.same_value(cell_0) and self.columns[j-1][2].value == 0 and self.columns[j+2][2].value != 0 and self.columns[j-1][1].value != self.columns[j+2][2].value:
+                return True
+        return False
+   
+
+    #Lambda praticular case like pi
+    #Lambda and Lambda' only symetric on horizontal
+    #j-1 empty
+    #j-2,0 == j-2,2 == j,1 == j,3 != 0
+    #j-2,1 == j-2,3 == "j-1" == j,2 == 0
+    #j,0 != j,1 =! j+1,2!= 0
+    #j+1,2 != j,1 =! 0
+    def is_Lambda(self):
+        if self.size < 2:
+             return False
+        if(self.start_col -2 < 0):
+            return False
+        ''''
+        cell_jm2_0 = self.grid.get_cell(self.start_col -2,0)
+        cell_jm2_2 = self.grid.get_cell(self.start_col -2,2)
+        cell_j_1 = self.columns[0][1]
+        cell_j_3 = self.columns[0][3]
+
+        cells_c = [cell_jm2_2,cell_jm2_0,cell_j_1,cell_j_3]
+
+        cell_jm2_1 = self.grid.get_cell(self.start_col -2,1)
+        cell_jm2_3 = self.grid.get_cell(self.start_col -2,3)
+        cell_j_2 = self.columns[0][2]
+        cells_0 = [cell_jm2_1,cell_jm2_3,cell_j_2]
+
+        cell_j_0 = self.columns[0][0]
+
+        cell_jp1_2 = self.grid.get_cell(self.start_col +1,2)
+        '''
+        cell_jm2_0 = self.grid.get_cell(self.start_col -2,0)
+        cell_jm2_1 = self.grid.get_cell(self.start_col -2,1)
+        cell_j_0 = self.columns[0][0]
+        cell_jp1_2 = self.grid.get_cell(self.start_col +1,2)
+
+
+        j = self.start_col
+        cells_0 = [(j-2,1),(j-2,3),(j,2)]
+        cells_c = [(j-2,0),(j-2,2),(j,1),(j,3)]
+
+
+        if  self.same_value_grid(cells_c) and cell_jm2_0.value != 0:
+            if self.same_value_grid(cells_0) and cell_jm2_1.value == 0:
+                if(cell_j_0.value != cell_jm2_0.value and cell_j_0.value != 0):
+                    if(cell_jp1_2.value != cell_jm2_0.value and cell_jp1_2.value != 0 and cell_jp1_2.value != cell_j_0.value):
+                        print("Block4: Lambda config")
+                        return True
+
+        #block = Block(self.grid)
+        
+
+        return False
+
+
+    #j-2,0 == j-2,2 == j,1 == j,3 != 0
+    #j-2,1 == j-2,3 == j,2 == j+1,1 == j+1,2 == j+1,3 == 0
+    #j,0 != j,1 != 0
+    #j+2,1 safe
+    def is_Lambda_p(self):
+        if self.size < 3:
+            return False
+        if (self.start_col -2 < 0):
+            return False
+
+        j = self.start_col
+        cells_c = [(j-2,0),(j-2,2),(j,1),(j,3)]
+        cells_0 = [(j-2,1),(j-2,3),(j,2),(j+1,1),(j+1,2),(j+1,3)]
+        cell_jm2_0 = self.grid.get_cell(self.start_col -2,0)
+        cell_jm2_1 = self.grid.get_cell(self.start_col -2,1)
+        cell_j_0 = self.columns[0][0]
+        cell_jp2_1 = self.grid.get_cell(self.start_col +2,1)
+
+        if  self.same_value_grid(cells_c) and cell_jm2_0.value != 0:
+            print("Lambda_p: same value c")
+            if self.same_value_grid(cells_0) and cell_jm2_1.value == 0:
+                print("Lambda_p: same value 0")
+                if(cell_j_0.value != cell_jm2_0.value and cell_j_0.value != 0):
+                    print("Lambda_p: cell j,0 value")
+                    if cell_jp2_1.is_safe:
+                        print("Block4: Lambda' config")
+                        return True
+        return False
     
+    #same as Lambda but j-2,1 or j-2,3 colored and j-3 not empty
+    def is_Lambda_2(self):
+        if self.size < 2:
+             return False
+        if(self.start_col -3 < 0):
+            return False
+        
+        cell_jm2_0 = self.grid.get_cell(self.start_col -2,0)
+        cell_j_2 = self.grid.get_cell(self.start_col -2,1)
+        cell_j_0 = self.columns[0][0]
+        cell_jp1_2 = self.grid.get_cell(self.start_col +1,2)
+
+
+        j = self.start_col
+        
+        cells_c = [(j-2,0),(j-2,2),(j,1),(j,3)]
+        cells_jm3 = [(j-3,0),(j-3,1),(j-3,2),(j-3,3)]
+
+
+        if  self.same_value_grid(cells_c) and cell_jm2_0.value != 0:
+            if cell_j_2.value == 0:
+                if(cell_j_0.value != cell_jm2_0.value and cell_j_0.value != 0):
+                    if(cell_jp1_2.value != cell_jm2_0.value and cell_jp1_2.value != 0 and cell_jp1_2.value != cell_j_0.value):
+                        
+                        #Check if j-3 not empty
+                        if not(self.same_value_grid(cells_jm3)):
+
+                            #check if j-2,1 or j-2,3 colored and other one empty
+                            cell_jm2_3 = self.grid.get_cell(self.start_col -2,3)
+                            cell_jm2_1 = self.grid.get_cell(self.start_col -2,1)
+                            if (cell_jm2_1.value == 0 and cell_jm2_3.value != 0) or (cell_jm2_1.value != 0 and cell_jm2_3.value == 0):
+                                print("Block4: Lambda2 config")
+                                return True
+
+        return False
+    
+
+
+    #same as Lambda' but j-2,1 or j-2,3 colored and j-3 not empty
+    def is_Lambda_2_p(self):
+        if self.size < 3:
+            return False
+        if (self.start_col -3 < 0):
+            return False
+
+        j = self.start_col
+        cells_c = [(j-2,0),(j-2,2),(j,1),(j,3)]
+        cells_0 = [(j,2),(j+1,1),(j+1,2),(j+1,3)]
+        cell_jm2_0 = self.grid.get_cell(self.start_col -2,0)
+        cell_j_2 = self.grid.get_cell(self.start_col -2,1)
+        cell_j_0 = self.columns[0][0]
+        cell_jp2_1 = self.grid.get_cell(self.start_col +2,1)
+        
+        cells_jm3 = [(j-3,0),(j-3,1),(j-3,2),(j-3,3)]
+
+        if  self.same_value_grid(cells_c) and cell_jm2_0.value != 0:
+            print("Lambda_p: same value c")
+            if self.same_value_grid(cells_0) and cell_j_2.value == 0:
+                print("Lambda_p: same value 0")
+                if(cell_j_0.value != cell_jm2_0.value and cell_j_0.value != 0):
+                    print("Lambda_p: cell j,0 value")
+                    if cell_jp2_1.is_safe:
+
+                        #Check if j-3 not empty
+                        if not(self.same_value_grid(cells_jm3)):
+                            #check if j-2,1 or j-2,3 colored and other one empty
+                            cell_jm2_3 = self.grid.get_cell(self.start_col -2,3)
+                            cell_jm2_1 = self.grid.get_cell(self.start_col -2,1)
+                            if (cell_jm2_1.value == 0 and cell_jm2_3.value != 0) or (cell_jm2_1.value != 0 and cell_jm2_3.value == 0):
+                                print("Block4: Lambda2' config")
+                                return True
+        return False
+
+
 
 
     #set the left and right configurations of the block
@@ -303,15 +490,33 @@ class Block:
         if self.is_pi():
             #print("Block is pi")
             self.right_configuration = "p"
-
-        
-        #manage critical cases
+ 
+  
+        #manage particulars cases
         if self.is_Delta():
-            #print("Block is Delta")
-            self.right_configuration = "D"
+            self.particular_config = "Delta"
+      
+        if self.is_Delta_p():
+            self.particular_config = "Delta'"
+
+        if self.is_Delta_p2():
+            self.particular_config = "Delta2'"
+
+        if self.is_Lambda():
+            self.particular_config = "Lambda"
+
+        if self.is_Lambda_p():
+            self.particular_config = "Lambda'"
+
+        if self.is_Lambda_2():
+            self.particular_config = "Lambda2"
+
+        if self.is_Lambda_2_p():
+            self.particular_config = "Lambda2'"
 
         print(f"Block from column {self.start_col} to {self.end_col}, size: {self.size}")
         print(f"RIGHT {self.right_configuration} LEFT {self.left_configuration}")
+        print(f"particular config: {self.particular_config}")
         '''
         print("RIGHT config:")
         self.print_block(self.flip_config_right)
@@ -370,3 +575,22 @@ class Block:
             print()
         print()
 
+
+    #check if all cells in list have same value and is not the val "not_val"
+    #list = [(j,x)]
+    def same_value(self,list):
+        (j,x) = list[0]
+        first_value = self.columns[j][x].value
+        for j,x in list: 
+            if self.columns[j][x].value != first_value: 
+                return False
+        return True
+    
+    #same function as above but on the grid
+    def same_value_grid(self,list):
+        (j,x) = list[0]
+        first_value = self.grid.get_cell(j,x).value
+        for j,x in list: 
+            if self.grid.get_cell(j,x).value != first_value: 
+                return False
+        return True

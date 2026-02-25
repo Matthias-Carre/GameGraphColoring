@@ -6,12 +6,16 @@ class Draw:
         self.height = height
         self.grid = grid
         self.canvas = canvas
+        self.number_of_colors = grid.num_colors
         self.colors = ["Red", "Green", "Blue","Purple"]
         self.color_selected = -1 # given by the radio button
         self.root = root
         self.turn = 0 #0 for Alice, 1 for Bob
-        self.print_status = True
+        self.print_status = False
+        self.print_rounds = True
         self.round = 1 
+        self.button_frame =  tk.Frame(self.root)
+        self.button_frame.pack(pady=10)
 
     #draw text at x,y with color and font
     def draw_text(self, x, y, text, color="black", font=("Arial", 16)):
@@ -47,7 +51,7 @@ class Draw:
         radio_frame.pack(side="left")
         
         #color Slecetion
-        for i in range(len(self.colors)):
+        for i in range(self.number_of_colors):
             tk.Radiobutton(radio_frame, text=(i+1), value=i, variable=self.color_selected).pack(anchor="w")
         button_frame = tk.Frame(color_frame)
         button_frame.pack(side="left", padx=10)
@@ -55,7 +59,7 @@ class Draw:
 
     #function to draw a button with text and command
     def draw_button(self, text, command):
-        button = tk.Button(self.root, text=text, command=command).pack()
+        button = tk.Button(self.button_frame, text=text, command=command).pack(side="left", padx=5)
         #button.place(x=pos_x, y=pos_y)
         return button
 
@@ -84,31 +88,42 @@ class Draw:
 
     #draw the grid on the canvas as we do on the paper
     def draw_gridV2(self):
-        ratio = min(self.width / self.grid.width, self.height / self.grid.height)
-        
+        if(self.height / self.width > self.grid.height/self.grid.width):
+            ratio = self.width / self.grid.width
+        else:
+            ratio = self.height / self.grid.height
+            
+        #ratio = min(self.width / self.grid.width, self.height / self.grid.height)        
         self.draw_rectangle(0,0,self.width,self.height,"white")
         for i in range(self.grid.width):
-            self.draw_rectangle(i*(self.width/self.grid.width),0,1,self.height,"black")
+            self.draw_rectangle(i*(ratio),0,1,self.height,"black")
 
             for j in range(self.grid.height):
-                self.draw_rectangle(0,j*(self.width/self.grid.width),self.width,1,"black")
+                self.draw_rectangle(0,j*(ratio),self.width,1,"black")
+                #print("Draw ratio",ratio)
                 x = i * ratio
                 y = j * ratio
+                #print("Draw x y",x,y)
                 cell = self.grid.get_cell(i, j)
                 self.draw_text(x + ratio / 2, y + ratio / 2, cell.get_value() if cell.get_value()!=0 else "","Blue" if cell.played_by == 1 else "Red",font=("Arial",int(ratio/1.5)))
                 if(self.print_status):
                     state = cell.get_status()
                     self.draw_text(x + ratio / 6, y + ratio / 6, state, color="green", font=("Arial", 8))
-                        
-                    self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
                 
                     self.draw_doctor_patient(cell)
+
+                if(self.print_rounds):
+                    self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
+
+
 
                 if(cell.any_color):
                     self.draw_text(x + ratio / 4, y + ratio / 4, "any", color="black", font=("Arial", 16))
 
 
     def draw_doctor_patient(self,cell):
+        return
+        """
         for patient in cell.patients:
             #draw a line from doctor to patient 
             ratio = min(self.width / self.grid.width, self.height / self.grid.height)
@@ -117,7 +132,7 @@ class Draw:
             x2 = patient.x * ratio + ratio / 2
             y2 = patient.y * ratio + ratio / 2
             self.canvas.create_line(y1, x1, y2, x2, fill="black", width=2, dash=(4, 2))
-
+        """
         
 
     def draw_window(self):

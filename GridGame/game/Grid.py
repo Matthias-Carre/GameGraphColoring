@@ -21,25 +21,24 @@ class Grid:
         self.width = width
         self.height = height
         self.nodes = [[Cell(x, y, self ,num_colors=num_colors) for y in range(width)] for x in range(height)]
-        
-        self.neighbors = []
-        
+                
         self.last_moves = [] # (x,y,color)
         self.previous_changes = [] #list of list on changes for each move
         self.num_colors = num_colors
         self.blocks = []
         self.player = 0 #0 for Alice, 1 for Bob
         self.round = 1
+        
         self.last_Bob_move = None # (x,y,color,past_config)        
 
         #add neighbors to each cell
         self.init_state()
-  
+
+        self.history = []
 
     def init_state(self):
         for i in range(self.width):
             for j in range(self.height):
-                print(f"TEST GRID: nodes[{self.nodes}]")
                 self.nodes[j][i].neighbors = self.neighborhood(self.nodes[j][i])
 
                 #add the starting status of each cell
@@ -65,33 +64,33 @@ class Grid:
         else:
             raise IndexError("Column index out of bounds")
 
-    def play_move(self,x,y,color):
-        if not(self.is_move_valid(x,y,color)):
-            print(f"Invalid move at ({x}, {y}) with color {color} by player {self.player}")
+    #joue le coup color en x y et update la grille 
+    def play_move(self, x, y, color):
+        if not self.is_move_valid(x, y, color):
+            print(f"Invalid move at ({x}, {y})")
             return False
         
-        #list of the nodes changed by this move
-        self.previous_changes.append([])
+        #save pour undo
+        self.last_Bob_move = (x,y,color)
+        self.save_zone_snapshot(x, y, distance=2)
 
-        node = self.nodes[y][x].clone_cell()
-        self.add_to_previous_changes([node])
+        #applique le coup
+        target = self.nodes[y][x]
+        target.value = color
+        target.played_by = self.player
+        target.round = self.round
+        target.update_cell()
         
-        self.nodes[y][x].value = color
-        self.nodes[y][x].played_by = self.player
-        self.nodes[y][x].round = self.round
-        self.nodes[y][x].update_cell()
         self.last_moves.append((x,y,color))
-
         self.update_neighbors(x,y,color)
-        print(f"Debug:previous changes \n{len(self.previous_changes)}")
 
-
+        return True
 
     def update_neighbors(self,x,y,color):
         cell = self.nodes[y][x]
         for neighbor in cell.neighbors:
             if color in neighbor.color_options:
-                self.add_to_previous_changes([neighbor.clone_cell()])
+                #self.add_to_previous_changes([neighbor.clone_cell()])
 
                 neighbor.color_options.remove(color)
             neighbor.neighbors_to_color -= 1
@@ -100,7 +99,7 @@ class Grid:
         return 
     
             
-    
+    #utiliser dans la premier version de undo
     def roll_back_neighbors(self,x,y,color):
         cell = self.nodes[y][x]
         for neighbor in cell.neighbors:
@@ -125,7 +124,7 @@ class Grid:
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.nodes[y][x]
         else:
-            raise IndexError("Cell position out of bounds")
+            raise IndexError(f"Cell position out of bounds ({x},{y})")
     
     """
     #undo need to blank the last move, and restore the color options of the neighbors
@@ -141,31 +140,28 @@ class Grid:
             return True
         return False
     """
-    #undo version where we just rollback changed cells
+    #undo version avec zone de sauvegarde
     def undo_move(self):
-        if self.previous_changes == []:
-            print("No moves to undo")
+        if not self.history:
+            print("Rien à annuler")
             return False
-        List_of_nodes = self.previous_changes.pop()
 
-        #set the nodes to their previous state
-        for node in List_of_nodes:
-            x = node.x
-            y = node.y
-            self.nodes[x][y] = node
+        #recup de la save
+        patch = self.history.pop()
+
+        #restoration 
+        for (x, y), state in patch.items():
+            self.nodes[y][x].restore_state(state, self)
         
-        #setback neighbors to their previous state
-        for node in List_of_nodes:
-            i = node.x
-            j = node.y
-            self.nodes[i][j].neighbors = self.neighborhood(self.nodes[i][j])
+        if self.last_moves:
+            self.last_moves.pop()
         
         return True
-    
+
     #add changed nodes to the last list of previous changes
     def add_to_previous_changes(self,changed_nodes):
         for node in changed_nodes:
-            if not(self.is_present(node,self.previous_changes[-1])):
+            if self.previous_changes == [] or not(self.is_present(node,self.previous_changes[-1])):
                 self.previous_changes[-1].append(node)
 
 
@@ -188,3 +184,23 @@ class Grid:
             if 0 <= nx < self.width and 0 <= ny < self.height:
                 neighborhood.append(self.nodes[ny][nx])
         return neighborhood
+    
+    #test d'une autre logique de save, on garde une zone autour du coup jouer 
+    # on grade les co des elements voisin pour les restorer apres sans garder les objets 
+    def save_zone_snapshot(self, center_x, center_y, distance=2):
+        
+        patch = {}
+        
+        # Calcul des bornes pour ne pas sortir de la grille
+        min_x = max(0, center_x - distance)
+        max_x = min(self.width, center_x + distance + 1)
+        min_y = max(0, center_y - distance)
+        max_y = min(self.height, center_y + distance + 1)
+
+        # On boucle sur la zone carrée
+        for y in range(min_y, max_y):
+            for x in range(min_x, max_x):
+                # On sauvegarde l'état AVANT modif
+                patch[(x, y)] = self.nodes[y][x].get_state()
+        
+        self.history.append(patch)
