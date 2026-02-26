@@ -6,7 +6,7 @@ from game.latexForm import save_grid_latex
 class GameEngine:
     def __init__(self,grid,root,Alice=None,Bob=None):
         self.window_width = 1600
-        self.window_height = 900
+        self.window_height = 800
         self.grid = grid
         self.root = root
         self.state = GameState(grid)
@@ -116,6 +116,9 @@ class GameEngine:
             print(f'Button clicked at: {i}, {j}, color: {self.color_selected}')
             if not(self.is_move_valid(i, j, self.color_selected + 1)):
                 print("Engie: Invalid move")
+                #popup message
+                self.window.show_popup("Invalid Move", "The selected move is not valid.")
+                
                 return
             
             if (self.grid.get_cell(i, j).get_value() == 0):
