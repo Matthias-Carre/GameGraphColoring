@@ -63,8 +63,19 @@ def main():
 
     # Submit button
     def submit():
+        # need to check if input are int
         width = int(width_entry.get())
+        if width < 2:
+            width = 2
+        elif width > 30:
+            width = 30
+
         height = int(height_entry.get())
+        if height < 2:
+            height = 2
+        elif height > 30:
+            height = 30
+
         num_colors = int(color_entry.get())
         print(f"lunch with width: {width}, height: {height}")
         if num_colors < 2:
