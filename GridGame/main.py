@@ -46,11 +46,13 @@ def main():
 
     main_frame = tk.Frame(root)
     main_frame.pack(padx=20, pady=20)
-    tk.Label(main_frame, text="Largeur de la grille:").pack(pady=5)
+    tk.Label(main_frame, text="Largeur de la grille:").pack(pady=2.5)
+    tk.Label(main_frame, text="(min 2,max 30):").pack(pady=3) 
     width_entry = tk.Entry(main_frame)
     width_entry.pack(pady=5)
 
-    tk.Label(main_frame, text="Hauteur de la grille:").pack(pady=5)
+    tk.Label(main_frame, text="Hauteur de la grille:").pack(pady=2.5)
+    tk.Label(main_frame, text="(min 2,max 30):").pack(pady=3)
     height_entry = tk.Entry(main_frame)
     height_entry.pack(pady=5)
 
