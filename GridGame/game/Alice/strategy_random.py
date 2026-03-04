@@ -2,6 +2,7 @@ import random
 
 
 def is_any(grid, bob_move):
+    print("test any")
     return True
 
 def random_move(grid, bob_move):

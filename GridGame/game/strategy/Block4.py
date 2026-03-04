@@ -21,8 +21,10 @@ class Block:
         self.flip_config_left = None #store the block for the left config but flip it at right
 
         self.particular_config = None #dict to store node:config
+        self.particular_config_j = None # index of the j for the particular config 
         self.particular_config_block = None #give the block with the particular config rotated
 
+        
         #self.pi_
 
     #merge 2 blocks together 
@@ -269,14 +271,16 @@ class Block:
 
         if(len(self.columns) < 3): return False
         j = len(self.columns) - 3
-        #print(f"Delta config: j={j}")
+        print(f"Delta config: j={self.columns[j][0].y}")
         cell_c = [(j,1),(j,3),(j+2,0),(j+2,2)]
         cell_0 = [(j+1,0),(j+1,1),(j+1,3),(j+2,1),(j+2,3)]
         if self.same_value(cell_c) and self.columns[j][1].value !=0:
             if self.same_value(cell_0) and self.columns[j+1][0].value == 0 :
                 if self.columns[j+1][2].value != 0 and self.columns[j][1].value != self.columns[j+1][2].value: 
+                    self.particular_config_j = self.columns[j][0].y
+        
                     return True
-
+                
         return False
 
     #Is Delta'

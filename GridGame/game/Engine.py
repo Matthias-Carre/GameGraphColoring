@@ -31,6 +31,7 @@ class GameEngine:
     def run(self):
         if self.grid.height == 4:
             self.strategy = BlockHeight4(self.grid)
+            self.grid.blocks = self.strategy
 
 
         self.window.create_window()
