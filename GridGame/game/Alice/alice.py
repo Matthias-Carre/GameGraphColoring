@@ -20,6 +20,13 @@ class Alice:
         if self.grid.height == 4:
             self.strategy = [
                 (is_1Delta, solve_1Delta),
+                (is_Delta_p_a, solve_Delta_p_a),
+                (is_Delta_p_b, solve_Delta_p_b),
+                (is_Delta_p_c, solve_Delta_p_c),
+                (is_Delta_p_d, solve_Delta_p_d),
+                (is_Delta_p_e, solve_Delta_p_e),
+                (is_Delta_p_f, solve_Delta_p_f),
+
                 (is_TestConfig,solve_TestConfig)
             ]
         else:

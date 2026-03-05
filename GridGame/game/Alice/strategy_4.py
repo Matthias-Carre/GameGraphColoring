@@ -49,15 +49,95 @@ def is_Delta_p_a(grid,bob_move):
     x,y,color = bob_move
     block = grid.blocks.block_at(x)
 
-    if block.particular_config != "Delta_p":
+    if block.particular_config != "Delta'":
         return False
     j = block.particular_config_j
     #Bob play in (1,j-1) or (0,j+1)
-    print("Bob last move 2,j-1 ",(x,y) == (2,j-1), "or" "0,j+1",(x,y) == (0,j+1))
-    if (x,y) == (1,j-1) or (x,y) == (0,j+1):
+    print("DPA: Bob last move ",(x,y))
+    print("DPA: check:",2,j-1,"or",1,j)
+    print("Bob last move 2,j-1 ",(y,x) == (2,j-1), "or" "1,j",(y,x) == (1,j))
+    print("j=",j)
+    if ((y,x) == (2,j-1)) or ((y,x) == (1,j)):
         print("DELTRA P A")
         return True
     return False
 
 def solve_Delta_p_a(grid,bob_move):
+
     print("Alice joue (2,j+1)")
+
+def is_Delta_p_b(grid,bob_move):
+    x,y,color = bob_move
+    block = grid.blocks.block_at(x)
+    if block.particular_config != "Delta'":
+        return False
+
+    j = block.particular_config_j
+    if ((y,x) == (2,j)):
+        print("DELTRA P B")
+        return True
+
+def solve_Delta_p_b(grid,bob_move):
+    
+    print("Alice joue")
+    
+def is_Delta_p_c(grid,bob_move):
+    x,y,color = bob_move
+    block = grid.blocks.block_at(x)
+    if block.particular_config != "Delta'":
+        return False
+    j = block.particular_config_j
+
+    if ((y,x) == (2,j+1)):
+        print("DELTRA P C")
+        return True
+
+def solve_Delta_p_c(grid,bob_move):
+    
+    print("Alice joue")
+
+def is_Delta_p_d(grid,bob_move):
+    x,y,color = bob_move
+    block = grid.blocks.block_at(x)
+    if block.particular_config != "Delta'":
+        return False
+    j = block.particular_config_j
+
+    if ((y,x) == (1,j+2)):
+        print("DELTRA P D")
+        return True
+
+def solve_Delta_p_d(grid,bob_move):
+    
+    print("Alice joue")
+
+def is_Delta_p_e(grid,bob_move):
+    x,y,color = bob_move
+    block = grid.blocks.block_at(x)
+
+    if block.particular_config != "Delta'":
+        return False
+    j = block.particular_config_j
+    if ((y,x) == (4,j+2)):
+        print("DELTRA P E")
+        return True
+    
+def solve_Delta_p_e(grid,bob_move):
+    
+    print("Alice joue")
+
+
+def is_Delta_p_f(grid,bob_move):
+    x,y,color = bob_move
+    block = grid.blocks.block_at(x)
+
+    if block.particular_config != "Delta'":
+        return False
+    j = block.particular_config_j
+    if ((y,x) == (2,j+2)):
+        print("DELTRA P F")
+        return True
+
+def solve_Delta_p_f(grid,bob_move):
+    
+    print("Alice joue")
