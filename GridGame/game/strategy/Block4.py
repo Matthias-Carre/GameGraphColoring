@@ -286,15 +286,20 @@ class Block:
     #j-1,1 == j,0 == j,3 == j+1,1 == j+2,3 == j+4,2 != 0
     #j-1,2 == j,1 == j,2 == j+1,0 == j+1,2 == j+1,3 == j+2,0 == j+2,1 == j+2,2 == 0
     def is_Delta_p(self):
-        j=len(self.columns) - 4
+        j_first = len(self.columns) - 4
         if (len(self.columns) < 5):
             return False
-        cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3),(j+3,2)]
-        cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3),(j+2,0),(j+2,1),(j+2,2)]
-        if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
-            if self.same_value(cell_0) and self.columns[j-1][2].value == 0 : 
-                self.particular_config_j = self.columns[j][0].y
-                return True
+        
+        #checking for the config starting from each column (to detect config in the middle)
+        for j in range(j_first, 0, -1):
+            print(f"Block4: j={j}")
+            cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3),(j+3,2)]
+            cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3),(j+2,0),(j+2,1),(j+2,2)]
+            if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
+                if self.same_value(cell_0) and self.columns[j-1][2].value == 0 : 
+                    self.particular_config_j = self.columns[j][0].y
+                    return True
+                
         return False
 
 
@@ -302,15 +307,16 @@ class Block:
     # j+2,2 != 0 != j-1,1
     # j-1,2 == j,1 == j,2 == j+1,0 == j+1,2 == j+1,3 == 0
     def is_Delta_p2(self):
-        j=len(self.columns) - 3
+        j_max=len(self.columns) - 3
         if (len(self.columns) < 4):
             return False
-        cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3)]
-        cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3)]
-        if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
-            if self.same_value(cell_0) and self.columns[j-1][2].value == 0 and self.columns[j+2][2].value != 0 and self.columns[j-1][1].value != self.columns[j+2][2].value:
-                self.particular_config_j = self.columns[j][0].y
-                return True
+        for j in range(j_max, 0, -1): 
+            cell_c = [(j-1,1),(j,0),(j,3),(j+1,1),(j+2,3)]
+            cell_0 = [(j-1,2),(j,1),(j,2),(j+1,0),(j+1,2),(j+1,3)]
+            if self.same_value(cell_c) and self.columns[j-1][1].value !=0:
+                if self.same_value(cell_0) and self.columns[j-1][2].value == 0 and self.columns[j+2][2].value != 0 and self.columns[j-1][1].value != self.columns[j+2][2].value:
+                    self.particular_config_j = self.columns[j][0].y
+                    return True
         return False
    
 

@@ -141,3 +141,17 @@ def is_Delta_p_f(grid,bob_move):
 def solve_Delta_p_f(grid,bob_move):
     
     print("Alice joue")
+
+def is_Delta_p_2(grid,bob_move):
+    x,y,color = bob_move
+    block = grid.blocks.block_at(x)
+
+    if block.particular_config != "Delta2'":
+        return False
+    
+    return True
+
+#Bob play in (j-2,j-1 or j) in Lambda or Lambda2
+def is_Lambda_a(grid,bob_move):
+    # 4,j-1 -> 3,j-1
+
