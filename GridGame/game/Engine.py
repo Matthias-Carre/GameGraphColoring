@@ -259,14 +259,20 @@ class GameEngine:
     def is_move_valid(self,x,y,color):
         return self.grid.is_move_valid(x,y,color)
     
-    
+
     def test_print(self,msg):
         print("EngineTestPrint:",msg)
 
+    """
+    show or hide states of the cells
+    """
     def toggle_debug(self):
         self.window.draw.print_status = not self.window.draw.print_status
         self.on_update_callback()
 
+    """
+    show or hide the number of rounds
+    """
     def toggle_rounds(self):
         self.window.draw.print_rounds = not self.window.draw.print_rounds
         self.on_update_callback()
