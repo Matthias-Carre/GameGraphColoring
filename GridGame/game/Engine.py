@@ -28,6 +28,10 @@ class GameEngine:
     def button_test(self):
         print("Test")
 
+
+    """
+    create the window and start the game
+    """
     def run(self):
         if self.grid.height == 4:
             self.strategy = BlockHeight4(self.grid)
@@ -70,6 +74,13 @@ class GameEngine:
 
         self.root.mainloop()
 
+    """
+    input : event of a click/key press
+    out : do the action corresponding to the click/key press
+        u : undo
+        l : save the grid in a latex file
+        1-5 : select the color
+    """
     def on_key_press(self,event):
         print("key pressed",event)
         if event.char == 'u':
@@ -99,7 +110,10 @@ class GameEngine:
             self.color_var_accessor.set(4)
         
         
-
+    """
+    input : event of a click
+    out : on left click try to play the move at the current position
+    """
     def on_left_click(self,event):
         
         print("click",event)
@@ -127,6 +141,10 @@ class GameEngine:
                 self.change_node_color(self.grid, i, j, self.color_selected + 1)
                 self.on_update_callback()
     
+    """
+    input : event of a click
+    out : on right click print the cell informations
+    """
     def on_right_click(self,event):
         #print("right click",event)
         x = event.x
@@ -141,11 +159,17 @@ class GameEngine:
             cell.print_cell_informations()
         
         self.on_update_callback()
-        
+    
+    """
+    idea: show what would be play in advance and see how it change depending on the next move
+    """
     def preview(self):
         print("Previewing next move")
         
-
+    """
+    input : event of a click
+    out : on middle click, play "any" in the cell just to do ilustration
+    """
     def on_x_press(self,event):
         #print("button3 pressed",event)
         x = event.x
@@ -161,6 +185,10 @@ class GameEngine:
         self.on_update_callback()
 
     #manage Alice actions
+    """
+    check if it's Alice's turn
+    If yes, play the move coresponding to Alice's strategy
+    """
     def alice_move(self):
         if self.grid.player != 0:
             print("Not Alice's turn")
@@ -169,6 +197,10 @@ class GameEngine:
         self.change_node_color(self.grid, x, y, color)
         self.on_update_callback()
 
+    """
+    check if it's Bob's turn
+    If yes, play the move coresponding to Bob's strategy
+    """
     def bob_move(self):
         if self.grid.player != 1:
             print("Not Bob's turn")
@@ -177,6 +209,9 @@ class GameEngine:
         self.change_node_color(self.grid, x, y, color)
         self.on_update_callback()
 
+    """
+    Undo the last move played
+    """
     def undo(self):
         print("Undo last move")
         if(self.grid.undo_move()):
@@ -193,7 +228,15 @@ class GameEngine:
     def reset(self):
         self.reset(self.tk_root) if self.reset is not None else print("No reset function defined")
 
+    """
+    input : 
+        grid : gird of the game
+        x,y : position of the move
+        color : color of the move
+    out : void
+    result : play the move on the grid and update the interface
 
+    """
     def change_node_color(self,grid, x, y, color):
         grid.play_move(x, y, color)
         if self.strategy is not None:
@@ -204,14 +247,19 @@ class GameEngine:
         self.grid.player = 0 if self.grid.player == 1 else 1
         return
     
+    """
+    call the draw function
+    """
     def draw_grid(self):
         self.window.draw_grid()
 
-
+    """
+    check if the move is valid
+    """
     def is_move_valid(self,x,y,color):
         return self.grid.is_move_valid(x,y,color)
     
-
+    
     def test_print(self,msg):
         print("EngineTestPrint:",msg)
 
