@@ -154,4 +154,39 @@ def is_Delta_p_2(grid,bob_move):
 #Bob play in (j-2,j-1 or j) in Lambda or Lambda2
 def is_Lambda_a(grid,bob_move):
     # 4,j-1 -> 3,j-1
+    return False
 
+
+"""
+Case 3: Bob colors empty column
+"""
+def is_3_new(grid,bob_move):
+    x,y,color = bob_move
+    
+    print("IS 3 NEW:",x,y)
+    print("strategy 4: len nodes",len(grid.nodes[0]))
+    #previous and next column
+    list = [(x-1,0),(x-1,1),(x-1,2),(x-1,3),(x+1,0),(x+1,1),(x+1,2),(x+1,3)]
+    if same_value_grid(grid,list):
+        print("Bob play in empty column",x)
+        return True
+    return False
+
+
+def solve_3_new(grid,bob_move):
+    print("Alice play in ")
+
+
+
+
+"""
+input: list of (j,x) coordinates
+return true if all the cells in the list have the same value
+"""
+def same_value_grid(grid,list):
+    (j,x) = list[0]
+    first_value = grid.get_cell(j,x).value
+    for j,x in list: 
+        if grid.get_cell(j,x).value != first_value: 
+            return False
+    return True
