@@ -27,6 +27,9 @@ class Alice:
                 (is_Delta_p_e, solve_Delta_p_e),
                 (is_Delta_p_f, solve_Delta_p_f),
 
+
+                #case 3:
+                (is_3_new, solve_3_new),
                 (is_TestConfig,solve_TestConfig)
             ]
         else:

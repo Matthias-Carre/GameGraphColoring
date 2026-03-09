@@ -154,4 +154,9 @@ def is_Delta_p_2(grid,bob_move):
 #Bob play in (j-2,j-1 or j) in Lambda or Lambda2
 def is_Lambda_a(grid,bob_move):
     # 4,j-1 -> 3,j-1
+    return False
+
+
+
+
 
