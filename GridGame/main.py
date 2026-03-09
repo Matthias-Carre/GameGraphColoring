@@ -7,10 +7,10 @@ from game.Bob.bob import Bob
 from game.Alice.alice import Alice
 
 
-def on_button_click(event):
-    return
 
 
+# input : root window, width of the grid, height of the grid, number of colors
+# out : create the game and start it
 def create_game(root,width=15, height=4,num_colors=4):
     #grid = Grid(width, height, num_colors=4)
     
@@ -26,12 +26,16 @@ def create_game(root,width=15, height=4,num_colors=4):
     engine.run()
 
 
+#function to reset the game
+#input : root window
+#out : new game
 def reset_game(tk_root):
     # Clear the current game state and reset the interface
     tk_root.destroy()  # Close the current window
     main()
 
 
+#create the window and ask the parameters of the game to create the game
 
 def main():
     # Create the main window
@@ -46,11 +50,13 @@ def main():
 
     main_frame = tk.Frame(root)
     main_frame.pack(padx=20, pady=20)
-    tk.Label(main_frame, text="Largeur de la grille:").pack(pady=5)
+    tk.Label(main_frame, text="Largeur de la grille:").pack(pady=2.5)
+    tk.Label(main_frame, text="(min 2,max 30):").pack(pady=3) 
     width_entry = tk.Entry(main_frame)
     width_entry.pack(pady=5)
 
-    tk.Label(main_frame, text="Hauteur de la grille:").pack(pady=5)
+    tk.Label(main_frame, text="Hauteur de la grille:").pack(pady=2.5)
+    tk.Label(main_frame, text="(min 2,max 30):").pack(pady=3)
     height_entry = tk.Entry(main_frame)
     height_entry.pack(pady=5)
 
@@ -61,8 +67,19 @@ def main():
 
     # Submit button
     def submit():
+        # need to check if input are int
         width = int(width_entry.get())
+        if width < 2:
+            width = 2
+        elif width > 30:
+            width = 30
+
         height = int(height_entry.get())
+        if height < 2:
+            height = 2
+        elif height > 30:
+            height = 30
+
         num_colors = int(color_entry.get())
         print(f"lunch with width: {width}, height: {height}")
         if num_colors < 2:
@@ -80,4 +97,4 @@ if __name__ == "__main__":
     #main()
 
     #Commenter au dessus et decommenter en dessous pour passer la selection des parametres
-    create_game(tk.Tk(),width=9, height=3, num_colors=3)
+    create_game(tk.Tk(),width=10, height=4, num_colors=4)

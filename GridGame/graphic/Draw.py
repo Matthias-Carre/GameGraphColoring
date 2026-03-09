@@ -106,6 +106,7 @@ class Draw:
                 #print("Draw x y",x,y)
                 cell = self.grid.get_cell(i, j)
                 self.draw_text(x + ratio / 2, y + ratio / 2, cell.get_value() if cell.get_value()!=0 else "","Blue" if cell.played_by == 1 else "Red",font=("Arial",int(ratio/1.5)))
+                self.draw_text(x + ratio / 2, y + ratio / 2, "X" if cell.is_uncolorable else "","black",font=("Arial",int(ratio/1.5)))
                 if(self.print_status):
                     state = cell.get_status()
                     self.draw_text(x + ratio / 6, y + ratio / 6, state, color="green", font=("Arial", 8))
@@ -114,8 +115,6 @@ class Draw:
 
                 if(self.print_rounds):
                     self.draw_text(x + ratio / 1.2, y + ratio / 1.2, cell.round, color="black", font=("Arial", 8))
-
-
 
                 if(cell.any_color):
                     self.draw_text(x + ratio / 4, y + ratio / 4, "any", color="black", font=("Arial", 16))

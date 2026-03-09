@@ -76,3 +76,48 @@ class Interface:
 
     def test_print(self,msg=""):
         print("InterTestPrint:",msg)
+
+    def show_popup(self, title, message, popup_type="error"):
+        """Affiche un message popup directement sur le canvas
+        popup_type: 'error' (rouge), 'warning' (jaune), 'info' (bleu)
+        """
+        colors = {
+            "error": {"bg": "#ffcccc", "border": "#ff0000", "text": "#cc0000"},
+            "warning": {"bg": "#fff3cd", "border": "#ffc107", "text": "#856404"},
+            "info": {"bg": "#cce5ff", "border": "#007bff", "text": "#004085"}
+        }
+        color = colors.get(popup_type, colors["error"])
+        
+        # Position centrale du canvas
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
+        if canvas_width < 10:  # Canvas pas encore rendu
+            canvas_width = 800
+            canvas_height = 600
+        
+        cx, cy = canvas_width // 2, canvas_height // 2
+        box_width, box_height = 300, 80
+        
+        # Créer le rectangle de fond
+        popup_rect = self.canvas.create_rectangle(
+            cx - box_width // 2, cy - box_height // 2,
+            cx + box_width // 2, cy + box_height // 2,
+            fill=color["bg"], outline=color["border"], width=3, tags="popup"
+        )
+        
+        # Créer le titre
+        popup_title = self.canvas.create_text(
+            cx, cy - 15,
+            text=title, font=("Arial", 12, "bold"),
+            fill=color["text"], tags="popup"
+        )
+        
+        # Créer le message
+        popup_message = self.canvas.create_text(
+            cx, cy + 10,
+            text=message, font=("Arial", 10),
+            fill=color["text"], tags="popup"
+        )
+        
+        # Supprimer le popup après 2 secondes
+        self.root.after(500, lambda: self.canvas.delete("popup"))

@@ -19,6 +19,14 @@ class Alice:
 
         if self.grid.height == 4:
             self.strategy = [
+                (is_1Delta, solve_1Delta),
+                (is_Delta_p_a, solve_Delta_p_a),
+                (is_Delta_p_b, solve_Delta_p_b),
+                (is_Delta_p_c, solve_Delta_p_c),
+                (is_Delta_p_d, solve_Delta_p_d),
+                (is_Delta_p_e, solve_Delta_p_e),
+                (is_Delta_p_f, solve_Delta_p_f),
+
                 (is_TestConfig,solve_TestConfig)
             ]
         else:
@@ -52,6 +60,7 @@ class Alice:
         #CASE 1: in block/border d/j,j-1 of L,L2,L',L'2/j-2 of L,L'/j-2 of L2,L'2 if j-3 not empty
 
         #case 1D
+
 
         #case 1D'
 
@@ -109,40 +118,5 @@ class Alice:
         self.case_1D(bob_move)
     '''
 
-
-    #color j+1 or j+2 of D => 
-    #1. bob color sick => Alice color any j+1
-    #2. bob not color sick => Alice color sick with available color
-    def case_1D(self,bob_move):
-        if bob_move.past_state == 'sick':
-            #alice colors any j+1
-            pass
-        else:
-            #alice colors sick with available color
-            pass
-
-    #color in D' or D'2 =>
-    #1. D'
-    def case_1D_p(self,bob_move):
-        #if config D'
-        if bob_move.config == 'Dp':
-            #if bob color v(2,j-1) or v(3,j) => v(2,j+1)
-            if bob_move.pos == None:#x,y:
-                pass
-            #if bob color v(2,j) => v(1,j+1)
-
-            #if bob color v(2,j+1) => v(1,j+1)
-
-            #if bob color v(3,j+2) => v(2,j+1)
-
-            #if bob color v(4,j+2) => v(3,j+2)
-
-            #if bob color v(2,j+2) => v(3,j+2)
-
-            #for D'2
-
-        pass
-
-        
 
 
