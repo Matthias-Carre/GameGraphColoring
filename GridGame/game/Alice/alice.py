@@ -28,7 +28,8 @@ class Alice:
                 (is_Delta_p_f, solve_Delta_p_f),
 
                 #Case 3:
-                (is_3_new, solve_3_new), 
+                (is_3_new, solve_3_new),
+                (is_3_pi, solve_3_pi),
 
                 (is_TestConfig,solve_TestConfig)
             ]

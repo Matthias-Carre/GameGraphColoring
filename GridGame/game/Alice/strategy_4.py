@@ -160,21 +160,41 @@ def is_Lambda_a(grid,bob_move):
 """
 Case 3: Bob colors empty column
 """
+
+# Bob play in col j with j-1,j and j+1 empty 
 def is_3_new(grid,bob_move):
     x,y,color = bob_move
     
     print("IS 3 NEW:",x,y)
     print("strategy 4: len nodes",len(grid.nodes[0]))
     #previous and next column
-    list = [(x-1,0),(x-1,1),(x-1,2),(x-1,3),(x+1,0),(x+1,1),(x+1,2),(x+1,3)]
+    list = [(x-1,0),(x-1,1),(x-1,2),(x-1,3),(x+1,0),(x+1,1),(x+1,2),(x+1,3),(x,0),(x,1),(x,2),(x,3)]
+    list.remove((x,y))
     if same_value_grid(grid,list):
-        print("Bob play in empty column",x)
+        print("Case 3-new")
         return True
     return False
 
-
+# Alice answer in col j with |a-b| = 2 with c
 def solve_3_new(grid,bob_move):
-    print("Alice play in ")
+    print("Case 3-new: Alice color v_b,j with |a-b| = 2 with c")
+    x,y,color = bob_move
+    if y == 0 or y == 1:
+        return (x,y+2,color)
+    elif y == 2 or y == 3:
+        return (x,y-2,color)
+
+
+def is_3_pi(grid,bob_move):
+    x,y,color = bob_move
+    print("IS 3 PI:",x,y,grid.bob_play_on_config)
+
+def solve_3_pi(grid,bob_move):
+    return
+    
+
+
+
 
 
 

@@ -238,7 +238,9 @@ class GameEngine:
 
     """
     def change_node_color(self,grid, x, y, color):
-        grid.play_move(x, y, color)
+
+        if(not(grid.play_move(x, y, color))):
+           return 
         if self.strategy is not None:
             self.strategy.move_played(x, y, color, "A" if grid.player == 0 else "B")
 

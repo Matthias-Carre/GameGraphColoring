@@ -29,8 +29,9 @@ class Grid:
         self.player = 0 #0 for Alice, 1 for Bob
         self.round = 1
         
+        
         self.last_Bob_move = None # (x,y,color,past_config)        
-
+        self.Bob_play_on_config = None #config of the block where Bob played, used for strategy
         #add neighbors to each cell
         self.init_state()
 
@@ -73,6 +74,7 @@ class Grid:
         #save pour undo
         self.last_Bob_move = (x,y,color)
         self.save_zone_snapshot(x, y, distance=2)
+
 
         #applique le coup
         target = self.nodes[y][x]

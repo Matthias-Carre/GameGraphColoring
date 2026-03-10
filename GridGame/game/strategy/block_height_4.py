@@ -28,10 +28,14 @@ class BlockHeight4(Block) :
             block_right = self.block_at(x+1)
 
             if(block_left):
+                #Notes: si c'est bob on aimerais save la config du bord pour reagir en consequence
+                self.grid.bob_play_on_config = block_left.right_configuration
+
                 block_left.end_col = x
                 block_left.size += 1
                 block_left.columns.append([self.get_cell(x, row) for row in range(self.height)])
                 #merge 2 blocks
+
                 if(block_right):
                     block_left.end_col = block_right.end_col
                     block_left.size += block_right.size
@@ -43,6 +47,9 @@ class BlockHeight4(Block) :
                 return
                       
             if(block_right):
+                #idem que block_left pour les configs
+                self.grid.bob_play_on_config = block_right.left_configuration
+
                 block_right.start_col = x
                 block_right.size += 1
                 block_right.columns.insert(0,[self.get_cell(x, row) for row in range(self.height)])
