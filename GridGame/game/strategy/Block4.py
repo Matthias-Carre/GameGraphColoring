@@ -223,6 +223,7 @@ class Block:
 
             if self.pi_config(a,b,c,d,cd):
                 self.right_configuration = "p"
+
                 self.flip_config_right = self
             
 
@@ -505,6 +506,8 @@ class Block:
         if self.is_pi():
             #print("Block is pi")
             self.right_configuration = "p"
+            
+
  
   
         #manage particulars cases

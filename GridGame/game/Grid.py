@@ -31,7 +31,9 @@ class Grid:
         
         
         self.last_Bob_move = None # (x,y,color,past_config)        
-        self.Bob_play_on_config = None #config of the block where Bob played, used for strategy
+        self.Bob_play_on_config = None #config of the block where Bob played, used for strategy 
+        #might have to keep left and right on some cases
+
         #add neighbors to each cell
         self.init_state()
 
@@ -71,6 +73,7 @@ class Grid:
             print(f"Invalid move at ({x}, {y})")
             return False
         
+
         #save pour undo
         self.last_Bob_move = (x,y,color)
         self.save_zone_snapshot(x, y, distance=2)

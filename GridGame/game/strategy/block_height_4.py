@@ -1,15 +1,24 @@
 from game.strategy.Block4 import Block
 
-class BlockHeight4(Block) :
+class BlockHeight4:
     def __init__(self,grid):
+
         self.blocks = []
         self.grid = grid
         self.height = grid.height
         self.width = grid.width
 
 
+    """
+    input: move played by Bob (x,y,color)
+    output: void
+    result: update the configuration of the block
+    """
     def move_played(self,x,y,color,player_name):
-        #print("Move played in BlockHeight4")
+        
+        #keep the config on which Bob played for Alice strategy
+        print("block_height_4: Bob played on config: ", self.get_config_at(x))
+
         self.update_block(x)
         right_block_start = self.get_right_block(self.block_at(x))
         self.update_block(right_block_start) if right_block_start != None else None
@@ -49,6 +58,7 @@ class BlockHeight4(Block) :
             if(block_right):
                 #idem que block_left pour les configs
                 self.grid.bob_play_on_config = block_right.left_configuration
+                print("block_height_4: Bob play on config: ", self.grid.bob_play_on_config)
 
                 block_right.start_col = x
                 block_right.size += 1
@@ -67,6 +77,11 @@ class BlockHeight4(Block) :
             self.blocks.append(block)
 
         block.check_configurations()
+        if block.right_configuration == 'p':
+            self.block_at(x+2).left_configuration = 'p'
+            print("block_height_4: change right block config to p")
+        if block.left_configuration == 'p':
+            self.block_at(x-2).right_configuration = 'p'
         #block.print_block()
         return
 
@@ -88,5 +103,14 @@ class BlockHeight4(Block) :
             if b.start_col > block.end_col:
                 return b.start_col
         return None
-        
     
+    def get_config_at(self,x):
+        block = self.block_at(x)
+        
+        
+        block_left = self.block_at(x-1)
+        block_right = self.block_at(x+1)
+        if block_left and block_right:
+            if block_left.right_configuration == 'p' or block_right.left_configuration == 'p':
+                return 'p'
+        return None
