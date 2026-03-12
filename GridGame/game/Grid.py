@@ -53,6 +53,7 @@ class Grid:
     def is_move_valid(self, x, y, value):
         for neighbor in self.nodes[y][x].neighbors:
             if neighbor.value == value:
+                print(f"Invalide move {x},{y} val: {value} already in neighbor at ({neighbor.x},{neighbor.y})")
                 return False
 
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -84,7 +85,22 @@ class Grid:
         target.value = color
         target.played_by = self.player
         target.round = self.round
+        #manage if its a doctor / patient
+        if target.is_doctor():
+            patient = target.patients[0] 
+            for doc in patient.doctors:
+                doc.patients = []
+            patient.doctors = []
+        
+        if target.doctors != []:
+            for doc in target.doctors:
+                doc.patients = []
+            target.doctors = []
+
+        
+        
         target.update_cell()
+
         
         self.last_moves.append((x,y,color))
         self.update_neighbors(x,y,color)

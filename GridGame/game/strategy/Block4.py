@@ -24,6 +24,8 @@ class Block:
         self.particular_config_j = None # index of the j for the particular config 
         self.particular_config_block = None #give the block with the particular config rotated
 
+        self.is_fliped_hori = False
+        self.is_fliped_verti = False
         
         #self.pi_
 
@@ -56,6 +58,17 @@ class Block:
             #block of 1 is always left alpha
             self.flip_config_left = self
             self.left_configuration = "a"
+
+        #right side
+        a,b,c,d = self.columns[0]
+        first = self.alpha_config(a,b,c,d)
+        revers = self.alpha_config(d,c,b,a)
+        if revers:
+            self.flip_config_right = self.flip_horizontal()
+            self.right_configuration = "a"
+        if first:
+            self.flip_config_right = self
+            self.right_configuration = "a"
             
         
         
@@ -63,9 +76,11 @@ class Block:
         # b=c != 0
         if( (b.value == d.value and b.value !=0)):
             #a and c not doctors
+            print("Block4: check doc")
             if((not(a.is_doctor()) and not(c.is_doctor()))):
+                print("Block4: alpha config b=d=",b.value)
                 #if a and c colored then a != c
-                if(a.value != c.value or a.value ==0 or c.value==0):
+                if(a.value != c.value or a.value == 0 or c.value == 0):
                     return True
 
     #check if the block is of type beta

@@ -1,4 +1,8 @@
-
+"""
+Every case of the paper
+Note: in the paper line are from down to up starting from 1
+Here we consider up to down starting from 0
+"""
 
 #exemple de skelet de code pour l'exec
 def is_TestConfig(grid,bob_move):
@@ -164,9 +168,6 @@ Case 3: Bob colors empty column
 # Bob play in col j with j-1,j and j+1 empty 
 def is_3_new(grid,bob_move):
     x,y,color = bob_move
-    
-    print("IS 3 NEW:",x,y)
-    print("strategy 4: len nodes",len(grid.nodes[0]))
     #previous and next column
     list = [(x-1,0),(x-1,1),(x-1,2),(x-1,3),(x+1,0),(x+1,1),(x+1,2),(x+1,3),(x,0),(x,1),(x,2),(x,3)]
     list.remove((x,y))
@@ -186,10 +187,40 @@ def solve_3_new(grid,bob_move):
 
 
 def is_3_pi(grid,bob_move):
-    x,y,color = bob_move
-    print("IS 3 PI:",x,y,grid.bob_play_on_config)
+    if grid.bob_play_on_config == "p":
+        print("Is 3 pi")
+        return True
+    return False
 
 def solve_3_pi(grid,bob_move):
+    x,y,color = bob_move
+    #bob 2,j+1 => alice 1,j+1
+    if(y==2):
+        c = grid.get_cell(x,1).color_options
+        #print("3Pi color option: ", c)
+        return (x,1,c[0])
+    #bob 1,j+1 => alice 2,j+1
+    if(y==1):
+        c = grid.get_cell(x,2).color_options
+        #print("3Pi color option: ", c)
+        return (x,2,c[0])
+    
+    #bob 3,j+1 cw c' or c'' => alice 1,j+1 cw available 
+    print("strat: ",color, grid.get_cell(x,1).value, grid.get_cell(x,2).value)
+    if y == 3:
+        if color == grid.get_cell(x-1,2).value or color == grid.get_cell(x+1,2).value:
+            c = grid.get_cell(x,1).color_options
+            #print("3Pi color option: ", c)
+            return (x,1,c[0])
+        
+        #bob 3,j+1 cw w => if 1,j+2 != w => alice 1,j+1 cw w else 1,j+1 cw c''
+        if color != grid.get_cell(x+1,1).value:
+            return (x,1,color)
+        else:
+            #get the value of c''
+
+            return (x,1,grid.get_cell(x-1,2).value)
+
     return
     
 

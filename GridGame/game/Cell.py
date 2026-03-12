@@ -30,6 +30,7 @@ class Cell:
         self.is_uncolorable = False
 
         self.doctors = []
+        #doctors has only one patient
         self.patients = []
 
     #return the colors of the neighboring cells
@@ -197,6 +198,7 @@ class Cell:
         print(f"  Is uncolorable: {self.is_uncolorable}")
         print(f"  Doctors: {[(d.x, d.y) for d in self.doctors]}")
         print(f"  Patients: {[(p.x, p.y) for p in self.patients]}")
+        print("is_doctor: ", self.is_doctor())
         print("=--=--=--=--=--=--=--=--=--=--=--=--=--=--=")
         
 
@@ -216,7 +218,8 @@ class Cell:
             "round": self.round,
             #on save les coo pour restaurer plus facilement
             "doctors_coords": [(d.x, d.y) for d in self.doctors],
-            "patients_coords": [(p.x, p.y) for p in self.patients]
+            "patients_coords": [(p.x, p.y) for p in self.patients],
+
         }
 
     #restaure lancien etat des cells

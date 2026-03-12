@@ -106,6 +106,9 @@ class BlockHeight4:
     
     def get_config_at(self,x):
         block = self.block_at(x)
+        if block:
+            return block.left_configuration
+
         
         
         block_left = self.block_at(x-1)
@@ -113,4 +116,9 @@ class BlockHeight4:
         if block_left and block_right:
             if block_left.right_configuration == 'p' or block_right.left_configuration == 'p':
                 return 'p'
+        if block_left and block_right == None:
+            return block_left.right_configuration
+        if block_right and block_left == None:
+            return block_right.left_configuration
+        
         return None

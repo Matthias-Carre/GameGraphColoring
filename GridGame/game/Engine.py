@@ -116,7 +116,7 @@ class GameEngine:
     """
     def on_left_click(self,event):
         
-        print("click",event)
+        #print("click",event)
         x = event.x
         y = event.y
         ratio = min(self.window_width / self.grid.width, self.window_height / self.grid.height)
