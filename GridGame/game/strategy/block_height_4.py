@@ -38,7 +38,9 @@ class BlockHeight4:
 
             if(block_left):
                 #Notes: si c'est bob on aimerais save la config du bord pour reagir en consequence
-                self.grid.bob_play_on_config = block_left.right_configuration
+                self.grid.bob_play_on_config["config"] = block_left.right_configuration
+                self.grid.bob_play_on_config["is_hori_flipped"] = block_left.is_right_flipped
+                
 
                 block_left.end_col = x
                 block_left.size += 1
@@ -57,7 +59,9 @@ class BlockHeight4:
                       
             if(block_right):
                 #idem que block_left pour les configs
-                self.grid.bob_play_on_config = block_right.left_configuration
+                self.grid.bob_play_on_config["config"] = block_right.left_configuration
+                self.grid.bob_play_on_config["is_hori_flipped"] = block_right.is_left_flipped
+                self.grid.bob_play_on_config["is_vert_flipped"] = True
                 print("block_height_4: Bob play on config: ", self.grid.bob_play_on_config)
 
                 block_right.start_col = x
@@ -114,11 +118,15 @@ class BlockHeight4:
         block_left = self.block_at(x-1)
         block_right = self.block_at(x+1)
         if block_left and block_right:
-            if block_left.right_configuration == 'p' or block_right.left_configuration == 'p':
+            if block_left.right_configuration == 'p':
+                return 'p'
+            if block_right.left_configuration == 'p':
+                self.grid.bob_play_on_config["is_vert_flipped"] = True
                 return 'p'
         if block_left and block_right == None:
             return block_left.right_configuration
         if block_right and block_left == None:
+            self.grid.bob_play_on_config["is_vert_flipped"] = True
             return block_right.left_configuration
         
         return None

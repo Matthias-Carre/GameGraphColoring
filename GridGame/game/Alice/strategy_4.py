@@ -187,13 +187,27 @@ def solve_3_new(grid,bob_move):
 
 
 def is_3_pi(grid,bob_move):
-    if grid.bob_play_on_config == "p":
+    if grid.bob_play_on_config["config"] == "p":
         print("Is 3 pi")
         return True
     return False
 
 def solve_3_pi(grid,bob_move):
+    #normalize bob move:
     x,y,color = bob_move
+    is_h_flip = grid.bob_play_on_config["is_hori_flipped"]
+    is_v_flip = grid.bob_play_on_config["is_vert_flipped"]
+    
+
+    #fix j is full line of 3_pi is right or left
+    j = x+1 if is_v_flip else x-1 
+
+    #bob 2,j+1 => alice 1,j+1
+    print("3Pi: Bob last move ",(x,y))
+    print("3Pi: Bob normalized move: ",get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip))
+    print("3Pi: check j+1, 2:",get_norm_cell(grid,x,y+1,is_h_flip,is_v_flip).value)
+    print("3Pi: flip h and v: ",is_h_flip, is_v_flip)
+    """
     #bob 2,j+1 => alice 1,j+1
     if(y==2):
         c = grid.get_cell(x,1).color_options
@@ -222,7 +236,7 @@ def solve_3_pi(grid,bob_move):
             return (x,1,grid.get_cell(x-1,2).value)
 
     return
-    
+    """
 
 
 
@@ -241,3 +255,28 @@ def same_value_grid(grid,list):
         if grid.get_cell(j,x).value != first_value: 
             return False
     return True
+
+"""
+input:grid, x, y, is_hori_flipped, is_vert_flipped
+return: the cell at (x,y) on this context
+"""
+def get_norm_cell(grid,x,y,hori,verti):
+    if hori and verti:
+        return grid.get_cell(grid.width-1-x,grid.height-1-y)
+    elif hori:
+        return grid.get_cell(grid.width-1-x,y)
+    elif verti:
+        return grid.get_cell(x,grid.height-1-y)
+    else:
+        return grid.get_cell(x,y)
+
+"""
+input: grid, x, y, j, is_hori_flipped, is_verti_flipped
+return: the coordinates of (x,y) on the normalized context
+idea: bob move is translate to his position after normalization
+"""
+def get_norm_pos(grid,x,y,j,hori,verti):
+    x_norm = j - abs(x-j) if verti else x
+    y_norm = grid.height-1-y if hori else y 
+
+    return (x_norm,y_norm)

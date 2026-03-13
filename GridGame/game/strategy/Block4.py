@@ -17,6 +17,7 @@ class Block:
         self.right_configuration = None
         self.left_configuration = None
 
+
         self.flip_config_right = None #store the block fliped to match configurations (can be same as self)
         self.flip_config_left = None #store the block for the left config but flip it at right
 
@@ -24,8 +25,8 @@ class Block:
         self.particular_config_j = None # index of the j for the particular config 
         self.particular_config_block = None #give the block with the particular config rotated
 
-        self.is_fliped_hori = False
-        self.is_fliped_verti = False
+        self.is_right_flipped = False
+        self.is_left_flipped = False
         
         #self.pi_
 
@@ -41,6 +42,11 @@ class Block:
     cp c 0
     dp d 0
     (ap = a' ...)
+
+    Structure:
+    function is_xxx() -> get the values to check the config in 4 directions
+    function xxx_config() -> get the normelized config to check if it match the config
+
     """
     #check if the block is of type alpha
     # b=c != 0, a and c not doctors and if colored then a != c
@@ -52,6 +58,7 @@ class Block:
         
         if revers:
             self.flip_config_left = self.flip_horizontal()
+            self.is_left_flipped = True
             self.left_configuration = "a"
             
         if first:
@@ -65,11 +72,13 @@ class Block:
         revers = self.alpha_config(d,c,b,a)
         if revers:
             self.flip_config_right = self.flip_horizontal()
+            self.is_right_flipped = True
             self.right_configuration = "a"
+
         if first:
             self.flip_config_right = self
             self.right_configuration = "a"
-            
+
         
         
     def alpha_config(self,a,b,c,d):
@@ -98,6 +107,7 @@ class Block:
         #create fliped right
         if revers:
             self.flip_config_right = self.flip_horizontal()
+            self.is_right_flipped = True
             self.right_configuration = "b"
 
         if first:
@@ -117,6 +127,7 @@ class Block:
             self.flip_config_left = self.flip_vertical()
             fliped = self.flip_config_left
             self.flip_config_left = fliped.flip_horizontal()
+            self.is_left_flipped = True
             self.left_configuration = "b"
 
         #create vertic fliped  
@@ -144,6 +155,7 @@ class Block:
 
         if revers:
             self.flip_config_right = self.flip_horizontal()
+            self.is_right_flipped = True
             self.right_configuration = "g"
 
 
@@ -162,6 +174,7 @@ class Block:
             self.flip_config_left = self.flip_vertical()
             fliped = self.flip_config_left
             self.flip_config_left = fliped.flip_horizontal()
+            self.is_left_flipped = True
             self.left_configuration = "g"
 
         if first:
@@ -193,6 +206,7 @@ class Block:
         
         if revers:
             self.flip_config_right = self.flip_horizontal()
+            self.is_right_flipped = True
             self.right_configuration = "d"
 
         if first:
@@ -209,6 +223,7 @@ class Block:
             self.flip_config_left = self.flip_vertical()
             fliped = self.flip_config_left
             self.flip_config_left = fliped.flip_horizontal()
+            self.is_left_flipped = True
             self.left_configuration = "d"
 
         if first:
@@ -238,7 +253,6 @@ class Block:
 
             if self.pi_config(a,b,c,d,cd):
                 self.right_configuration = "p"
-
                 self.flip_config_right = self
             
 
@@ -247,6 +261,7 @@ class Block:
             if self.pi_config(a,b,c,d,cd):
                 self.right_configuration = "p"
                 self.flip_config_right = self.flip_horizontal()
+                self.is_right_flipped = True
         
         #left side
         if self.start_col -2 >= 0:
@@ -257,6 +272,7 @@ class Block:
 
             if self.pi_config(a,b,c,d,cd):
                 self.left_configuration = "p"
+                self.is_left_flipped = True
                 self.flip_config_left = self.flip_vertical()
             
 
@@ -267,6 +283,7 @@ class Block:
                 self.left_configuration = "p"
                 fliped = self.flip_vertical()
                 self.flip_config_left = fliped.flip_horizontal()
+                self.is_left_flipped = True
 
     def pi_config(self,a,b,c,d,cd):
         # a==d, b==cd and c != a,b,0 and a != b and a,b,c != 0
@@ -502,6 +519,8 @@ class Block:
     def check_configurations(self):
         self.left_configuration = None
         self.right_configuration = None
+        self.is_right_flipped = False
+        self.is_left_flipped = False
 
         if self.is_alpha():
             #print("Block is alpha")

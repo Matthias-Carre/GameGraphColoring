@@ -30,8 +30,10 @@ class Grid:
         self.round = 1
         
         
-        self.last_Bob_move = None # (x,y,color,past_config)        
-        self.Bob_play_on_config = None #config of the block where Bob played, used for strategy 
+        self.last_Bob_move = None # (x,y,color,past_config) 
+
+        # dic with the config and the flips to normelize      
+        self.bob_play_on_config = {"config":'',"is_hori_flipped":False,"is_vert_flipped":False}
         #might have to keep left and right on some cases
 
         #add neighbors to each cell
