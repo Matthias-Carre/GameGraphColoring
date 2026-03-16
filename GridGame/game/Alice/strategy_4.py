@@ -287,8 +287,14 @@ def solve_3_delta(grid,bob_move):
 
     #Case 3d3
     #bob 2,j+1 c != y if j+2 not empty => alice 1,j+1 available
-    #bob 2,j+1 c != y if j+2 empty if 1,j+3 != c => alice 1,j+2 c 
+    #bob 2,j+1 c != y if j+2 empty if 1,j+3 != c => alice 1,j+2 c else 0,j+2 c
 
+    #case 3d4
+    #bob 1,j+1 c if j+2 not empty => alice 2,j+1 available
+    #bob 1,j+1 c if j+2 empty 3,j+1 y
+
+    #case 3d5
+    #bob 0,j+1 c != x if c != y and 1,j+2 != y => alice 1,j+1 y 
 
 
 
