@@ -83,9 +83,14 @@ class BlockHeight4:
         block.check_configurations()
         if block.right_configuration == 'p':
             self.block_at(x+2).left_configuration = 'p'
+            self.block_at(x+2).is_left_flipped = block.is_right_flipped
+            self.block_at(x+2).pi_side = block.pi_side
             print("block_height_4: change right block config to p")
         if block.left_configuration == 'p':
+            self.grid.bob_play_on_config["is_vert_flipped"] = True
             self.block_at(x-2).right_configuration = 'p'
+            self.block_at(x-2).is_right_flipped = block.is_left_flipped
+            self.block_at(x-2).pi_side = block.pi_side
         #block.print_block()
         return
 
@@ -108,10 +113,14 @@ class BlockHeight4:
                 return b.start_col
         return None
     
+    """
+    input: column x
+    output: {"config": char , "is_hori_flipped" : bool, "is_vert_flipped": bool}
+    """
     def get_config_at(self,x):
         block = self.block_at(x)
         if block:
-            return block.left_configuration
+            return {"config": block.left_configuration, "is_hori_flipped": False, "is_vert_flipped": False}
 
         
         
@@ -119,14 +128,24 @@ class BlockHeight4:
         block_right = self.block_at(x+1)
         if block_left and block_right:
             if block_left.right_configuration == 'p':
-                return 'p'
+                if block_left.pi_side == "left":
+                    print("block_height_4: 1")
+                    return {"config": 'p', "is_hori_flipped": block_left.is_right_flipped, "is_vert_flipped": False}
+                else:
+                    print("block_height_4: 2")
+                    return {"config": 'p', "is_hori_flipped": block_left.is_right_flipped, "is_vert_flipped": True}
+                
             if block_right.left_configuration == 'p':
                 self.grid.bob_play_on_config["is_vert_flipped"] = True
-                return 'p'
+                if block_right.pi_side == "left":
+                    print("block_height_4: 3")
+                    return {"config": 'p', "is_hori_flipped": block_right.is_left_flipped, "is_vert_flipped": False}
+                else:
+                    print("block_height_4: 4")
+                    return {"config": 'p', "is_hori_flipped": block_right.is_left_flipped, "is_vert_flipped": True}
+            
         if block_left and block_right == None:
-            return block_left.right_configuration
-        if block_right and block_left == None:
-            self.grid.bob_play_on_config["is_vert_flipped"] = True
-            return block_right.left_configuration
+            return {"config": "", "is_hori_flipped": False, "is_vert_flipped": False}
+
         
         return None

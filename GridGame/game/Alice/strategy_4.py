@@ -204,9 +204,20 @@ def solve_3_pi(grid,bob_move):
 
     #bob 2,j+1 => alice 1,j+1
     print("3Pi: Bob last move ",(x,y))
+    print("3Pi: in :",grid.bob_play_on_config["config"])
     print("3Pi: Bob normalized move: ",get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip))
-    print("3Pi: check j+1, 2:",get_norm_cell(grid,x,y+1,is_h_flip,is_v_flip).value)
+    print("3Pi: check j+2, 2:",get_norm_cell(grid,2,2,j,is_h_flip,is_v_flip).value)
     print("3Pi: flip h and v: ",is_h_flip, is_v_flip)
+    nx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
+
+    if(ny == 2):
+        c = get_norm_cell(grid,nx,1,j,is_h_flip,is_v_flip).color_options
+        print("3Pi color option: ", c)
+        rx,ry = get_real_pos(grid,nx,1,j,is_h_flip,is_v_flip)
+        print("3Pi real pos: ",rx,ry)
+        return (rx,ry,c[0])
+        
+
     """
     #bob 2,j+1 => alice 1,j+1
     if(y==2):
@@ -257,26 +268,41 @@ def same_value_grid(grid,list):
     return True
 
 """
-input:grid, x, y, is_hori_flipped, is_vert_flipped
+input: grid, dx, y, j, is_hori_flipped, is_vert_flipped
+    dx is just the position relative to j
 return: the cell at (x,y) on this context
+
 """
-def get_norm_cell(grid,x,y,hori,verti):
+def get_norm_cell(grid,dx,y,j,hori,verti):
+
     if hori and verti:
-        return grid.get_cell(grid.width-1-x,grid.height-1-y)
+        print("strategy: dx,y,j , nx,ny ",dx,y,j,2*j-dx,grid.height-1-y)
+        return grid.get_cell(j-dx,grid.height-1-y)
     elif hori:
-        return grid.get_cell(grid.width-1-x,y)
+        return grid.get_cell(j+dx,grid.height-1-y)
     elif verti:
-        return grid.get_cell(x,grid.height-1-y)
+        return grid.get_cell(j-dx,y)
     else:
-        return grid.get_cell(x,y)
+        return grid.get_cell(j+dx,y)
 
 """
 input: grid, x, y, j, is_hori_flipped, is_verti_flipped
 return: the coordinates of (x,y) on the normalized context
+x will be the position relative to j
 idea: bob move is translate to his position after normalization
 """
 def get_norm_pos(grid,x,y,j,hori,verti):
-    x_norm = j - abs(x-j) if verti else x
+    dx_norm = j-x if verti else x-j
     y_norm = grid.height-1-y if hori else y 
 
-    return (x_norm,y_norm)
+    return (dx_norm,y_norm)
+
+"""
+input: grid, x, y, j, is_hori_flipped, is_verti_flipped
+output: the coordinates of (x,y) in the real grid
+"""
+def get_real_pos(grid,dx,y,j,hori,verti):
+    x_real = j - dx if verti else j+dx
+    y_real = grid.height-1-y if hori else y 
+
+    return (x_real,y_real)

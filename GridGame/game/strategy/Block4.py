@@ -17,7 +17,6 @@ class Block:
         self.right_configuration = None
         self.left_configuration = None
 
-
         self.flip_config_right = None #store the block fliped to match configurations (can be same as self)
         self.flip_config_left = None #store the block for the left config but flip it at right
 
@@ -28,7 +27,7 @@ class Block:
         self.is_right_flipped = False
         self.is_left_flipped = False
         
-        #self.pi_
+        self.pi_side = None #side of the line full on pi config
 
     #merge 2 blocks together 
     def merge(self,other_block):
@@ -252,16 +251,20 @@ class Block:
             cd = self.grid.get_cell(self.end_col +2,2)
 
             if self.pi_config(a,b,c,d,cd):
+                print("Block4: Pi config 1")
                 self.right_configuration = "p"
                 self.flip_config_right = self
+                self.pi_side = "left"
             
 
             d, c, b, a = self.columns[len(self.columns)-1]
             cd = self.grid.get_cell(self.end_col +2,1)
             if self.pi_config(a,b,c,d,cd):
+                print("Block4: Pi config 2")
                 self.right_configuration = "p"
                 self.flip_config_right = self.flip_horizontal()
                 self.is_right_flipped = True
+                self.pi_side = "left"
         
         #left side
         if self.start_col -2 >= 0:
@@ -271,19 +274,25 @@ class Block:
             #print(f"Pi config A cd={cd.value}, a={a.value},b={b.value},c={c.value},d={d.value}")
 
             if self.pi_config(a,b,c,d,cd):
+                print("Block4: Pi config 3")
+                print("Block4: Pi config left t f")
                 self.left_configuration = "p"
-                self.is_left_flipped = True
+                self.is_left_flipped = False
                 self.flip_config_left = self.flip_vertical()
+                self.pi_side = "right"
             
 
             d, c, b, a = self.columns[0]
             cd = self.grid.get_cell(self.start_col -2,1)
             #print("Pi config B:",cd.value)
             if self.pi_config(a,b,c,d,cd):
+                print("Block4: Pi config 4")
                 self.left_configuration = "p"
                 fliped = self.flip_vertical()
                 self.flip_config_left = fliped.flip_horizontal()
                 self.is_left_flipped = True
+                self.pi_side = "right"
+
 
     def pi_config(self,a,b,c,d,cd):
         # a==d, b==cd and c != a,b,0 and a != b and a,b,c != 0

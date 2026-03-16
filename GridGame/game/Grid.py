@@ -81,6 +81,10 @@ class Grid:
         self.last_Bob_move = (x,y,color)
         self.save_zone_snapshot(x, y, distance=2)
 
+        #test config where bob play:
+        
+
+
 
         #applique le coup
         target = self.nodes[y][x]
