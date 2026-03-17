@@ -145,7 +145,9 @@ class BlockHeight4:
                     return {"config": 'p', "is_hori_flipped": block_right.is_left_flipped, "is_vert_flipped": True}
             
         if block_left and block_right == None:
-            return {"config": "", "is_hori_flipped": False, "is_vert_flipped": False}
+            return {"config": block_left.right_configuration, "is_hori_flipped": block_left.is_right_flipped, "is_vert_flipped": False}
 
+        if block_right and block_left == None:
+            return {"config": block_right.left_configuration, "is_hori_flipped": block_right.is_left_flipped, "is_vert_flipped": True}
         
         return None

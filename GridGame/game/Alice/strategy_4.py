@@ -2,8 +2,22 @@
 Every case of the paper
 Note: in the paper line are from down to up starting from 1
 Here we consider up to down starting from 0
+
 """
 
+
+"""
+in the normelized context we work with dx relative to j of the config 
+
+get value of cell a,j+dx in a config:
+color = get_norm_cell(grid,dx,a,j,is_h_flip,is_v_flip).value
+used to get the color of a cell in the config
+
+
+get real position of cell that would be a,j+x in the normalized context:
+rx,ry = get_real_pos(grid,x,y,j,is_h_flip,is_v_flip)
+used to know where Bob played and to translate Alice response
+"""
 #exemple de skelet de code pour l'exec
 def is_TestConfig(grid,bob_move):
     #C'est juste un exemple de test
@@ -326,13 +340,36 @@ def is_3_delta(grid,bob_move):
     return
 
 def solve_3_delta(grid,bob_move):
+
+    #normalize bob move:
+    x,y,color = bob_move
+    is_h_flip = grid.bob_play_on_config["is_hori_flipped"]
+    is_v_flip = grid.bob_play_on_config["is_vert_flipped"]
+    
+    #fix j
+    j = x+1 if is_v_flip else x-1
+    nx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
+
     #Case 3d1
     #bob 3,j+1 y if 1,j+2 != y => alice 1,j+1 w y
-    #bob 3,j+1 y if 1,j+2 = y => 0,j+1 w y
-
+    if(ny == 3):
+        cell_2_j = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
+        if color == cell_2_j.value:
+            cell_1_jp2 = get_norm_cell(grid,2,1,j,is_h_flip,is_v_flip)
+            if cell_1_jp2.value != color:
+                rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d1a")
+                return (rx,ry,color)
+            else:
+                #if 1,j+2 = y => alice 1,j+1 w y
+                rx,ry = get_real_pos(grid,1,0,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d1b")
+                return (rx,ry,color)
     #Case 3d2
     #bob 3,j+1 c != y => alice 1,j+1 c or y
-
+        else: #color != y
+            cell = get_norm_cell(grid,1,1,j,is_h_flip,is_v_flip)
+            
     #Case 3d3
     #bob 2,j+1 c != y if j+2 not empty => alice 1,j+1 available
     #bob 2,j+1 c != y if j+2 empty if 1,j+3 != c => alice 1,j+2 c else 0,j+2 c
