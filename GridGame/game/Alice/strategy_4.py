@@ -203,22 +203,25 @@ def solve_3_pi(grid,bob_move):
     j = x+1 if is_v_flip else x-1 
 
     #bob 2,j+1 => alice 1,j+1
-    print("3Pi: Bob last move ",(x,y))
-    print("3Pi: in :",grid.bob_play_on_config["config"])
-    print("3Pi: Bob normalized move: ",get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip))
-    print("3Pi: check j+2, 2:",get_norm_cell(grid,2,2,j,is_h_flip,is_v_flip).value)
-    print("3Pi: flip h and v: ",is_h_flip, is_v_flip)
+
+    #print("3Pi: Bob last move ",(x,y))
+    #print("3Pi: in :",grid.bob_play_on_config["config"])
+    #print("3Pi: Bob normalized move: ",get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip))
+    #print("3Pi: check j+2, 2:",get_norm_cell(grid,2,2,j,is_h_flip,is_v_flip).value)
+    #print("3Pi: flip h and v: ",is_h_flip, is_v_flip)
     dx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
 
     if(ny == 2):
         col = get_norm_cell(grid,1,1,j,is_h_flip,is_v_flip).color_options
-        print("3Pi color option: ", col)
+        #print("3Pi color option: ", col)
         rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
-        print("3Pi real pos: ",rx,ry)
+        #print("3Pi real pos: ",rx,ry)
+        print(f"3Pi: 1")
         return (rx,ry,col[0])
     if(ny == 1):
         col = get_norm_cell(grid,1,2,j,is_h_flip,is_v_flip).color_options
         rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+        print(f"3Pi: 2")
         return (rx,ry,col[0])
     
     #bob 3,j+1 cw c' or c'' => alice 1,j+1 cw available 
@@ -229,30 +232,75 @@ def solve_3_pi(grid,bob_move):
         col_cell_2 = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
         #color v3,j+1 w c' or c''
         if color == col_cell_1.value or color == col_cell_2.value:
-            c = get_norm_cell(grid,dx,1,j,is_h_flip,is_v_flip).color_options
-            rx,ry = get_real_pos(grid,dx,1,j,is_h_flip,is_v_flip)
+            c = get_norm_cell(grid,1,1,j,is_h_flip,is_v_flip).color_options
+            rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+            print(f"3Pi: 3")
             return (rx,ry,c[0])
         #bob 3,j+1 cw w => if 1,j+2 != w => alice 1,j+1 cw w else 1,j+1 cw c''
         if color != get_norm_cell(grid,dx+1,1,j,is_h_flip,is_v_flip).value:
             rx,ry = get_real_pos(grid,dx,1,j,is_h_flip,is_v_flip)
+            print(f"3Pi: 4")
             return (rx,ry,color)
         else:
             #get the value of c'' (j,2)
-            cell = get_norm_cell(grid,dx,2,j,is_h_flip,is_v_flip)
-            #A FINIR
-    
+            cell = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
+            rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+
+            print(f"3Pi: 5")
+            return (rx,ry,cell.value)
 
     if (ny == 0):
         #if 0,j+1 = c' => 2,j+1 available 
-        #if 0,j+1 =  w => 2,j+1 w
-        #if 0,j+1 = c'' => if 1,j+2 c'' => 2,j+1 aviable
+        c1 = get_norm_cell(grid,0,1,j,is_h_flip,is_v_flip)
+        if color == c1.value:
+            col = get_norm_cell(grid,1,2,j,is_h_flip,is_v_flip).color_options
+            rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+            print(f"3Pi: 6")
+            return (rx,ry,col[0])
         
-        #if 0,j+1 = c'' => if 1,j+2 c or w => 2,j+1 same
-        #if 0,j+1 = c' => if 1,j+2 0 => 1,j+1 w
+        #if 0,j+1 =  w => 2,j+1 w
+        c = get_norm_cell(grid,0,0,j,is_h_flip,is_v_flip)
+        c2 = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
 
-        return
+        #calc of w
+        possi = [1,2,3,4]
+        possi.remove(c.value)
+        possi.remove(c1.value)
+        possi.remove(c2.value)
+        w = possi[0]
 
-    """
+        print(f"3Pi: c={c.value}, c'={c1.value}, c''={c2.value},w={w}")
+        if color == w:
+            print(f"3Pi: 7")
+            rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+            return (rx,ry,color)
+        
+        #if 0,j+1 = c'' => if 1,j+2 c'' => 2,j+1 aviable
+        if color == c2.value:
+            cell_1_jp2 = get_norm_cell(grid,1,2,j,is_h_flip,is_v_flip)
+            if cell_1_jp2.value == c2.value:
+                col = get_norm_cell(grid,1,2,j,is_h_flip,is_v_flip).color_options
+                rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+                print(f"3Pi: 8")
+                return (rx,ry,col[0])
+
+            #if 0,j+1 = c'' => if 1,j+2 c or w => 2,j+1 same
+            if cell_1_jp2.value == c.value or cell_1_jp2.value == w:
+                rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+                print(f"3Pi: 9")
+                return (rx,ry,color)
+
+            #if 0,j+1 = c' => if 1,j+2 0 => 1,j+1 w
+            if cell_1_jp2.value == 0:
+                rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+                print(f"3Pi: 10")
+                return (rx,ry,w)
+        
+    print("3Pi: no condition matched")  
+    return
+        
+
+"""
     
     print("strat: ",color, grid.get_cell(x,1).value, grid.get_cell(x,2).value)
     if y == 3:
@@ -270,7 +318,7 @@ def solve_3_pi(grid,bob_move):
             return (x,1,grid.get_cell(x-1,2).value)
 
     return
-    """
+"""
 
 def is_3_delta(grid,bob_move):
     #bob coor in col adjacent to border of config delta
@@ -297,7 +345,7 @@ def solve_3_delta(grid,bob_move):
     #bob 0,j+1 c != x if c != y and 1,j+2 != y => alice 1,j+1 y 
 
 
-
+    return
 
 
 
