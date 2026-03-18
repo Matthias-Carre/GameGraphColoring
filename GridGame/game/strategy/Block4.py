@@ -221,16 +221,14 @@ class Block:
         if revers:
             self.flip_config_left = self.flip_vertical()
             fliped = self.flip_config_left
-            self.flip_config_left = fliped.flip_horizontal()
-            self.is_left_flipped = True
             self.left_configuration = "d"
 
         if first:
             self.flip_config_left = self.flip_vertical()
+            self.flip_config_left = fliped.flip_horizontal()
+            self.is_left_flipped = True
             self.left_configuration = "d"
-
         
-
 
     def delta_config(self,a,c,bp):
         # a=bp !=0

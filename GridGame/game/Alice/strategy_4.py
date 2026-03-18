@@ -32,7 +32,7 @@ def solve_TestConfig(grid,bob_move):
     lx,ly,lc = bob_move
     
     print("resolve test config")
-    return (lx+1,ly+1,lc)
+    return (0,0,1)
 
 
 #Bob joue dans j+1 ou j+2 de D 
@@ -337,7 +337,11 @@ def solve_3_pi(grid,bob_move):
 def is_3_delta(grid,bob_move):
     #bob coor in col adjacent to border of config delta
     #idea: Alice will color to obtain alpha beta gamma or delta or merge
-    return
+    if grid.bob_play_on_config["config"] == "d":
+        print("Is 3 delta")
+        return True
+    
+    return False
 
 def solve_3_delta(grid,bob_move):
 
@@ -347,6 +351,7 @@ def solve_3_delta(grid,bob_move):
     is_v_flip = grid.bob_play_on_config["is_vert_flipped"]
     
     #fix j
+    print(f"3Delta: Bob last move{(x,y)},{is_h_flip},{is_v_flip} ",) 
     j = x+1 if is_v_flip else x-1
     nx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
 
@@ -369,9 +374,29 @@ def solve_3_delta(grid,bob_move):
     #bob 3,j+1 c != y => alice 1,j+1 c or y
         else: #color != y
             cell = get_norm_cell(grid,1,1,j,is_h_flip,is_v_flip)
+            cell_y = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
+            print(f"3Delta: j={j}")
+
+            rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+            #if y is an option for 1,j+1
+            print(f"y={cell_y.value}, options 1,j+1: {cell.color_options},c={color}")
+            if cell_y.value in cell.color_options:
+                print("3Delta: Case 3d2a")
+                return (rx,ry,cell_y.value)
+            #else (y not an option) => color c
+            else:
+                rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d2b")
+                return (rx,ry,color)
             
     #Case 3d3
-    #bob 2,j+1 c != y if j+2 not empty => alice 1,j+1 available
+    #bob 2,j+1 c = y if j+2 not empty => alice 1,j+1 available
+    if(ny == 2):
+        cell_y = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
+        if color != cell_y.value:
+            #check if j+2 not empty
+            print(f"3Delta: Is j+2 empty: {is_column_empty(grid,2,j,is_v_flip)}")
+
     #bob 2,j+1 c != y if j+2 empty if 1,j+3 != c => alice 1,j+2 c else 0,j+2 c
 
     #case 3d4
@@ -391,12 +416,22 @@ input: list of (j,x) coordinates
 return true if all the cells in the list have the same value
 """
 def same_value_grid(grid,list):
-    (j,x) = list[0]
-    first_value = grid.get_cell(j,x).value
-    for j,x in list: 
-        if grid.get_cell(j,x).value != first_value: 
+    (j,y) = list[0]
+    first_value = grid.get_cell(j,y).value
+    for j,y in list: 
+        if grid.get_cell(j,y).value != first_value: 
             return False
     return True
+
+"""ckeck if column j is empty from normized context """
+def is_column_empty(grid,dx,j,verti):
+    rj = j-dx if verti else j+dx
+
+    for y in range(grid.height):
+        if grid.get_cell(rj,y).value != 0:
+            return False
+    return True
+
 
 """
 input: grid, dx, y, j, is_hori_flipped, is_vert_flipped

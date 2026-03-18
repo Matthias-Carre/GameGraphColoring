@@ -30,6 +30,7 @@ class Alice:
                 #Case 3:
                 (is_3_new, solve_3_new),
                 (is_3_pi, solve_3_pi),
+                (is_3_delta, solve_3_delta),
 
                 (is_TestConfig,solve_TestConfig)
             ]

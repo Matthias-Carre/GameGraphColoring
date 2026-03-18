@@ -18,6 +18,7 @@ class BlockHeight4:
         
         #keep the config on which Bob played for Alice strategy
         print("block_height_4: Bob played on config: ", self.get_config_at(x))
+        self.grid.bob_play_on_config = self.get_config_at(x)
 
         self.update_block(x)
         right_block_start = self.get_right_block(self.block_at(x))
@@ -123,7 +124,6 @@ class BlockHeight4:
             return {"config": block.left_configuration, "is_hori_flipped": False, "is_vert_flipped": False}
 
         
-        
         block_left = self.block_at(x-1)
         block_right = self.block_at(x+1)
         if block_left and block_right:
@@ -150,4 +150,4 @@ class BlockHeight4:
         if block_right and block_left == None:
             return {"config": block_right.left_configuration, "is_hori_flipped": block_right.is_left_flipped, "is_vert_flipped": True}
         
-        return None
+        return {"config": 'none', "is_hori_flipped": False, "is_vert_flipped": False}
