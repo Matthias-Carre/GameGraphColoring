@@ -337,6 +337,7 @@ def solve_3_pi(grid,bob_move):
 def is_3_delta(grid,bob_move):
     #bob coor in col adjacent to border of config delta
     #idea: Alice will color to obtain alpha beta gamma or delta or merge
+    print("Check 3 delta: ", grid.bob_play_on_config)
     if grid.bob_play_on_config["config"] == "d":
         print("Is 3 delta")
         return True
@@ -396,15 +397,83 @@ def solve_3_delta(grid,bob_move):
         if color != cell_y.value:
             #check if j+2 not empty
             print(f"3Delta: Is j+2 empty: {is_column_empty(grid,2,j,is_v_flip)}")
-
+            if not is_column_empty(grid,2,j,is_v_flip):
+                cell = get_norm_cell(grid,1,1,j,is_h_flip,is_v_flip)
+                rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d3a1")
+                return (rx,ry,cell.color_options[0])
     #bob 2,j+1 c != y if j+2 empty if 1,j+3 != c => alice 1,j+2 c else 0,j+2 c
+            else: #j+2 empty
+                cell_1_jp3 = get_norm_cell(grid,3,1,j,is_h_flip,is_v_flip)
+                if cell_1_jp3.value != color:
+                    rx,ry = get_real_pos(grid,2,1,j,is_h_flip,is_v_flip)
+                    print("3Delta: Case 3d3a2")
+                    return (rx,ry,color)
+                else:
+                    rx,ry = get_real_pos(grid,2,0,j,is_h_flip,is_v_flip)
+                    print("3Delta: Case 3d3b")
+                    return (rx,ry,color)
 
     #case 3d4
     #bob 1,j+1 c if j+2 not empty => alice 2,j+1 available
+    if(ny == 1):
+        if not(is_column_empty(grid,2,j,is_v_flip)):
+            cell = get_norm_cell(grid,1,2,j,is_h_flip,is_v_flip)
+            rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+            print("3Delta: Case 3d4a")
+            return (rx,ry,cell.color_options[0])
     #bob 1,j+1 c if j+2 empty 3,j+1 y
+        else:
+            cell_y = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
+            rx,ry = get_real_pos(grid,1,3,j,is_h_flip,is_v_flip)
+            print(f"3Delta: Case 3d4b")
+            return (rx,ry,cell_y.value)
 
     #case 3d5
     #bob 0,j+1 c != x if c != y and 1,j+2 != y => alice 1,j+1 y 
+    if(ny == 0):
+        cell_y = get_norm_cell(grid,0,2,j,is_h_flip,is_v_flip)
+        if color != cell_y.value:
+            cell_1_jp2 = get_norm_cell(grid,2,1,j,is_h_flip,is_v_flip)
+            if cell_1_jp2.value != cell_y.value:
+                rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d5a")
+                return (rx,ry,cell_y.value)
+            
+            else:# 1,j+2 = y => alice 1,j c
+                rx,ry = get_real_pos(grid,0,1,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d5b")
+                return (rx,ry,color)
+        #if color = y if 3,j+2 != y => alice 3,j+1 y else if...
+        else: #color = y
+            cell_3_jp2 = get_norm_cell(grid,2,3,j,is_h_flip,is_v_flip)
+            if cell_3_jp2.value != cell_y.value:
+                rx,ry = get_real_pos(grid,1,3,j,is_h_flip,is_v_flip)
+                print("3Delta: Case 3d5c")
+                return (rx,ry,cell_y.value)
+            #if c=y and 3,j+2 = y if 2,j+2 = c' != 0 => alice 1,j+1 c' else 
+            #- if 1,j+2 = c' => alice 2,j+1 c' (if c' != y or other) else(1,j+2=0) should not be possible
+            else: # 3,j+2 = y
+                cell_2_jp2 = get_norm_cell(grid,2,2,j,is_h_flip,is_v_flip)
+                if cell_2_jp2.value != 0:
+                    rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+                    print("3Delta: Case 3d5d")
+                    return (rx,ry,cell_2_jp2.value)
+                else: # 2,j+2 = 0
+                    cell_1_jp2 = get_norm_cell(grid,2,1,j,is_h_flip,is_v_flip)
+                    if cell_1_jp2.value != 0: 
+                        if cell_y.value != cell_1_jp2.value:
+                            rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+                            print("3Delta: Case 3d5e")
+                            return (rx,ry,cell_1_jp2.value)
+                        else:
+                            cell = get_norm_cell(grid,1,2,j,is_h_flip,is_v_flip)
+                            rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+                            print("3Delta: Case 3d5f")
+                            return (rx,ry,cell.color_options[0])
+
+                    else: # 1,j+2 = 0
+                        print("3Delta: Case 3d5f - should not happen")
 
 
     return

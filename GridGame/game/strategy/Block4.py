@@ -225,7 +225,7 @@ class Block:
 
         if first:
             self.flip_config_left = self.flip_vertical()
-            self.flip_config_left = fliped.flip_horizontal()
+            #self.flip_config_left = fliped.flip_horizontal()
             self.is_left_flipped = True
             self.left_configuration = "d"
         
