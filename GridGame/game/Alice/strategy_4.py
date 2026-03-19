@@ -19,6 +19,9 @@ rx,ry = get_real_pos(grid,x,y,j,is_h_flip,is_v_flip)
 used to know where Bob played and to translate Alice response
 """
 #exemple de skelet de code pour l'exec
+from matplotlib.pyplot import grid
+
+
 def is_TestConfig(grid,bob_move):
     #C'est juste un exemple de test
     #if alpha Alice play diagonal same value (if possible)
@@ -475,10 +478,185 @@ def solve_3_delta(grid,bob_move):
                     else: # 1,j+2 = 0
                         print("3Delta: Case 3d5f - should not happen")
 
-
+    print("3Delta: no condition matched")
     return
 
 
+def is_3_alpha_F(grid,bob_move):
+    #Bob play border of alpha with no block on the other side
+    if grid.bob_play_on_config["config"] == "a":
+        if grid.bob_play_on_config["config2"] == "empty":
+            print("Is 3 alpha F")
+            return True 
+    return False
+
+def solve_3_alpha_F(grid,bob_move):
+    
+    #normalize bob move:
+    x,y,color = bob_move
+    is_h_flip = grid.bob_play_on_config["is_hori_flipped"]
+    is_v_flip = grid.bob_play_on_config["is_vert_flipped"]
+    
+    j = x+1 if is_v_flip else x-1
+    nx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
+
+    #Bob play in 3,j+1 or 0,j+1 => Alice play in 2,j+1 c
+    if (ny == 3 or ny == 0):
+        cell_c = get_norm_cell(grid,0,1,j,is_h_flip,is_v_flip)
+        rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+        print("3Alpha F1") 
+        return (rx,ry,cell_c.value)
+    #if Bob 1,j+1 c' => Alice 3,j+1 c'
+    if (ny == 1):
+        rx,ry = get_real_pos(grid,1,3,j,is_h_flip,is_v_flip)
+        print("3Alpha F2")
+        return (rx,ry,color)
+    #if Bob play 2,j+1 c' => Alice play 0,j+1 c
+    if (ny == 2):
+        cell_c = get_norm_cell(grid,0,1,j,is_h_flip,is_v_flip)
+        rx,ry = get_real_pos(grid,1,0,j,is_h_flip,is_v_flip)
+        print("3Alpha F3")
+        return (rx,ry,cell_c.value)
+    
+    print("3Alpha F: no condition matched")
+    return
+
+def is_3_beta_F(grid,bob_move):
+    #Bob play border of beta with no block on the other side
+    if grid.bob_play_on_config["config"] == "b":
+        if grid.bob_play_on_config["config2"] == "empty":
+            print("Is 3 beta F")
+            return True 
+    return False
+
+def solve_3_beta_F(grid,bob_move):
+
+    #normalize bob move:
+    x,y,color = bob_move
+    is_h_flip = grid.bob_play_on_config["is_hori_flipped"]
+    is_v_flip = grid.bob_play_on_config["is_vert_flipped"]
+    
+    j = x+1 if is_v_flip else x-1
+    nx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
+
+    #Bob play 3,j+1 c' if != c => Alice 1,j+1 c' else 0,j+1 c
+    if (ny == 3):
+        cell_c = get_norm_cell(grid,0,1,j,is_h_flip,is_v_flip)
+        if color != cell_c.value:
+            rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+            print("3Beta F1")
+            return (rx,ry,color)
+        else:
+            rx,ry = get_real_pos(grid,1,0,j,is_h_flip,is_v_flip)
+            print("3Beta F2")
+            return (rx,ry,cell_c.value)
+    #Bob play 2,j+1 c' => Alice play 0,j+1 c
+    if (ny == 2):
+        cell_c = get_norm_cell(grid,0,1,j,is_h_flip,is_v_flip)
+        rx,ry = get_real_pos(grid,1,0,j,is_h_flip,is_v_flip)
+        print("3Beta F3")
+        return (rx,ry,cell_c.value)
+    #Bob play 0,j+1 c' => Alice 2,j+1 c
+    if (ny == 0):
+        cell_c = get_norm_cell(grid,0,1,j,is_h_flip,is_v_flip)
+        rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+        print("3Beta F4")
+        return (rx,ry,cell_c.value)
+    #Bob play 1,j+1 c' => if 3,j != c' => Alice 3,j+1 c' else (if 2,j+3 != c' => Alice 2,j+2 c' else Alice 3,j+2 c')
+    if (ny == 1):
+        cell_3_j = get_norm_cell(grid,0,3,j,is_h_flip,is_v_flip)
+        if color != cell_3_j.value:
+            rx,ry = get_real_pos(grid,1,3,j,is_h_flip,is_v_flip)
+            print("3Beta F5")
+            return (rx,ry,color)
+        else:
+            cell_2_jp3 = get_norm_cell(grid,3,2,j,is_h_flip,is_v_flip)
+            if color != cell_2_jp3.value:
+                rx,ry = get_real_pos(grid,2,2,j,is_h_flip,is_v_flip)
+                print("3Beta F6")
+                return (rx,ry,color)
+            else:
+                rx,ry = get_real_pos(grid,2,3,j,is_h_flip,is_v_flip)
+                print("3Beta F7")
+                return (rx,ry,color)
+            
+    print("3Beta F: no condition matched")
+    return
+
+
+def is_3_gamma_F(grid,bob_move):
+    #Bob play border of gamma with no block on the other side
+    if grid.bob_play_on_config["config"] == "g":
+        if grid.bob_play_on_config["config2"] == "empty":
+            print("Is 3 gamma F")
+            return True 
+    return False
+
+def solve_3_gamma_F(grid,bob_move):
+    #normalize bob move:
+    x,y,color = bob_move
+    is_h_flip = grid.bob_play_on_config["is_hori_flipped"]
+    is_v_flip = grid.bob_play_on_config["is_vert_flipped"]
+    j = x+1 if is_v_flip else x-1
+    nx,ny = get_norm_pos(grid,x,y,j,is_h_flip,is_v_flip)
+
+    #bob play 0,j+1 c' => Alice 2,j+1 c'
+    if (ny == 0):
+        rx,ry = get_real_pos(grid,1,2,j,is_h_flip,is_v_flip)
+        print("3Gamma F1")
+        return (rx,ry,color)
+    
+    #bob play 3,j+1 c' => Alice 1,j+1 c'
+    if (ny == 3):
+        rx,ry = get_real_pos(grid,1,1,j,is_h_flip,is_v_flip)
+        print("3Gamma F2")
+        return (rx,ry,color)
+    #bob play 2,j+1 c' != c => Alice 1,j c'
+    if (ny == 2):
+        cell_c = get_norm_cell(grid,0,0,j,is_h_flip,is_v_flip)
+        if color != cell_c.value:
+            rx,ry = get_real_pos(grid,0,1,j,is_h_flip,is_v_flip)
+            print("3Gamma F3")
+            return (rx,ry,color)
+    #bob play 2,j+1 c' = c => if 1,j+3 != c => Alice 1,j c else if 3,j+3 != c => Alice 0,j+2 c
+        else:
+            cell_1_jp3 = get_norm_cell(grid,3,1,j,is_h_flip,is_v_flip)
+            if cell_c.value != cell_1_jp3.value:
+                rx,ry = get_real_pos(grid,0,1,j,is_h_flip,is_v_flip)
+                print("3Gamma F4")
+                return (rx,ry,cell_c.value)
+            else:
+                cell_3_jp3 = get_norm_cell(grid,3,3,j,is_h_flip,is_v_flip)
+                if cell_c.value != cell_3_jp3.value:
+                    rx,ry = get_real_pos(grid,2,0,j,is_h_flip,is_v_flip)
+                    print("3Gamma F5")
+                    return (rx,ry,cell_c.value)
+
+    #bob play 1,j+1 c' != c => Alice 2,j c'
+    if (ny == 1):
+        cell_c = get_norm_cell(grid,0,0,j,is_h_flip,is_v_flip)
+        if color != cell_c.value:
+            rx,ry = get_real_pos(grid,0,2,j,is_h_flip,is_v_flip)
+            print("3Gamma F6")
+            return (rx,ry,color)
+    #bob play 1,j+1 c' = c if 2,j+3 != c => Alice 2,j+2 c else we are in Delta'
+        else:
+            cell_2_jp3 = get_norm_cell(grid,3,2,j,is_h_flip,is_v_flip)
+            if color != cell_2_jp3.value:
+                rx,ry = get_real_pos(grid,2,2,j,is_h_flip,is_v_flip)
+                print("3Gamma F7")
+                return (rx,ry,color)
+            else:
+                rx,ry = get_real_pos(grid,2,3,j,is_h_flip,is_v_flip)
+                print("3Gamma F8 *2TH:je supp a verifier")
+                return (rx,ry,color)
+    print("3Gamma F: no condition matched")
+    return
+
+def is_3_gamma(grid,bob_move):
+    #Bob play between gamma and (alpha beta or gamma)
+    
+    
 
 """
 input: list of (j,x) coordinates

@@ -31,6 +31,9 @@ class Alice:
                 (is_3_new, solve_3_new),
                 (is_3_pi, solve_3_pi),
                 (is_3_delta, solve_3_delta),
+                (is_3_alpha_F, solve_3_alpha_F),
+                (is_3_beta_F, solve_3_beta_F),
+                (is_3_gamma_F, solve_3_gamma_F),
 
                 (is_TestConfig,solve_TestConfig)
             ]
@@ -53,6 +56,7 @@ class Alice:
         if(self.grid.round == 1):
             return (0,1,1)
         
+        print("Alice strategy: Bob: ", self.grid.bob_play_on_config)
         for is_case, solve_case in self.strategy:
             if is_case(self.grid,self.grid.last_Bob_move):
                 return solve_case(self.grid,self.grid.last_Bob_move)

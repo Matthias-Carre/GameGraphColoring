@@ -32,8 +32,12 @@ class Grid:
         
         self.last_Bob_move = None # (x,y,color,past_config) 
 
-        # dic with the config and the flips to normelize      
-        self.bob_play_on_config = {"config":'',"is_hori_flipped":False,"is_vert_flipped":False}
+        # dic with the config and the flips to normelize 
+        # "config2": can be:
+        # None -> there is a block but no config
+        # Empty -> there is no block
+        # char -> block with config char     
+        self.bob_play_on_config = {"config":'',"config2":"","is_hori_flipped":False,"is_vert_flipped":False}
         #might have to keep left and right on some cases
 
         #add neighbors to each cell

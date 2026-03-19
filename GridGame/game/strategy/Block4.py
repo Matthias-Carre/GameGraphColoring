@@ -311,7 +311,7 @@ class Block:
 
         if(len(self.columns) < 3): return False
         j = len(self.columns) - 3
-        print(f"Delta config: j={self.columns[j][0].y}")
+        #print(f"Delta config: j={self.columns[j][0].y}")
         cell_c = [(j,1),(j,3),(j+2,0),(j+2,2)]
         cell_0 = [(j+1,0),(j+1,1),(j+1,3),(j+2,1),(j+2,3)]
         if self.same_value(cell_c) and self.columns[j][1].value !=0:
